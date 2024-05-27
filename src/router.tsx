@@ -58,6 +58,12 @@ const router = createBrowserRouter([
         }),
       },
       {
+        path: 'aduanas',
+        lazy: async () => ({
+          Component: (await import('@/pages/aduanas')).default,
+        }),
+      },
+      {
         path: 'chats',
         lazy: async () => ({
           Component: (await import('@/components/coming-soon')).default,
