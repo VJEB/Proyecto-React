@@ -69,41 +69,32 @@ export const priorities = [
     icon: ArrowUpIcon,
   },
 ]
-interface Aduana {
-  adua_Codigo: string
-  adua_Direccion_Exacta: string
-  adua_Estado: boolean
-  adua_FechaCreacion: string
-  adua_FechaEliminacion: string | null
-  adua_FechaModificacion: string | null
-  adua_Id: number
-  adua_Nombre: string
-  ciud_Id: number
-  ciud_Nombre: string | null
-  pvin_Id: number
-  pvin_Nombre: string | null
-  usarioCreacion: string
+interface Cargo {
+  carg_Id: number | null
+  carg_Nombre: string | null
+  carg_Aduana: boolean | null
   usua_UsuarioCreacion: number
-  usua_UsuarioEliminacion: number | null
   usua_UsuarioModificacion: number | null
-  usuarioModificacion: string | null
+  usuarioCreacionNombre: string | null
+  carg_FechaCreacion: string | null
+  usuarioModificacionNombre: string | null
+  carg_FechaModificacion: string | null
+  usua_UsuarioEliminacion: string | null
+  carg_FechaEliminacion: string | null
+  pvin_Nombre: string | null
+  carg_Estado: boolean | null
 }
 
-export const cargarAduanas = async () => {
+export const cargarCargos = async () => {
   try {
-    console.log('HOLA');
-    
     const apiKey = import.meta.env.VITE_ApiKey;
-
-    console.log(apiKey, 'APIKEY');
-    
 
     if (!apiKey) {
       console.error('API key is undefined.')
       return
     }
 
-    const response = await fetch(import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar', {
+    const response = await fetch(import.meta.env.VITE_API_SimexPro_Url + 'api/Cargos/Listar', {
       method: 'GET',
       headers: {
         XApiKey: apiKey,
@@ -116,11 +107,11 @@ export const cargarAduanas = async () => {
     }
 
     const data = await response.json()
-    return data.data.map((aduana: Aduana) => {
+    return data.data.map((cargo: Cargo) => {
       return {
-        id: aduana.adua_Codigo,
-        title: aduana.adua_Nombre,
-        subRows: [],
+        id: cargo.carg_Id,
+        title: cargo.carg_Nombre,
+        // subRows: [],
         // status: 'in progress',
         // label: 'documentation',
         // priority: 'medium',

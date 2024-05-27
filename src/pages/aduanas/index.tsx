@@ -6,13 +6,13 @@ import { DataTable } from './components/data-table'
 import { tasks } from "./data/tasks";
 import { columns } from './components/columns'
 import { useEffect, useState } from 'react'
-import { cargarAduanas } from "./data/data";
+import { cargarCargos } from "./data/data";
 
-export default function Tasks() {
-  const [aduanas, setAduanas] = useState();
+export default function PagCargos({title = "Cargos"}:{title?:string}) {
+  const [cargos, setCargos] = useState();
   useEffect(() => {    
-    cargarAduanas().then((data) =>{
-      setAduanas(data);
+    cargarCargos().then((data) =>{
+      setCargos(data);
     }).catch((err) =>{console.log('Error al cargar las aduanas:' + err);
     });
   }, []);
@@ -22,7 +22,7 @@ export default function Tasks() {
       {/* ===== Top Heading ===== */}
       <LayoutHeader>
         {/* <Search /> */}
-        <h1 className='text-4xl'>Aduanas</h1>
+        <h1 className='text-4xl'>{title}</h1>
         <div className='ml-auto flex items-center space-x-4'>
           <ThemeSwitch />
           <UserNav />
@@ -35,9 +35,9 @@ export default function Tasks() {
             <h2 className='text-2xl font-bold tracking-tight'>Listado de aduanas</h2>
           </div>
         </div>
-        {aduanas && 
+        {cargos && 
         <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          <DataTable data={aduanas} columns={columns} />
+          <DataTable data={cargos} columns={columns} />
         </div>}
       </LayoutBody>
     </Layout>

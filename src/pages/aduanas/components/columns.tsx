@@ -8,9 +8,9 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 import { labels, priorities, statuses } from '../data/data'
-import { Task } from '../data/schema'
+import { Cargo } from '../data/schema'
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Cargo>[] = [
   {
     id: 'expand',
     // header: ({ table }) => (
@@ -27,7 +27,7 @@ export const columns: ColumnDef<Task>[] = [
     cell: ({ row }) =>
       true && (
         <Button
-          onClick={row.getToggleExpandedHandler()}
+          onClick={()=>row.toggleExpanded()}
           variant='ghost'
           className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
         >
@@ -61,7 +61,7 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: 'title',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Aduana' />
+      <DataTableColumnHeader column={column} title='Cargo' />
     ),
     cell: ({ row }) => {
       // const label = labels.find((label) => label.value === row.original.label)

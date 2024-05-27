@@ -70,6 +70,10 @@ export function DataTable<TData, TValue>({
     getExpandedRowModel: getExpandedRowModel(),
   })
 
+  React.useEffect(() => {    
+    console.clear();
+  }, []);
+
   return (
     <div className='space-y-4'>
       <DataTableToolbar table={table} />
@@ -111,9 +115,10 @@ export function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                   {row.getIsExpanded() && (
-                    <TableRow key={row.id + '_DETAILS'}>
+                    <TableRow key={row.id + 1} >
                       <TableCell
-                        key={row.id + '_DETAILS_CELL'}
+                        key={row.id + 2}
+                        className='pl-[10%]'
                         colSpan={row.getVisibleCells().length}
                       >
                         DETALLE
