@@ -91,14 +91,19 @@ interface Aduana {
 
 export const cargarAduanas = async () => {
   try {
-    const apiKey = '4b567cb1c6b24b51ab55248f8e66e5cc'
+    console.log('HOLA');
+    
+    const apiKey = import.meta.env.VITE_ApiKey;
+
+    console.log(apiKey, 'APIKEY');
+    
 
     if (!apiKey) {
       console.error('API key is undefined.')
       return
     }
 
-    const response = await fetch('https://localhost:44380/api/Aduanas/Listar', {
+    const response = await fetch(import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar', {
       method: 'GET',
       headers: {
         XApiKey: apiKey,

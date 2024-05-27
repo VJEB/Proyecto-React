@@ -10,7 +10,7 @@ import { cargarAduanas } from "./data/data";
 
 export default function Tasks() {
   const [aduanas, setAduanas] = useState();
-  useEffect(() => {
+  useEffect(() => {    
     cargarAduanas().then((data) =>{
       setAduanas(data);
     }).catch((err) =>{console.log('Error al cargar las aduanas:' + err);
