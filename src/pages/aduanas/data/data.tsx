@@ -85,43 +85,27 @@ interface Cargo {
   carg_Estado: boolean | null
 }
 
-interface Empleado {
-  empl_Id: number
-  empl_Nombres: string
-  empl_Apellidos: string
-  empl_DNI: string
-  escv_Id: number
-  escv_Nombre: string
-  empl_NombreCompleto: string
-  empl_Sexo: string
-  empl_FechaNacimiento: string
-  empl_Telefono: string
-  empl_DireccionExacta: string
-  pvin_Id: number
-  pvin_Nombre: string
-  pais_Id: number
-  pais_Codigo: string
-  pais_Nombre: string
-  empl_CorreoElectronico: string
-  carg_Id: number
-  carg_Nombre: string
-  empl_EsAduana: boolean
+interface Aduana {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Nombre: string | null
+  pvin_Id: number | null
+  ciud_Id: number | null
+  ciud_Nombre: string | null
   usua_UsuarioCreacion: number
-  usuarioCreacionNombre: string
-  empl_FechaCreacion: string
+  adua_FechaCreacion: string
   usua_UsuarioModificacion: number | null
-  usuarioModificacionNombre: string | null
-  empl_FechaModificacion: string | null
+  adua_FechaModificacion: string | null
   usua_UsuarioEliminacion: number | null
-  usuarioEliminacionNombre: string | null
-  empl_FechaEliminacion: string | null
-  empl_Estado: boolean
-  usua_UsuarioActivacion: number | null
-  usuarioActivacionNombre: string | null
-  empl_FechaActivacion: string | null
+  adua_FechaEliminacion: string | null
+  adua_Estado: boolean
+  usarioCreacion: string | null
+  usuarioModificacion: string | null
 }
 
-export const cargarEmpleados = async () => {
+export const cargarAduanas = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -131,7 +115,7 @@ export const cargarEmpleados = async () => {
     }
 
     const response = await fetch(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Empleados/Listar',
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
       {
         method: 'GET',
         headers: {
@@ -146,27 +130,29 @@ export const cargarEmpleados = async () => {
     }
 
     const data = await response.json()
-    return data.data.map((empleado: Empleado) => {
+    return data.data.map((aduana: Aduana) => {
       return {
-        empl_Id: empleado.empl_Id,
-        empl_Nombres: empleado.empl_Nombres,
-        empl_Apellidos: empleado.empl_Apellidos,
-        empl_DNI: empleado.empl_DNI,
-        escv_Nombre: empleado.escv_Nombre,
-        empl_NombreCompleto: empleado.empl_NombreCompleto,
-        empl_Sexo: empleado.empl_Sexo,
-        empl_FechaNacimiento: empleado.empl_FechaNacimiento,
-        empl_Telefono: empleado.empl_Telefono,
-        empl_DireccionExacta: empleado.empl_DireccionExacta,
-        pvin_Nombre: empleado.pvin_Nombre,
-        pais_Nombre: empleado.pais_Nombre,
-        empl_CorreoElectronico: empleado.empl_CorreoElectronico,
-        carg_Id: empleado.carg_Id,
+        adua_Id: aduana.adua_Id,
+        adua_Codigo: aduana.adua_Codigo,
+        adua_Nombre: aduana.adua_Nombre,
+        adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
+        pvin_Nombre: aduana.pvin_Nombre,
+        pvin_Id: aduana.pvin_Id,
+        ciud_Id: aduana.ciud_Id,
+        ciud_Nombre: aduana.ciud_Nombre,
+        usua_UsuarioCreacion: aduana.usua_UsuarioCreacion,
+        adua_FechaCreacion: aduana.adua_FechaCreacion,
+        usua_UsuarioModificacion: aduana.usua_UsuarioModificacion,
+        adua_FechaModificacion: aduana.adua_FechaModificacion,
+        usua_UsuarioEliminacion: aduana.usua_UsuarioEliminacion,
+        adua_FechaEliminacion: aduana.adua_FechaEliminacion,
+        adua_Estado: aduana.adua_Estado,
+        usarioCreacion: aduana.usarioCreacion,
+        usuarioModificacion: aduana.usuarioModificacion
       }
     })
   } catch (error) {
-    console.error(`Error al cargar empleados: ${error}`);
-    
+    console.error(`Error al cargar las adunas: ${error}`)
     return []
   }
 }
