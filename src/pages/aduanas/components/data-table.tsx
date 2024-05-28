@@ -150,9 +150,6 @@ export function DataTable<TData, TValue>({
                       <TableCell key={row.id + 2} className='pl-[2%]'>Id</TableCell>
                       <TableCell key={row.id + 3}>Codigo</TableCell>
                       <TableCell key={row.id + 4}>Nombre</TableCell>
-                      <TableCell key={row.id + 5}>Estado civil</TableCell>
-                      <TableCell key={row.id + 6}>País</TableCell>
-                      <TableCell key={row.id + 7}>Provincia</TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&

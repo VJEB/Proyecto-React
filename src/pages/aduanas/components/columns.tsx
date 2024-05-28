@@ -64,7 +64,7 @@ export const columns: ColumnDef<aduanaSchema>[] = [
   {
     accessorKey: 'aduana',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Aduana' />
+      <DataTableColumnHeader column={column} title='aduana' />
     ),
     cell: ({ row }) => {
       // const label = labels.find((label) => label.value === row.original.label)
@@ -73,7 +73,7 @@ export const columns: ColumnDef<aduanaSchema>[] = [
         <div className='flex space-x-2'>
           {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('Aduana')}
+            {row.getValue('aduana')}
             {/* {row.getIsExpanded().toString()} */}
           </span>
         </div>
