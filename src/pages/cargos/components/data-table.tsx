@@ -133,11 +133,21 @@ export function DataTable<TData, TValue>({
                         </TableCell>
                         {cell.column.id === 'cargo' && (
                           <>
-                            <TableCell key={cell.id + 1}></TableCell>
-                            <TableCell key={cell.id + 2}></TableCell>
-                            <TableCell key={cell.id + 3}></TableCell>
-                            <TableCell key={cell.id + 4}></TableCell>
-                            <TableCell key={cell.id + 5}></TableCell>
+                            <TableCell
+                              key={cell.id + 1 + 'relleno'}
+                            ></TableCell>
+                            <TableCell
+                              key={cell.id + 2 + 'relleno'}
+                            ></TableCell>
+                            <TableCell
+                              key={cell.id + 3 + 'relleno'}
+                            ></TableCell>
+                            <TableCell
+                              key={cell.id + 4 + 'relleno'}
+                            ></TableCell>
+                            <TableCell
+                              key={cell.id + 5 + 'relleno'}
+                            ></TableCell>
                           </>
                         )}
                       </>
@@ -145,35 +155,48 @@ export function DataTable<TData, TValue>({
                   </TableRow>
                   {row.getIsExpanded() && (
                     <TableRow
-                      key={row.id + 1}
+                      key={row.id + 1 + 'columna'}
                       className='bg-[#11141d] font-bold'
                     >
-                      <TableCell key={row.id + 2} className='pl-[2%]'>
+                      <TableCell
+                        key={row.id + 2 + 'columna'}
+                        className='pl-[2%]'
+                      >
                         Id
                       </TableCell>
-                      <TableCell key={row.id + 3}>DNI</TableCell>
-                      <TableCell key={row.id + 4}>Empleado</TableCell>
-                      <TableCell key={row.id + 5}>Teléfono</TableCell>
-                      <TableCell key={row.id + 5}>Correo</TableCell>
-                      <TableCell key={row.id + 6}>
+                      <TableCell key={row.id + 3 + 'columna'}>DNI</TableCell>
+                      <TableCell key={row.id + 4 + 'columna'}>
+                        Empleado
+                      </TableCell>
+                      <TableCell key={row.id + 5 + 'columna'}>
+                        Teléfono
+                      </TableCell>
+                      <TableCell key={row.id + 6 + 'columna'}>Correo</TableCell>
+                      <TableCell key={row.id + 7 + 'columna'}>
                         Fecha de nacimiento
                       </TableCell>
-                      <TableCell key={row.id + 7}>Estado civil</TableCell>
-                      <TableCell key={row.id + 8}>País</TableCell>
-                      <TableCell key={row.id + 9}>Provincia</TableCell>
+                      <TableCell key={row.id + 8 + 'columna'}>
+                        Estado civil
+                      </TableCell>
+                      <TableCell key={row.id + 9 + 'columna'}>País</TableCell>
+                      <TableCell key={row.id + 10 + 'columna'}>
+                        Provincia
+                      </TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&
                     row.original.subRows.map(
                       (empleado: Empleado, index: number) => (
-                        <TableRow key={empleado.carg_Id + index}>
+                        <TableRow key={empleado.carg_Id + index + 'carg_Id'}>
                           <TableCell
                             className='pl-[2%]'
-                            key={empleado.empl_Id + index}
+                            key={empleado.empl_Id + index + 'empl_Id'}
                           >
                             {empleado.empl_Id}
                           </TableCell>
-                          <TableCell key={empleado.empl_DNI + index}>
+                          <TableCell
+                            key={empleado.empl_DNI + index + 'empl_DNI'}
+                          >
                             {empleado.empl_DNI}
                           </TableCell>
                           <TableCell

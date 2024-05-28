@@ -28,7 +28,6 @@ export const columns: ColumnDef<Cargo>[] = [
       row.original.subRows.length > 0 && (
         <Button
           onClick={() => {
-            console.log(row.original.subRows)
             row.toggleExpanded()
           }}
           variant='ghost'
