@@ -25,9 +25,12 @@ export const columns: ColumnDef<Cargo>[] = [
     //   />
     // ),
     cell: ({ row }) =>
-      true && (
+      row.original.subRows.length > 0 && (
         <Button
-          onClick={()=>row.toggleExpanded()}
+          onClick={() => {
+            console.log(row.original.subRows)
+            row.toggleExpanded()
+          }}
           variant='ghost'
           className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
         >
@@ -36,7 +39,7 @@ export const columns: ColumnDef<Cargo>[] = [
           ) : (
             <CaretRightIcon className='h-4 w-4' />
           )}
-          <span className='sr-only'>Open menu</span>
+          <span className='sr-only'>Desplegar menú</span>
         </Button>
       ),
 
@@ -59,7 +62,7 @@ export const columns: ColumnDef<Cargo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'title',
+    accessorKey: 'cargo',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Cargo' />
     ),
@@ -70,7 +73,8 @@ export const columns: ColumnDef<Cargo>[] = [
         <div className='flex space-x-2'>
           {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('title')}
+            {row.getValue('cargo')}
+            {/* {row.getIsExpanded().toString()} */}
           </span>
         </div>
       )

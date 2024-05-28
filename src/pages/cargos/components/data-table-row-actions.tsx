@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { labels } from '../data/data'
-import { taskSchema } from '../data/schema'
+import { cargosSchema } from '../data/schema'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -26,7 +26,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original)
+  // const cargo = cargosSchema.parse(row.original)
 
   return (
     <DropdownMenu>
@@ -40,11 +40,11 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuSub>
+        <DropdownMenuItem>Editar</DropdownMenuItem>
+        <DropdownMenuItem>Ver detalle</DropdownMenuItem>
+        {/* <DropdownMenuItem>Favorite</DropdownMenuItem> */}
+        {/* <DropdownMenuSeparator /> */}
+        {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={task.label}>
@@ -55,10 +55,10 @@ export function DataTableRowActions<TData>({
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
+        </DropdownMenuSub> */}
+        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem>
-          Delete
+          Eliminar
           {/* <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
