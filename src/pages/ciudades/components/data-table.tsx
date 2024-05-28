@@ -122,9 +122,9 @@ export function DataTable<TData, TValue>({
                         </TableCell>
                         {cell.column.id === 'ciudad' && (
                           <>
-                            <TableCell key={cell.id + 1}></TableCell>
-                            <TableCell key={cell.id + 2}></TableCell>
-                            <TableCell key={cell.id + 3}></TableCell>
+                            {/* <TableCell key={cell.id + 1}></TableCell> */}
+                            {/* <TableCell key={cell.id + 2}></TableCell> */}
+                            {/* <TableCell key={cell.id + 3}></TableCell> */}
                           </>
                         )}
                       </>
@@ -143,26 +143,23 @@ export function DataTable<TData, TValue>({
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&
-                    row.original.subRows.map(
-                      (aldea: Aldea, index: number) => (
-                        <TableRow key={aldea.ciud_Id + index}>
-                          <TableCell
-                            className='pl-[2%]'
-                            key={aldea.alde_Id + index}
-                          >
-                            {aldea.alde_Id}
-                          </TableCell>
-                          <TableCell key={aldea.alde_Nombre + index}>
-                            {aldea.alde_Nombre}
-                          </TableCell>
-                          
-                          
-                          <TableCell key={aldea.pvin_Nombre + index}>
-                            {aldea.pvin_Nombre}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    )}
+                    row.original.subRows.map((aldea: Aldea, index: number) => (
+                      <TableRow key={aldea.ciud_Id + index}>
+                        <TableCell
+                          className='pl-[2%]'
+                          key={aldea.alde_Id + index}
+                        >
+                          {aldea.alde_Id}
+                        </TableCell>
+                        <TableCell key={aldea.alde_Nombre + index}>
+                          {aldea.alde_Nombre}
+                        </TableCell>
+
+                        <TableCell key={aldea.pvin_Nombre + index}>
+                          {aldea.pvin_Nombre}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </>
               ))
             ) : (
