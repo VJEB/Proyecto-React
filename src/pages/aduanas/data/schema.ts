@@ -3,49 +3,35 @@ import { z } from 'zod'
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
 
-const empleadoSchema = z.object({
-  empl_Id: z.number(),
-  empl_Nombres: z.string(),
-  empl_Apellidos: z.string(),
-  empl_DNI: z.string(),
-  escv_Id: z.number(),
-  escv_Nombre: z.string(),
-  empl_NombreCompleto: z.string(),
-  empl_Sexo: z.string(),
-  empl_FechaNacimiento: z.string(), // Date in ISO format
-  empl_Telefono: z.string(),
-  empl_DireccionExacta: z.string(),
+const ciudadSchema = z.object({
+  ciud_Id: z.string(),
+  ciud_Nombre: z.string(),
   pvin_Id: z.number(),
   pvin_Nombre: z.string(),
-  pais_Id: z.number(),
+  pvin_Codigo: z.string(),
   pais_Codigo: z.string(),
   pais_Nombre: z.string(),
-  empl_CorreoElectronico: z.string(),
-  carg_Id: z.number(),
-  carg_Nombre: z.string(),
-  empl_EsAduana: z.boolean(),
+  pais_Id: z.number(),
+  ciud_EsAduana: z.string(),
   usua_UsuarioCreacion: z.number(),
   usuarioCreacionNombre: z.string(),
-  empl_FechaCreacion: z.string(), // Date in ISO format
+  ciud_FechaCreacion: z.string(), // Date in ISO format
   usua_UsuarioModificacion: z.number(),
   usuarioModificacionNombre: z.string(),
-  empl_FechaModificacion: z.string(), // Date in ISO format
+  ciud_FechaModificacion: z.string(), // Date in ISO format
   usua_UsuarioEliminacion: z.number().nullable(),
   usuarioEliminacionNombre: z.string().nullable(),
-  empl_FechaEliminacion: z.string().nullable(), // Date in ISO format
-  empl_Estado: z.boolean(),
-  usua_UsuarioActivacion: z.number().nullable(),
-  usuarioActivacionNombre: z.string().nullable(),
-  empl_FechaActivacion: z.string().nullable(), // Date in ISO format
+  ciud_FechaEliminacion: z.string().nullable(), // Date in ISO format
+  ciud_Estado: z.boolean(),
 })
 
-export const cargosSchema = z.object({
+export const aduanaSchema = z.object({
   id: z.string(),
-  cargo: z.string(),
-  subRows: z.array(empleadoSchema),
+  ciudad: z.string(),
+  subRows: z.array(ciudadSchema),
   // status: z.string(),
   // label: z.string(),
   // priority: z.string(),
 })
 
-export type Cargo = z.infer<typeof cargosSchema>
+export type Ciudad = z.infer<typeof aduanaSchema>

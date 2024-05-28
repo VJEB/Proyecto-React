@@ -8,6 +8,7 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from '@radix-ui/react-icons'
+import axios from 'axios'
 
 export const labels = [
   {
@@ -69,20 +70,26 @@ export const priorities = [
     icon: ArrowUpIcon,
   },
 ]
-interface Cargo {
-  carg_Id: number | null
-  carg_Nombre: string | null
-  carg_Aduana: boolean | null
+
+interface Ciudad {
+  ciud_Id: string | null
+  ciud_Nombre: string | null
+  pvin_Id: string | null
+  pvin_Nombre: string | null
+  pvin_Codigo: string | null
+  pais_Codigo: string | null
+  pais_Nombre: string | null
+  pais_Id: string | null
+  ciud_EsAduana: boolean | null
   usua_UsuarioCreacion: number
   usua_UsuarioModificacion: number | null
   usuarioCreacionNombre: string | null
-  carg_FechaCreacion: string | null
+  ciud_FechaCreacion: string | null
   usuarioModificacionNombre: string | null
-  carg_FechaModificacion: string | null
+  ciud_FechaModificacion: string | null
   usua_UsuarioEliminacion: string | null
-  carg_FechaEliminacion: string | null
-  pvin_Nombre: string | null
-  carg_Estado: boolean | null
+  ciud_FechaEliminacion: string | null
+  ciud_Estado: boolean | null
 }
 
 interface Aduana {
@@ -105,7 +112,7 @@ interface Aduana {
   usuarioModificacion: string | null
 }
 
-export const cargarAduanas = async () => {
+export const cargarCiudades = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -130,25 +137,21 @@ export const cargarAduanas = async () => {
     }
 
     const data = await response.json()
-    return data.data.map((aduana: Aduana) => {
+    return data.data.map((ciudad: Ciudad) => {
       return {
-        adua_Id: aduana.adua_Id,
-        adua_Codigo: aduana.adua_Codigo,
-        adua_Nombre: aduana.adua_Nombre,
-        adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
-        pvin_Nombre: aduana.pvin_Nombre,
-        pvin_Id: aduana.pvin_Id,
-        ciud_Id: aduana.ciud_Id,
-        ciud_Nombre: aduana.ciud_Nombre,
-        usua_UsuarioCreacion: aduana.usua_UsuarioCreacion,
-        adua_FechaCreacion: aduana.adua_FechaCreacion,
-        usua_UsuarioModificacion: aduana.usua_UsuarioModificacion,
-        adua_FechaModificacion: aduana.adua_FechaModificacion,
-        usua_UsuarioEliminacion: aduana.usua_UsuarioEliminacion,
-        adua_FechaEliminacion: aduana.adua_FechaEliminacion,
-        adua_Estado: aduana.adua_Estado,
-        usarioCreacion: aduana.usarioCreacion,
-        usuarioModificacion: aduana.usuarioModificacion
+        ciud_Id: ciudad.ciud_Id,
+        ciud_Nombre: ciudad.ciud_Nombre,
+        pvin_Id: ciudad.pvin_Id,
+        pvin_Nombre: ciudad.pvin_Nombre,
+        usua_UsuarioCreacion: ciudad.usua_UsuarioCreacion,
+        ciud_FechaCreacion: ciudad.ciud_FechaCreacion,
+        usua_UsuarioModificacion: ciudad.usua_UsuarioModificacion,
+        ciud_FechaModificacion: ciudad.ciud_FechaModificacion,
+        usua_UsuarioEliminacion: ciudad.usua_UsuarioEliminacion,
+        ciud_FechaEliminacion: ciudad.ciud_FechaEliminacion,
+        ciud_Estado: ciudad.ciud_Estado,
+        usarioCreacion: ciudad.usua_UsuarioCreacion,
+        usuarioModificacion: ciudad.usua_UsuarioModificacion
       }
     })
   } catch (error) {
@@ -157,7 +160,7 @@ export const cargarAduanas = async () => {
   }
 }
 
-export const cargarCargos = async () => {
+export const cargarAduanas = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -166,7 +169,7 @@ export const cargarCargos = async () => {
       return
     }
 
-    const response = await fetch(
+    const response = await axios.get(
       import.meta.env.VITE_API_SimexPro_Url + 'api/Cargos/Listar',
       {
         method: 'GET',
@@ -177,19 +180,29 @@ export const cargarCargos = async () => {
       }
     )
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
 
-    const data = await response.json()
+    const data = await response.data
 
-    return cargarEmpleados()
-      .then((empleados: Empleado[]) => {
-        return data.data.map((cargo: Cargo) => {
+    return cargarCiudades()
+      .then((ciudad : Ciudad[]) => {
+        return data.data.map((aduana: Aduana) => {
           return {
-            id: cargo.carg_Id,
-            cargo: cargo.carg_Nombre,
-            subRows: empleados.filter((emp) => emp.carg_Id === cargo.carg_Id),
+            id: aduana.adua_Id,
+            adua_Codigo: aduana.adua_Codigo,
+            adua_Nombre: aduana.adua_Nombre,
+            adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
+            pvin_Nombre: aduana.pvin_Nombre,
+            pvin_Id: aduana.pvin_Id,
+            usua_UsuarioCreacion: aduana.usua_UsuarioCreacion,
+            adua_FechaCreacion: aduana.adua_FechaCreacion,
+            usua_UsuarioModificacion: aduana.usua_UsuarioModificacion,
+            adua_FechaModificacion: aduana.adua_FechaModificacion,
+            usua_UsuarioEliminacion: aduana.usua_UsuarioEliminacion,
+            adua_FechaEliminacion: aduana.adua_FechaEliminacion,
+            adua_Estado: aduana.adua_Estado,
+            usarioCreacion: aduana.usarioCreacion,
+            usuarioModificacion: aduana.usuarioModificacion,
+            subRows: ciudad.filter((ciud) => aduana.ciud_Id === ciud.ciud_Id),
             // status: 'in progress',
             // label: 'documentation',
             // priority: 'medium',

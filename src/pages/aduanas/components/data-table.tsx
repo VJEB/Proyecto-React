@@ -89,7 +89,6 @@ export function DataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
-    console.clear()
   }, [])
 
   return (
@@ -131,7 +130,7 @@ export function DataTable<TData, TValue>({
                             cell.getContext()
                           )}
                         </TableCell>
-                        {cell.column.id === 'cargo' && (
+                        {cell.column.id === 'aduana' && (
                           <>
                             <TableCell key={cell.id + 1}></TableCell>
                             <TableCell key={cell.id + 2}></TableCell>
@@ -148,19 +147,12 @@ export function DataTable<TData, TValue>({
                       key={row.id + 1}
                       className='bg-[#11141d] font-bold'
                     >
-                      <TableCell key={row.id + 2} className='pl-[2%]'>
-                        Id
-                      </TableCell>
-                      <TableCell key={row.id + 3}>DNI</TableCell>
-                      <TableCell key={row.id + 4}>Empleado</TableCell>
-                      <TableCell key={row.id + 5}>Teléfono</TableCell>
-                      <TableCell key={row.id + 5}>Correo</TableCell>
-                      <TableCell key={row.id + 6}>
-                        Fecha de nacimiento
-                      </TableCell>
-                      <TableCell key={row.id + 7}>Estado civil</TableCell>
-                      <TableCell key={row.id + 8}>País</TableCell>
-                      <TableCell key={row.id + 9}>Provincia</TableCell>
+                      <TableCell key={row.id + 2} className='pl-[2%]'>Id</TableCell>
+                      <TableCell key={row.id + 3}>Codigo</TableCell>
+                      <TableCell key={row.id + 4}>Nombre</TableCell>
+                      <TableCell key={row.id + 5}>Estado civil</TableCell>
+                      <TableCell key={row.id + 6}>País</TableCell>
+                      <TableCell key={row.id + 7}>Provincia</TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&

@@ -159,10 +159,9 @@ export const cargarCiudades = async () => {
       return
     }
 
-    const response = await fetch(
+    const response = await axios.get(
       import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar?ciud_EsAduana=true',
       {
-        method: 'GET',
         headers: {
           XApiKey: apiKey,
           'Content-Type': 'application/json',
@@ -170,11 +169,7 @@ export const cargarCiudades = async () => {
       }
     )
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-
-    const data = await response.json()
+    const data = await response.data
 
     return getAldeas()
       .then((aldea: Aldea[]) => {

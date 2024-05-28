@@ -8,9 +8,9 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 import { labels, priorities, statuses } from '../data/data'
-import { Cargo } from '../data/schema'
+import { aduanaSchema } from '../data/schema'
 
-export const columns: ColumnDef<Cargo>[] = [
+export const columns: ColumnDef<aduanaSchema>[] = [
   {
     id: 'expand',
     // header: ({ table }) => (
@@ -62,9 +62,9 @@ export const columns: ColumnDef<Cargo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'cargo',
+    accessorKey: 'aduana',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Cargo' />
+      <DataTableColumnHeader column={column} title='Aduana' />
     ),
     cell: ({ row }) => {
       // const label = labels.find((label) => label.value === row.original.label)
@@ -73,7 +73,7 @@ export const columns: ColumnDef<Cargo>[] = [
         <div className='flex space-x-2'>
           {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('cargo')}
+            {row.getValue('Aduana')}
             {/* {row.getIsExpanded().toString()} */}
           </span>
         </div>
