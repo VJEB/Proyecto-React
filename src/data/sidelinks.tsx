@@ -20,6 +20,7 @@ import {
   IconTruck,
   IconUserShield,
   IconUsers,
+  IconWorld,
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -63,6 +64,12 @@ export const sidelinks: SideLink[] = [
     label: '9',
     href: '/chats',
     icon: <IconMessages size={18} />,
+  },
+  {
+    title: 'Ciudades',
+    label: '9',
+    href: '/ciudades',
+    icon: <IconWorld size={18} />,
   },
   {
     title: 'Apps',
