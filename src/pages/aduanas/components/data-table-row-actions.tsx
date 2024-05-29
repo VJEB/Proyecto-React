@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { labels } from '../data/data'
-import { cargosSchema } from '../data/schema'
+import { aduanaSchema } from '../data/schema'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>

@@ -32,11 +32,26 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-interface Aldea {
-  alde_Id: string
-  ciud_Id: string
-  alde_Nombre: string
-  pvin_Nombre: string
+
+
+interface Aduana {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Nombre: string 
+  pvin_Id: number 
+  ciud_Id: number 
+  ciud_Nombre: string 
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number 
+  adua_FechaModificacion: string 
+  usua_UsuarioEliminacion: number 
+  adua_FechaEliminacion: string 
+  adua_Estado: boolean
+  usarioCreacion: string 
+  usuarioModificacion: string 
 }
 
 export function DataTable<TData, TValue>({
@@ -138,21 +153,21 @@ export function DataTable<TData, TValue>({
                       <TableCell key={row.id + 2} className='pl-[2%]'>
                         Id
                       </TableCell>
-                      <TableCell key={row.id + 3}>Aldea</TableCell>
+                      <TableCell key={row.id + 3}>Aduana</TableCell>
                       <TableCell key={row.id + 4}>Provincia</TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&
-                    row.original.subRows.map((aldea: Aldea, index: number) => (
+                    row.original.subRows.map((aldea: Aduana, index: number) => (
                       <TableRow key={aldea.ciud_Id + index}>
                         <TableCell
                           className='pl-[2%]'
-                          key={aldea.alde_Id + index}
+                          key={aldea.adua_Id + index}
                         >
-                          {aldea.alde_Id}
+                          {aldea.adua_Id}
                         </TableCell>
-                        <TableCell key={aldea.alde_Nombre + index}>
-                          {aldea.alde_Nombre}
+                        <TableCell key={aldea.adua_Nombre + index}>
+                          {aldea.adua_Nombre}
                         </TableCell>
 
                         <TableCell key={aldea.pvin_Nombre + index}>

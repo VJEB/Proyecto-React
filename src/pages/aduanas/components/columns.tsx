@@ -53,16 +53,16 @@ export const columns: ColumnDef<Aduana>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'id',
+    accessorKey: 'adua_Id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Id' />
     ),
-    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className='w-[80px]'>{row.getValue('adua_Id')}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: 'aduana',
+    accessorKey: 'adua_Nombre',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Aduana' />
     ),
@@ -73,7 +73,7 @@ export const columns: ColumnDef<Aduana>[] = [
         <div className='flex space-x-2'>
           {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('aduana')}
+            {row.getValue('adua_Nombre')}
             {/* {row.getIsExpanded().toString()} */}
           </span>
         </div>

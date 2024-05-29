@@ -26,12 +26,53 @@ const ciudadSchema = z.object({
 })
 
 export const aduanaSchema = z.object({
-  id: z.string(),
-  aduana: z.string(),
+  adua_Id: z.number(),
+  adua_Codigo: z.string(),
+  adua_Nombre: z.string(),
+  adua_Direccion_Exacta: z.string(),
+  pvin_Nombre: z.string(),
+  pvin_Id: z.number(),
+  ciud_Id: z.number(),
+  ciud_Nombre: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  adua_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number(),
+  adua_FechaModificacion: z.string(),
+  usua_UsuarioEliminacion: z.number(),
+  adua_FechaEliminacion: z.string(),
+  adua_Estado: z.boolean(),
+  usarioCreacion: z.string(),
+  usuarioModificacion: z.string(),
   subRows: z.array(ciudadSchema),
   // status: z.string(),
   // label: z.string(),
   // priority: z.string(),
 })
 
+
+export const aduanasSchema = z.object({
+  adua_Id: z.number(),
+  adua_Codigo: z.string(),
+  adua_Nombre: z.string(),
+  adua_Direccion_Exacta: z.string(),
+  pvin_Nombre: z.string(),
+  pvin_Id: z.number(),
+  ciud_Id: z.number(),
+  ciud_Nombre: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  adua_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number(),
+  adua_FechaModificacion: z.string(),
+  usua_UsuarioEliminacion: z.number(),
+  adua_FechaEliminacion: z.string(),
+  adua_Estado: z.boolean(),
+  usarioCreacion: z.string(),
+  usuarioModificacion: z.string(),
+  // status: z.string(),
+  // label: z.string(),
+  // priority: z.string(),
+})
+
 export type Aduana = z.infer<typeof aduanaSchema>
+export type Aduanas = z.infer<typeof aduanasSchema>
+export type Ciudad = z.infer<typeof ciudadSchema>

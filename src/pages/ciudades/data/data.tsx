@@ -71,6 +71,29 @@ export const priorities = [
     icon: ArrowUpIcon,
   },
 ]
+
+
+interface Aduana {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Nombre: string | null
+  pvin_Id: number | null
+  ciud_Id: number | null
+  ciud_Nombre: string | null
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  adua_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  adua_FechaEliminacion: string | null
+  adua_Estado: boolean
+  usarioCreacion: string | null
+  usuarioModificacion: string | null
+}
+
+
 interface Ciudad {
   ciud_Id: string | null
   ciud_Nombre: string | null
@@ -111,7 +134,7 @@ interface Aldea {
   alde_Estado: boolean
 }
 
-export const getAldeas = async () => {
+export const getAduana = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -121,7 +144,7 @@ export const getAldeas = async () => {
     }
 
     const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Aldea/Listar',
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
       {
         headers: {
           XApiKey: apiKey,
@@ -132,10 +155,10 @@ export const getAldeas = async () => {
 
 
     const data = await response.data
-    return data.data.map((aldea: Aldea) => {
+    return data.data.map((aldea: Aduana) => {
       return {
-        alde_Id: aldea.alde_Id,
-        alde_Nombre: aldea.alde_Nombre,
+        adua_Id: aldea.adua_Id,
+        adua_Nombre: aldea.adua_Nombre,
         ciud_Id: aldea.ciud_Id,
         ciud_Nombre: aldea.ciud_Nombre,
         pvin_Id: aldea.pvin_Id,
@@ -171,13 +194,13 @@ export const cargarCiudades = async () => {
 
     const data = await response.data
 
-    return getAldeas()
-      .then((aldea: Aldea[]) => {
+    return getAduana()
+      .then((aduana: Aduana[]) => {
         return data.data.map((ciudad: Ciudad) => {
           return {
             id: ciudad.ciud_Id,
             ciudad: ciudad.ciud_Nombre,
-            subRows: aldea.filter((ald) => ald.ciud_Id === ciudad.ciud_Id),
+            subRows: aduana.filter((adu) => adu.ciud_Id === ciudad.ciud_Id),
             // status: 'in progress',
             // label: 'documentation',
             // priority: 'medium',
@@ -192,4 +215,33 @@ export const cargarCiudades = async () => {
     console.error('Error in cargarCiudades:', error)
     return []
   }
+}
+
+export const guardarAduana = async (Aduana : Aduana) =>{
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Insertar', Aduana,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+
+    )
+    const data = await response.data
+    return data.datamessageStatus === "1"
+
+  } catch (error) {
+    console.error('Error in cargarCiudades:', error)
+    return []
+  }
+
 }

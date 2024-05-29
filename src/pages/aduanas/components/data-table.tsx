@@ -134,7 +134,7 @@ export function DataTable<TData, TValue>({
                             cell.getContext()
                           )}
                         </TableCell>
-                        {cell.column.id === 'aduana' && (
+                        {cell.column.id === 'adua_Id' && (
                           <>
                             <TableCell key={cell.id + 1}></TableCell>
                             <TableCell key={cell.id + 2}></TableCell>

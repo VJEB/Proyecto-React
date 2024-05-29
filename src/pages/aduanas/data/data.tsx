@@ -172,7 +172,6 @@ export const cargarAduanas = async () => {
     const response = await axios.get(
       import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
       {
-        method: 'GET',
         headers: {
           XApiKey: apiKey,
           'Content-Type': 'application/json',
@@ -187,9 +186,9 @@ export const cargarAduanas = async () => {
       .then((ciudad : Ciudad[]) => {
         return data.data.map((aduana: Aduana) => {
           return {
-            id: aduana.adua_Id,
+            adua_Id: aduana.adua_Id,
             adua_Codigo: aduana.adua_Codigo,
-            aduana: aduana.adua_Nombre,
+            adua_Nombre: aduana.adua_Nombre,
             adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
             pvin_Nombre: aduana.pvin_Nombre,
             pvin_Id: aduana.pvin_Id,
@@ -217,4 +216,34 @@ export const cargarAduanas = async () => {
     console.error('Error in cargarCargos:', error)
     return []
   }
+}
+
+
+export const guardarAduana = async (Aduana : Aduana) =>{
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Insertar', Aduana,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+
+    )
+    const data = await response.data
+    return data.datamessageStatus === "1"
+
+  } catch (error) {
+    console.error('Error in cargarCiudades:', error)
+    return []
+  }
+
 }
