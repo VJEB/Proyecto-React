@@ -10,15 +10,23 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme
-  setTheme: (theme: Theme) => void
+  setTheme: (theme: Theme) => void,
+  ofiProId: number,
+  setOfiProId: (ofiProId: number) => void,
+  procId: number,
+  setProcId: (ofiProId: number) => void,
 }
 
 const initialState: ThemeProviderState = {
   theme: 'system',
   setTheme: () => null,
+  ofiProId: 0,
+  setOfiProId: () => null,
+  procId: 0,
+  setProcId: () => null,
 }
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+export const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({
   children,
@@ -29,6 +37,8 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
+  const [ofiProId, setOfiProId] = useState(0);
+  const [procId, setProcId] = useState(0);
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -54,6 +64,10 @@ export function ThemeProvider({
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },
+    ofiProId,
+    setOfiProId,
+    procId,
+    setProcId
   }
 
   return (

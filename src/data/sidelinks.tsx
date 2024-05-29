@@ -21,6 +21,8 @@ import {
   IconUserShield,
   IconUsers,
   IconWorld,
+  IconTools,
+  IconTimelineEvent
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -40,6 +42,18 @@ export const sidelinks: SideLink[] = [
     label: '',
     href: '/',
     icon: <IconLayoutDashboard size={18} />,
+  },
+  {
+    title: 'Oficios & Profesiones',
+    label: '3',
+    href: '/oficios-profesiones',
+    icon: <IconTools size={18} />,
+  },
+  {
+    title: 'Procesos',
+    label: '3',
+    href: '/procesos',
+    icon: <IconTimelineEvent size={18} />,
   },
   {
     title: 'Tasks',
