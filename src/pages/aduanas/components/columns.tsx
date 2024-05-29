@@ -8,9 +8,9 @@ import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 import { labels, priorities, statuses } from '../data/data'
-import { aduanaSchema } from '../data/schema'
+import { Aduana } from '../data/schema'
 
-export const columns: ColumnDef<aduanaSchema>[] = [
+export const columns: ColumnDef<Aduana>[] = [
   {
     id: 'expand',
     // header: ({ table }) => (
@@ -64,7 +64,7 @@ export const columns: ColumnDef<aduanaSchema>[] = [
   {
     accessorKey: 'aduana',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='aduana' />
+      <DataTableColumnHeader column={column} title='Aduana' />
     ),
     cell: ({ row }) => {
       // const label = labels.find((label) => label.value === row.original.label)

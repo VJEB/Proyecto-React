@@ -27,11 +27,11 @@ const ciudadSchema = z.object({
 
 export const aduanaSchema = z.object({
   id: z.string(),
-  ciudad: z.string(),
+  aduana: z.string(),
   subRows: z.array(ciudadSchema),
   // status: z.string(),
   // label: z.string(),
   // priority: z.string(),
 })
 
-export type Ciudad = z.infer<typeof aduanaSchema>
+export type Aduana = z.infer<typeof aduanaSchema>

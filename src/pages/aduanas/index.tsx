@@ -11,6 +11,7 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
   useEffect(() => {
     cargarAduanas()
       .then((data) => {
+        console.log(data);
         setAduanas(data)
       })
       .catch((err) => {

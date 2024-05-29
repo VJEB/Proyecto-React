@@ -122,7 +122,7 @@ export const cargarCiudades = async () => {
     }
 
     const response = await fetch(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar?ciud_EsAduana=true',
       {
         method: 'GET',
         headers: {
@@ -170,7 +170,7 @@ export const cargarAduanas = async () => {
     }
 
     const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Cargos/Listar',
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
       {
         method: 'GET',
         headers: {
@@ -189,7 +189,7 @@ export const cargarAduanas = async () => {
           return {
             id: aduana.adua_Id,
             adua_Codigo: aduana.adua_Codigo,
-            adua_Nombre: aduana.adua_Nombre,
+            aduana: aduana.adua_Nombre,
             adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
             pvin_Nombre: aduana.pvin_Nombre,
             pvin_Id: aduana.pvin_Id,
