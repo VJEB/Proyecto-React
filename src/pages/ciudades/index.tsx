@@ -4,8 +4,10 @@ import { UserNav } from '@/components/user-nav'
 import { Layout, LayoutBody, LayoutHeader } from '@/components/custom/layout'
 import { DataTable } from './components/data-table'
 import { columns } from './components/columns'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { cargarCiudades, guardarAduana, paisddl, provinciaddl, ciudadesddl } from './data/data'
+
+import * as React from "react"
 
 import { Aduanas, Ciudad, Pais, Provincia, Ciudades } from './data/schema'
 import { Input } from "@/components/ui/input"
@@ -17,6 +19,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 import { Label } from "@/components/ui/label"
 import {
@@ -34,14 +42,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { ThemeProviderContext } from '@/components/theme-provider'
 
-export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) {
+export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?: string }) {
+  const context = useContext(ThemeProviderContext)
+  const [dialogState, setDialogState] = useState(false)
   const [ciudades, setCiudades] = useState()
   const { toast } = useToast()
   const [paises, setPaises] = useState<Pais[]>([])
   const [ciudad, setCiudad] = useState<Ciudades[]>([])
   const [provin, setProvin] = useState<Provincia[]>([])
-  
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [noOpen, setNoOpen] = React.useState(true)
+
   const [pais, setPais] = useState<Pais>({
     pais_Id : 0,
     pais_Nombre : "",
@@ -54,6 +67,7 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
     pvin_Id : 0,
     pvin_Nombre : ""
   })
+  const [aduanas, setAduanas] = useState<Aduanas[]>([])
 
   const [aduana, setAduana] = useState<Aduanas>({
     adua_Id: 0,
@@ -81,13 +95,32 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
     paisddl()
       .then((data) =>{
         setPaises(data)
-        console.log(data)
       })
       .catch((err) =>{
         console.log('Error'+err)
       })
 
-  }, [])
+  }, [context.refrescar])
+
+  useEffect(() => {
+    const procEncontrado = aduanas?.find(
+      (item) => item.adua_Id === context.aduaId
+    )
+    setAduana((adua) => {
+      return {
+        ...adua,
+        adua_Id: context.aduaId,
+        adua_Nombre: procEncontrado?.adua_Nombre ?? 'Corte',
+        adua_Codigo: procEncontrado?.adua_Codigo ?? '#000',
+        proc_Id: context.procId,
+        adua_Direccion_Exacta: procEncontrado?.adua_Direccion_Exacta ?? 'Corte',
+        ciud_Id: procEncontrado?.ciud_Id ?? '#000',
+      }
+    })
+    if (context.aduaId) {
+      setDialogState(true)
+    }
+  }, [context.aduaId])
 
   return (
     <Layout>
@@ -107,13 +140,18 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>
-              Listado de ciudades de aduanas
+              Listado de ciudades por aduanas
             </h2>
           </div>
         </div>
 
-
-      <Card>
+        <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="w-[350px] space-y-2"
+    >
+       <CollapsibleContent className="space-y-2">
+      <Card >
       <CardHeader>
         <CardTitle>Crear Aduana</CardTitle>
       </CardHeader>
@@ -159,11 +197,9 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
               <Select onValueChange={(value) => {
                 const selectedPais = paises.find(pais => pais.pais_Id.toString() === value);
                 if (selectedPais) {
-                  console.log(`Selected: ${selectedPais.pais_Nombre} with ID: ${selectedPais.pais_Id}`);
                   provinciaddl(selectedPais.pais_Id)
                     .then((data) => {
                       setProvin(data);
-                      console.log(selectedPais.pais_Id);
                     })
                     .catch((err) => {
                       console.log('Error al cargar las Provincias:' + err);
@@ -257,7 +293,9 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
         </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
+        <CollapsibleTrigger asChild>
+        <Button >Cancelar</Button>
+        </CollapsibleTrigger>
           <Button onClick={() =>{
             if((aduana.adua_Codigo == "")||(aduana.adua_Nombre == "")||(aduana.adua_Direccion_Exacta == "")||(aduana.ciud_Id == "")){
               toast({
@@ -267,18 +305,10 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
               })
               return;
             }
+
             guardarAduana(aduana)
             .then((exito) => {
-              if(!exito){
-              console.log(exito)
-
-                toast({
-                  title: "Error: ",
-                  variant: "destructive",
-                  description: "Error Al ingresar Aduana",
-                })
-                return;
-              }
+             
               toast({
                 title: "Guardado",
                 description: "Se guardo Con Exito",
@@ -296,12 +326,34 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
           }}>Guardar</Button>
         </CardFooter>
         </Card>
+        </CollapsibleContent>
+</Collapsible>
 
+
+    <Collapsible
+      open={noOpen}
+      onOpenChange={setNoOpen}
+    > 
+       
+
+        <Card>
+        <CardHeader className="flex justify-between">
+        <CollapsibleTrigger asChild>
+        <Button>Crear Aduana</Button>
+        </CollapsibleTrigger>
+      </CardHeader>
+      <CollapsibleContent className="space-y-2">
+        <CardContent>
         {ciudades && (
           <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
             <DataTable data={ciudades} columns={columns} />
           </div>
         )}
+        </CardContent>
+        </CollapsibleContent>
+
+        </Card>
+        </Collapsible>
       </LayoutBody>
     </Layout>
   )

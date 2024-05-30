@@ -93,6 +93,7 @@ export function DataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
+    console.clear()
   }, [])
 
   return (

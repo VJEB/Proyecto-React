@@ -228,8 +228,6 @@ export const provinciaddl = async (pais_Id: number) => {
       console.error('API key is undefined.')
       return
     }
-    const url = `${import.meta.env.VITE_API_SimexPro_Url}api/Provincias/ProvinciasFiltradaPorPaisYesAduana?pais_Id=${pais_Id}&pvin_EsAduana=false`;
-    console.log('Generated URL:', url);
 
     const response = await axios.get(
       `${import.meta.env.VITE_API_SimexPro_Url}api/Provincias/ProvinciasFiltradaPorPaisYesAduana?pais_Id=${pais_Id}&pvin_EsAduana=false`,
@@ -242,7 +240,6 @@ export const provinciaddl = async (pais_Id: number) => {
     )
 
     const data = await response.data
-    console.log(data)
     return data.data.map((provincia: Provincia) => {
       return {
         pvin_Id: provincia.pvin_Id,
@@ -349,19 +346,65 @@ export const guardarAduana = async (Aduana : Aduanas) =>{
     }
 
     const response = await axios.post(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Insertar', Aduana,
+     ` ${import.meta.env.VITE_API_SimexPro_Url}api/Aduanas/${Aduana.adua_Id === 0 ? 'Insertar' : 'Editar'}`, Aduana,
       {
         headers: {
           XApiKey: apiKey,
           'Content-Type': 'application/json',
         },
       }
-
     )
     const data = await response.data
-    console.log(data)
     return data.messageStatus === "1"
+  } catch (error) {
+    console.error('Error in cargarCiudades:', error)
+    return []
+  }
 
+}
+
+export const eliminarAduana = async (adua_Id : number) =>{
+  try {
+    console.log(adua_Id)
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+     ` ${import.meta.env.VITE_API_SimexPro_Url}api/Aduanas/Eliminar`, 
+     {
+      adua_Id: adua_Id,
+      adua_Codigo: '',
+      adua_Nombre: '',
+      adua_Direccion_Exacta: '',
+      pvin_Nombre: '',
+      pvin_Id: 0,
+      ciud_Id: 0,
+      ciud_Nombre: '',
+      usua_UsuarioCreacion: 1,
+      adua_FechaCreacion:  new Date().toISOString(),
+      usua_UsuarioModificacion: 1,
+      adua_FechaModificacion:  new Date().toISOString(),
+      usua_UsuarioEliminacion: 1,
+      adua_FechaEliminacion:  new Date().toISOString(),
+      adua_Estado: true,
+      usarioCreacion: '',
+      usuarioModificacion: ''
+     },
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    console.log (response)
+    const data = await response.data
+    return data.messageStatus === "1"
   } catch (error) {
     console.error('Error in cargarCiudades:', error)
     return []
