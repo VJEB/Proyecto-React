@@ -176,6 +176,10 @@ export function DataTable<TData, TValue>({
                         <TableCell key={aldea.adua_Direccion_Exacta + index}>
                           {aldea.adua_Direccion_Exacta}
                         </TableCell>
+                        <TableCell>
+                          
+                        </TableCell>
+
                       </TableRow>
                     ))}
                 </>

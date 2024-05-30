@@ -53,7 +53,17 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
   const [ciudad, setCiudad] = useState<Ciudades[]>([])
   const [provin, setProvin] = useState<Provincia[]>([])
   const [isOpen, setIsOpen] = React.useState(false)
-  const [noOpen, setNoOpen] = React.useState(true)
+  var [noOpen, setNoOpen] = React.useState(true)
+
+  const handleClick = () => {
+    setIsOpen(!noOpen);
+    setIsOpen(!isOpen); 
+  };
+
+  const handlerealoadClick = () => {
+    window.location.reload();
+  };
+
 
   const [pais, setPais] = useState<Pais>({
     pais_Id : 0,
@@ -112,7 +122,6 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
         adua_Id: context.aduaId,
         adua_Nombre: procEncontrado?.adua_Nombre ?? 'Corte',
         adua_Codigo: procEncontrado?.adua_Codigo ?? '#000',
-        proc_Id: context.procId,
         adua_Direccion_Exacta: procEncontrado?.adua_Direccion_Exacta ?? 'Corte',
         ciud_Id: procEncontrado?.ciud_Id ?? '#000',
       }
@@ -137,30 +146,24 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
       <LayoutBody className='flex flex-col' fixedHeight>
       
 
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <div>
-            <h2 className='text-2xl font-bold tracking-tight'>
-              Listado de ciudades por aduanas
-            </h2>
-          </div>
-        </div>
+        
 
-        <Collapsible
+    <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="w-[350px] space-y-2"
     >
        <CollapsibleContent className="space-y-2">
       <Card >
       <CardHeader>
-        <CardTitle>Crear Aduana</CardTitle>
+        <CardTitle>{aduana.adua_Id ? 'Editar': 'Crear'} Aduana</CardTitle>
       </CardHeader>
       <CardContent>
       <form>
-          <div className="grid w-full items-center gap-4">
-            <div className="col col-md-6  space-y-1.5">
+      <div className='grid grid-cols-2 gap-4 py-4'>
+            <div className="flex flex-col space-y-1.5">
+
               <Label htmlFor="name">Codigo</Label>
-              <Input id="name" placeholder="Codigo de la Aduana" className='col-span-3'
+              <Input id="name" placeholder="Codigo de la Aduana" className='col-span-3 col-sm-6 gap-4'
               onChange={
                 (e)=>{
                   setAduana(aduana => {
@@ -293,9 +296,7 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
         </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-        <CollapsibleTrigger asChild>
-        <Button >Cancelar</Button>
-        </CollapsibleTrigger>
+        <Button onClick={handlerealoadClick}>Cancelar</Button>
           <Button onClick={() =>{
             if((aduana.adua_Codigo == "")||(aduana.adua_Nombre == "")||(aduana.adua_Direccion_Exacta == "")||(aduana.ciud_Id == "")){
               toast({
@@ -308,20 +309,21 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
 
             guardarAduana(aduana)
             .then((exito) => {
-             
+             if(exito)
+              {
+                toast({
+                  title: "Error: ",
+                  variant: "destructive",
+                  description: "Todos los valores deven estar llenos",
+                })
+              }else{
               toast({
                 title: "Guardado",
                 description: "Se guardo Con Exito",
               })
-              cargarCiudades()
-              .then((data) => {
-                setCiudades(data)
-              })
-              .catch((err) => {
-                console.log('Error al cargar las ciudades:' + err)
-              })
+              window.location.reload();
 
-
+              }
             })
           }}>Guardar</Button>
         </CardFooter>
@@ -334,15 +336,22 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
       open={noOpen}
       onOpenChange={setNoOpen}
     > 
+      <CollapsibleContent className="space-y-2">
        
 
         <Card>
         <CardHeader className="flex justify-between">
-        <CollapsibleTrigger asChild>
-        <Button>Crear Aduana</Button>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight'>
+              Listado de ciudades por aduanas
+            </h2>
+          </div>
+        </div>
+        <CollapsibleTrigger >
+        <Button onClick={handleClick}>Crear Aduana</Button>
         </CollapsibleTrigger>
       </CardHeader>
-      <CollapsibleContent className="space-y-2">
         <CardContent>
         {ciudades && (
           <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
@@ -350,9 +359,10 @@ export default function PagCiudades({ title = 'Ciudades por Aduanas' }: { title?
           </div>
         )}
         </CardContent>
-        </CollapsibleContent>
 
         </Card>
+        </CollapsibleContent>
+
         </Collapsible>
       </LayoutBody>
     </Layout>

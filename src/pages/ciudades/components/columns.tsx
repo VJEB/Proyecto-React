@@ -2,28 +2,14 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/custom/button'
 import { CaretRightIcon, CaretDownIcon } from '@radix-ui/react-icons'
 
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
-import { labels, priorities, statuses } from '../data/data'
 import { Ciudad } from '../data/schema'
 
 export const columns: ColumnDef<Ciudad>[] = [
   {
     id: 'expand',
-    // header: ({ table }) => (
-    //   <Checkbox
-    //     checked={
-    //       table.getIsAllPageRowsSelected() ||
-    //       (table.getIsSomePageRowsSelected() && 'indeterminate')
-    //     }
-    //     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //     aria-label='Select all'
-    //     className='translate-y-[2px]'
-    //   />
-    // ),
     cell: ({ row }) =>
       row.original.subRows.length > 0 && (
         <Button

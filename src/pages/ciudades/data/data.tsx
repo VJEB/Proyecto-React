@@ -355,6 +355,7 @@ export const guardarAduana = async (Aduana : Aduanas) =>{
       }
     )
     const data = await response.data
+    console.log(data.messageStatus)
     return data.messageStatus === "1"
   } catch (error) {
     console.error('Error in cargarCiudades:', error)
