@@ -17,10 +17,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
-import { Label } from '@/components/ui/label'
 import { eliminarProceso } from '../data/data'
 
 interface DataTableRowActionsProps<TData> {
@@ -103,15 +101,7 @@ export function DataTableRowActions<TData>({
                       description: 'Proceso eliminado exitosamente!',
                     })
                     setDialogState(false)
-                    // getProcesos()
-                    //   .then((data) => {
-                    //     setProcesos(data)
-                    //   })
-                    //   .catch((err) => {
-                    //     console.log(
-                    //       'Error al cargar los procesos: ' + err
-                    //     )
-                    //   })
+                    context.setRefrescar(!context.refrescar)
                   })
                   .catch((err) => {
                     console.log('Error al cargar los procesos: ' + err)

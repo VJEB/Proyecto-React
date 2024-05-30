@@ -10,11 +10,13 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme
-  setTheme: (theme: Theme) => void,
-  ofiProId: number,
-  setOfiProId: (ofiProId: number) => void,
-  procId: number,
-  setProcId: (ofiProId: number) => void,
+  setTheme: (theme: Theme) => void
+  ofiProId: number
+  setOfiProId: (ofiProId: number) => void
+  procId: number
+  setProcId: (ofiProId: number) => void
+  refrescar: boolean
+  setRefrescar: (val: boolean) => void
 }
 
 const initialState: ThemeProviderState = {
@@ -24,9 +26,12 @@ const initialState: ThemeProviderState = {
   setOfiProId: () => null,
   procId: 0,
   setProcId: () => null,
+  refrescar: false,
+  setRefrescar: () => null,
 }
 
-export const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+export const ThemeProviderContext =
+  createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({
   children,
@@ -37,8 +42,9 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
-  const [ofiProId, setOfiProId] = useState(0);
-  const [procId, setProcId] = useState(0);
+  const [ofiProId, setOfiProId] = useState(0)
+  const [procId, setProcId] = useState(0)
+  const [refrescar, setRefrescar] = useState(false)
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -67,7 +73,9 @@ export function ThemeProvider({
     ofiProId,
     setOfiProId,
     procId,
-    setProcId
+    setProcId,
+    refrescar,
+    setRefrescar,
   }
 
   return (
