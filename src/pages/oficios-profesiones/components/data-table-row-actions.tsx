@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ThemeProviderContext } from '@/components/theme-provider'
 import { useContext } from 'react'
+import { IconEdit, IconEye } from '@tabler/icons-react'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -19,7 +20,7 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   // const cargo = cargosSchema.parse(row.original)
-  const context = useContext(ThemeProviderContext);
+  const context = useContext(ThemeProviderContext)
 
   return (
     <DropdownMenu>
@@ -33,10 +34,18 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem onClick={() =>
-          context.setOfiProId(row.original.ofpr_Id)
-        }>Editar</DropdownMenuItem>
-        <DropdownMenuItem>Ver detalle</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => context.setOfiProId(row.original.ofpr_Id)}
+        >
+          <IconEdit stroke={1.5} className='mr-1 h-5 w-5' />
+          Editar
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => context.setMostrarDetalle(row.original.ofpr_Id)}
+        >
+          <IconEye stroke={1.5} className='mr-1 h-5 w-5' />
+          Ver detalle
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

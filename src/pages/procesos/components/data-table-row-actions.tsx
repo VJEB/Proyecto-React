@@ -53,7 +53,9 @@ export function DataTableRowActions<TData>({
             <IconEdit stroke={1.5} className='mr-1 h-5 w-5' />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => context.setMostrarDetalle(row.original.proc_Id)}
+          >
             <IconEye stroke={1.5} className='mr-1 h-5 w-5' />
             Ver detalle
           </DropdownMenuItem>

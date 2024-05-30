@@ -6,7 +6,7 @@ import { columns } from './components/columns'
 import { useContext, useEffect, useState } from 'react'
 import { getProcesos, guardarProceso } from './data/data'
 import { Button } from '@/components/custom/button'
-import { IconPlus } from '@tabler/icons-react'
+import { IconPlus, IconArrowBack } from '@tabler/icons-react'
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,14 @@ import { Input } from '@/components/ui/input'
 import { Proceso } from './data/schema'
 import { useToast } from '@/components/ui/use-toast'
 import { ThemeProviderContext } from '@/components/theme-provider'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 export default function PagProcesos({
   title = 'Procesos',
@@ -48,6 +56,7 @@ export default function PagProcesos({
     proc_Estado: true,
   })
   useEffect(() => {
+    context.setMostrarDetalle(0)
     getProcesos()
       .then((data) => {
         setProcesos(data)
@@ -61,18 +70,24 @@ export default function PagProcesos({
     const procEncontrado = procesos?.find(
       (item) => item.proc_Id === context.procId
     )
-    setProceso((proc) => {
-      return {
-        ...proc,
-        proc_Id: context.procId,
-        proc_Descripcion: procEncontrado?.proc_Descripcion ?? 'Corte',
-        proc_CodigoHtml: procEncontrado?.proc_CodigoHtml ?? '#000',
-      }
-    })
+
+    if (procEncontrado) {
+      setProceso(procEncontrado)
+    }
     if (context.procId) {
       setDialogState(true)
     }
   }, [context.procId])
+
+  useEffect(() => {
+    const procEncontrado = procesos?.find(
+      (item) => item.proc_Id === context.mostrarDetalle
+    )
+
+    if (procEncontrado) {
+      setProceso(procEncontrado)
+    }
+  }, [context.mostrarDetalle])
 
   const toggleDialogState = () => {
     if (dialogState) {
@@ -93,21 +108,106 @@ export default function PagProcesos({
         </div>
       </LayoutHeader>
 
-      <LayoutBody className='flex flex-col' fixedHeight>
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <div>
-            <h2 className='text-2xl font-bold tracking-tight'>
-              Listado de {title.toLowerCase()}
-            </h2>
+      {context.mostrarDetalle !== 0 ? (
+        <LayoutBody className='flex flex-col' fixedHeight>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+            <h2 className='text-2xl font-bold tracking-tight'>Detalle</h2>
+            <Button
+              variant={'outline'}
+              onClick={() => context.setMostrarDetalle(0)}
+            >
+              <IconArrowBack stroke={1.5} className='mr-1 h-5 w-5' />
+              Regresar
+            </Button>
           </div>
-        </div>
-        {procesos && (
-          <>
-            <div className='mb-2 flex items-center justify-between space-y-2'>
-              <div>
+          {proceso && (
+            <div className='mb-2 flex flex-col items-center justify-between space-y-8 rounded border bg-slate-900 p-8'>
+              <div className='grid min-w-[100%] grid-cols-3 gap-3'>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Id</div>
+                  <div>{proceso.proc_Id}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Proceso</div>
+                  <div>{proceso.proc_Descripcion}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>
+                    Código del color
+                  </div>
+                  <div>{proceso.proc_CodigoHtml}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Color</div>
+                  <div
+                    style={{ backgroundColor: proceso.proc_CodigoHtml }}
+                    className={`h-[20px] w-[70px]`}
+                  ></div>
+                </div>
+              </div>
+
+              <div className='grid min-w-[100%] grid-cols-3 rounded bg-slate-950 p-4'>
+                <div></div>
+                <div className='font-medium text-[#94a3b8]'>Usuario</div>
+                <div className='font-medium text-[#94a3b8]'>Fecha</div>
+
+                <div className='border-t py-2 font-medium text-[#94a3b8]'>
+                  Creacion
+                </div>
+                <div className='border-t py-2'>
+                  {proceso.usuarioCreacion ?? ''}
+                </div>
+                <div className='border-t py-2'>
+                  {proceso.proc_FechaCreacion ?? ''}
+                </div>
+                <div className='border-t py-2 font-medium text-[#94a3b8]'>
+                  Modifica
+                </div>
+                <div className='border-t py-2'>
+                  {proceso.usuarioModificacion ?? ''}
+                </div>
+                <div className='border-t py-2'>
+                  {proceso.proc_FechaModificacion ?? ''}
+                </div>
+              </div>
+            </div>
+          )}
+        </LayoutBody>
+      ) : (
+        <LayoutBody className='flex flex-col' fixedHeight>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+            <div>
+              <h2 className='text-2xl font-bold tracking-tight'>
+                Listado de {title.toLowerCase()}
+              </h2>
+            </div>
+          </div>
+          {procesos && (
+            <>
+              <div className='mb-2 flex items-center justify-between space-y-2'>
                 <Dialog open={dialogState} onOpenChange={toggleDialogState}>
                   <DialogTrigger asChild>
-                    <Button>
+                    <Button
+                      onClick={() =>
+                        setProceso({
+                          proc_Id: 0,
+                          proc_Descripcion: '',
+                          proc_CodigoHtml: '#000000',
+                          modu_Id: 0,
+                          modu_Nombre: '',
+                          usua_UsuarioCreacion: 1,
+                          usuarioCreacion: '',
+                          proc_FechaCreacion: new Date().toISOString(),
+                          usua_UsuarioModificacion: 1,
+                          usuarioModificacion: '',
+                          proc_FechaModificacion: new Date().toISOString(),
+                          usua_UsuarioEliminacion: 1,
+                          usuarioEliminacion: '',
+                          proc_FechaEliminacion: new Date().toISOString(),
+                          proc_Estado: true,
+                        })
+                      }
+                    >
                       <IconPlus stroke={1.5} className='mr-1 h-5 w-5' /> Nuevo
                     </Button>
                   </DialogTrigger>
@@ -213,13 +313,13 @@ export default function PagProcesos({
                   </DialogContent>
                 </Dialog>
               </div>
-            </div>
-            <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-              <DataTable data={procesos} columns={columns} />
-            </div>
-          </>
-        )}
-      </LayoutBody>
+              <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+                <DataTable data={procesos} columns={columns} />
+              </div>
+            </>
+          )}
+        </LayoutBody>
+      )}
     </Layout>
   )
 }

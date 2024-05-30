@@ -1,15 +1,4 @@
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from '@radix-ui/react-icons'
-
-import axios from 'axios';
+import axios from 'axios'
 
 interface Oficio_Profesion {
   ofpr_Id: number
@@ -52,7 +41,7 @@ export const getOficios_Profesiones = async () => {
         ofpr_FechaModificacion: ofiPro.ofpr_FechaModificacion,
         ofpr_Estado: ofiPro.ofpr_Estado,
         usuarioCreacionNombre: ofiPro.usuarioCreacionNombre,
-        usuarioModificacionNombre: ofiPro.usuarioModificacionNombre
+        usuarioModificacionNombre: ofiPro.usuarioModificacionNombre,
       }
     })
   } catch (error) {
@@ -68,8 +57,12 @@ export const guardarOficios_Profesiones = async (ofiPro: Oficio_Profesion) => {
       return
     }
 
+    ofiPro.usua_UsuarioModificacion = 1
+    ofiPro.ofpr_FechaModificacion = new Date().toISOString()
+
     const response = await axios.post(
-      `${import.meta.env.VITE_API_SimexPro_Url}api/Oficio_Profesiones/${ofiPro.ofpr_Id === 0 ? 'Insertar' : 'Editar'}`,ofiPro,
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Oficio_Profesiones/${ofiPro.ofpr_Id === 0 ? 'Insertar' : 'Editar'}`,
+      ofiPro,
       {
         headers: {
           XApiKey: apiKey,
@@ -79,9 +72,8 @@ export const guardarOficios_Profesiones = async (ofiPro: Oficio_Profesion) => {
     )
 
     const data = await response.data
-    return data.data.messageStatus === "1"
+    return data.data.messageStatus === '1'
   } catch (error) {
     return []
   }
 }
-

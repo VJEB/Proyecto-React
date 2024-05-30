@@ -69,6 +69,9 @@ export const guardarProceso = async (proceso: Proceso) => {
       return
     }
 
+    proceso.usua_UsuarioModificacion = 1
+    proceso.proc_FechaModificacion = new Date().toISOString()
+
     const response = await axios.post(
       `${import.meta.env.VITE_API_SimexPro_Url}api/Procesos/${proceso.proc_Id === 0 ? 'Insertar' : 'Editar'}`,
       proceso,

@@ -17,6 +17,8 @@ type ThemeProviderState = {
   setProcId: (ofiProId: number) => void
   refrescar: boolean
   setRefrescar: (val: boolean) => void
+  mostrarDetalle: number
+  setMostrarDetalle: (val: number) => void
 }
 
 const initialState: ThemeProviderState = {
@@ -28,6 +30,8 @@ const initialState: ThemeProviderState = {
   setProcId: () => null,
   refrescar: false,
   setRefrescar: () => null,
+  mostrarDetalle: 0,
+  setMostrarDetalle: () => null,
 }
 
 export const ThemeProviderContext =
@@ -44,7 +48,9 @@ export function ThemeProvider({
   )
   const [ofiProId, setOfiProId] = useState(0)
   const [procId, setProcId] = useState(0)
+
   const [refrescar, setRefrescar] = useState(false)
+  const [mostrarDetalle, setMostrarDetalle] = useState(0)
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -76,6 +82,8 @@ export function ThemeProvider({
     setProcId,
     refrescar,
     setRefrescar,
+    mostrarDetalle,
+    setMostrarDetalle,
   }
 
   return (
