@@ -1,15 +1,4 @@
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from '@radix-ui/react-icons'
-
-import axios from 'axios';
+import axios from 'axios'
 
 interface Proceso {
   proc_Id: number
@@ -71,7 +60,7 @@ export const getProcesos = async () => {
     return []
   }
 }
-export const guardarProceso = async (proceso:Proceso) => {
+export const guardarProceso = async (proceso: Proceso) => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -81,7 +70,8 @@ export const guardarProceso = async (proceso:Proceso) => {
     }
 
     const response = await axios.post(
-      `${import.meta.env.VITE_API_SimexPro_Url}api/Procesos/${proceso.proc_Id === 0 ? 'Insertar' : 'Editar'}`, proceso,
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Procesos/${proceso.proc_Id === 0 ? 'Insertar' : 'Editar'}`,
+      proceso,
       {
         headers: {
           XApiKey: apiKey,
@@ -91,9 +81,51 @@ export const guardarProceso = async (proceso:Proceso) => {
     )
 
     const data = await response.data
-    return data.data.messageStatus === "1"
+    return data.data.messageStatus === '1'
   } catch (error) {
     return []
   }
 }
 
+export const eliminarProceso = async (procId: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Procesos/Eliminar`,
+      {
+        proc_Id: procId,
+        proc_Descripcion: '',
+        proc_CodigoHtml: '',
+        modu_Id: 0,
+        modu_Nombre: '',
+        usua_UsuarioCreacion: 1,
+        usuarioCreacion: '',
+        proc_FechaCreacion: new Date().toISOString(),
+        usua_UsuarioModificacion: 1,
+        usuarioModificacion: '',
+        proc_FechaModificacion: new Date().toISOString(),
+        usua_UsuarioEliminacion: 1,
+        usuarioEliminacion: '',
+        proc_FechaEliminacion: new Date().toISOString(),
+        proc_Estado: true,
+      },
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+    return data.data.messageStatus === '1'
+  } catch (error) {
+    return []
+  }
+}
