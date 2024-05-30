@@ -32,26 +32,25 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-
-
-interface Aduana {
-  adua_Id: number
-  adua_Codigo: string
-  adua_Nombre: string
-  adua_Direccion_Exacta: string
-  pvin_Nombre: string 
-  pvin_Id: number 
-  ciud_Id: number 
-  ciud_Nombre: string 
+interface Ciudad {
+  ciud_Id: string 
+  ciud_Nombre: string
+  pvin_Id: string
+  pvin_Nombre: string
+  pvin_Codigo: string
+  pais_Codigo: string
+  pais_Nombre: string
+  pais_Id: string
+  ciud_EsAduana: boolean
   usua_UsuarioCreacion: number
-  adua_FechaCreacion: string
-  usua_UsuarioModificacion: number 
-  adua_FechaModificacion: string 
-  usua_UsuarioEliminacion: number 
-  adua_FechaEliminacion: string 
-  adua_Estado: boolean
-  usarioCreacion: string 
-  usuarioModificacion: string 
+  usua_UsuarioModificacion: number
+  usuarioCreacionNombre: string
+  ciud_FechaCreacion: string
+  usuarioModificacionNombre: string
+  ciud_FechaModificacion: string
+  usua_UsuarioEliminacion: string
+  ciud_FechaEliminacion: string
+  ciud_Estado: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -135,11 +134,14 @@ export function DataTable<TData, TValue>({
                             cell.getContext()
                           )}
                         </TableCell>
-                        {cell.column.id === 'ciudad' && (
+                        {cell.column.id === 'adua_Id' && (
                           <>
-                            {/* <TableCell key={cell.id + 1}></TableCell> */}
-                            {/* <TableCell key={cell.id + 2}></TableCell> */}
-                            {/* <TableCell key={cell.id + 3}></TableCell> */}
+                            <TableCell key={cell.id + 1}></TableCell>
+                            <TableCell key={cell.id + 2}></TableCell>
+                            <TableCell key={cell.id + 3}></TableCell>
+                            <TableCell key={cell.id + 4}></TableCell>
+                            <TableCell key={cell.id + 5}></TableCell>
+                            <TableCell key={cell.id + 6}></TableCell>
                           </>
                         )}
                       </>
@@ -150,34 +152,31 @@ export function DataTable<TData, TValue>({
                       key={row.id + 1}
                       className='bg-[#11141d] font-bold'
                     >
-                      <TableCell key={row.id + 2} className='pl-[2%]'>
-                        Id
-                      </TableCell>
-                      <TableCell key={row.id + 3}>codigo</TableCell>
-                      <TableCell key={row.id + 4}>Aduana</TableCell>
-                      <TableCell key={row.id + 5}>Direccion Exacta</TableCell>
+                      <TableCell key={row.id + 2} ></TableCell>
+                      <TableCell key={row.id + 3} className='pl-[2%]' >Codigo</TableCell>
+                      <TableCell key={row.id + 4} className='pl-[2%]'>Ciudad</TableCell>
+                      <TableCell key={row.id + 5}></TableCell>
+                      <TableCell key={row.id + 6}></TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&
-                    row.original.subRows.map((aldea: Aduana, index: number) => (
-                      <TableRow key={aldea.ciud_Id + index}>
-                        <TableCell
-                          className='pl-[2%]'
-                          key={aldea.adua_Id + index}
-                        >
-                          {aldea.adua_Id}
-                        </TableCell>
-                        <TableCell key={aldea.adua_Codigo + index}>
-                          {aldea.adua_Codigo}
-                        </TableCell>
-                        <TableCell key={aldea.adua_Nombre + index}>
-                          {aldea.adua_Nombre}
-                        </TableCell>
-                        <TableCell key={aldea.adua_Direccion_Exacta + index}>
-                          {aldea.adua_Direccion_Exacta}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    row.original.subRows.map(
+                      (ciudad: Ciudad, index: number) => (
+                        <TableRow key={ciudad.ciud_Id + index}>
+                          <TableCell></TableCell>
+                          <TableCell
+                            className='pl-[2%]'
+                            key={ciudad.ciud_Id + index}
+                          >
+                            {ciudad.ciud_Id}
+                          </TableCell>
+                          <TableCell className='pl-[2%]' key={ciudad.ciud_Nombre + index}>
+                            {ciudad.ciud_Nombre}
+                          </TableCell>
+                        
+                        </TableRow>
+                      )
+                    )}
                 </>
               ))
             ) : (
