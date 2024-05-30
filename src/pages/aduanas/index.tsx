@@ -43,19 +43,14 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
     adua_Codigo: "0",
     adua_Nombre: "0",
     adua_Direccion_Exacta: "ahi meror simon",
-    pvin_Nombre: "0",
     pvin_Id: "83",
     ciud_Id: "301",
-    ciud_Nombre: "0",
     usua_UsuarioCreacion: 1,
-    adua_FechaCreacion: "2024-05-29",
+    adua_FechaCreacion: "2024-05-30",
     usua_UsuarioModificacion: 1,
-    adua_FechaModificacion: "2024-05-29",
-    usua_UsuarioEliminacion: 0,
-    adua_FechaEliminacion: "2024-05-29",
-    adua_Estado: true,
-    usarioCreacion: "0",
-    usuarioModificacion: "0"
+    adua_FechaModificacion: "2024-05-30",
+    usua_UsuarioEliminacion: 1,
+    adua_FechaEliminacion: "2024-05-30",
   })
   useEffect(() => {
     cargarAduanas()
@@ -121,19 +116,49 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
               }
               />
             </div>
+            
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
+              <Label htmlFor="framework">Ciudad</Label>
+              <Input id="name" placeholder="Nombre de la Aduana" className='col-span-3'
+              onChange={
+                (e)=>{
+                  setAduana(aduana => {
+                    return {
+                      ...aduana,
+                      ciud_Id: e.target.value,
+                    }
+                  }
+                )
+              }
+              }
+              />
               <Select>
                 <SelectTrigger id="framework">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                  <SelectItem value="1">Next.js</SelectItem>
+                  <SelectItem value="2">SvelteKit</SelectItem>
+                  <SelectItem value="3">Astro</SelectItem>
+                  <SelectItem value="4">Nuxt.js</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="name">Direccion Exacta</Label>
+              <Input id="name" placeholder="Direccion de la Aduana" className='col-span-3'
+              onChange={
+                (e)=>{
+                  setAduana(aduana => {
+                    return {
+                      ...aduana,
+                      adua_Direccion_Exacta: e.target.value,
+                    }
+                  }
+                )
+              }
+              }
+              />
             </div>
           </div>
         </form>

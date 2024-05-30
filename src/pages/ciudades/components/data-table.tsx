@@ -153,8 +153,9 @@ export function DataTable<TData, TValue>({
                       <TableCell key={row.id + 2} className='pl-[2%]'>
                         Id
                       </TableCell>
-                      <TableCell key={row.id + 3}>Aduana</TableCell>
-                      <TableCell key={row.id + 4}>Provincia</TableCell>
+                      <TableCell key={row.id + 3}>codigo</TableCell>
+                      <TableCell key={row.id + 4}>Aduana</TableCell>
+                      <TableCell key={row.id + 5}>Direccion Exacta</TableCell>
                     </TableRow>
                   )}
                   {row.getIsExpanded() &&
@@ -166,12 +167,14 @@ export function DataTable<TData, TValue>({
                         >
                           {aldea.adua_Id}
                         </TableCell>
+                        <TableCell key={aldea.adua_Codigo + index}>
+                          {aldea.adua_Codigo}
+                        </TableCell>
                         <TableCell key={aldea.adua_Nombre + index}>
                           {aldea.adua_Nombre}
                         </TableCell>
-
-                        <TableCell key={aldea.pvin_Nombre + index}>
-                          {aldea.pvin_Nombre}
+                        <TableCell key={aldea.adua_Direccion_Exacta + index}>
+                          {aldea.adua_Direccion_Exacta}
                         </TableCell>
                       </TableRow>
                     ))}

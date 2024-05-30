@@ -159,6 +159,8 @@ export const getAduana = async () => {
       return {
         adua_Id: aldea.adua_Id,
         adua_Nombre: aldea.adua_Nombre,
+        adua_Codigo: aldea.adua_Codigo,
+        adua_Direccion_Exacta: aldea.adua_Direccion_Exacta,
         ciud_Id: aldea.ciud_Id,
         ciud_Nombre: aldea.ciud_Nombre,
         pvin_Id: aldea.pvin_Id,

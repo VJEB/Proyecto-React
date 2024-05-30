@@ -112,6 +112,21 @@ interface Aduana {
   usuarioModificacion: string | null
 }
 
+interface Aduanas {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Id: string | null
+  ciud_Id: string | null
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  adua_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  adua_FechaEliminacion: string | null
+}
+
 export const cargarCiudades = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
@@ -219,7 +234,7 @@ export const cargarAduanas = async () => {
 }
 
 
-export const guardarAduana = async (Aduana : Aduana) =>{
+export const guardarAduana = async (Aduana : Aduanas) =>{
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -239,6 +254,7 @@ export const guardarAduana = async (Aduana : Aduana) =>{
 
     )
     const data = await response.data
+    console.log(data)
     return data.datamessageStatus === "1"
 
   } catch (error) {
