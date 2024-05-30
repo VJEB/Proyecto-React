@@ -10,6 +10,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from '@/components/custom/button'
 import { useToast } from "@/components/ui/use-toast"
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -33,13 +40,13 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
   const { toast } = useToast()
   const [aduana, setAduana] = useState<Aduanas>({
     adua_Id: 0,
-    adua_Codigo: "",
-    adua_Nombre: "",
+    adua_Codigo: "0",
+    adua_Nombre: "0",
     adua_Direccion_Exacta: "ahi meror simon",
-    pvin_Nombre: "",
-    pvin_Id: 83,
-    ciud_Id: 301,
-    ciud_Nombre: "",
+    pvin_Nombre: "0",
+    pvin_Id: "83",
+    ciud_Id: "301",
+    ciud_Nombre: "0",
     usua_UsuarioCreacion: 1,
     adua_FechaCreacion: "2024-05-29",
     usua_UsuarioModificacion: 1,
@@ -47,8 +54,8 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
     usua_UsuarioEliminacion: 0,
     adua_FechaEliminacion: "2024-05-29",
     adua_Estado: true,
-    usarioCreacion: "",
-    usuarioModificacion: ""
+    usarioCreacion: "0",
+    usuarioModificacion: "0"
   })
   useEffect(() => {
     cargarAduanas()
@@ -135,7 +142,12 @@ export default function PagAduanas({ title = 'Aduanas' }: { title?: string }) {
         <Button variant="outline">Cancel</Button>
           <Button onClick={() =>{
             if((!aduana.adua_Codigo)||(!aduana.adua_Nombre)){
-
+              toast({
+                title: "Error: ",
+                variant: "destructive",
+                description: "Error Al ingresar Aduana",
+              })
+              return;
             }
             guardarAduana(aduana)
             .then((exito) => {

@@ -98,8 +98,8 @@ interface Aduana {
   adua_Nombre: string
   adua_Direccion_Exacta: string
   pvin_Nombre: string | null
-  pvin_Id: number | null
-  ciud_Id: number | null
+  pvin_Id: string | null
+  ciud_Id: string | null
   ciud_Nombre: string | null
   usua_UsuarioCreacion: number
   adua_FechaCreacion: string
