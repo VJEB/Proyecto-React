@@ -60,25 +60,6 @@ export const columns: ColumnDef<Ciudad>[] = [
     },
   },
   {
-    accessorKey: 'pais',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Pais' />
-    ),
-    cell: ({ row }) => {
-      // const label = labels.find((label) => label.value === row.original.label)
-
-      return (
-        <div className='flex space-x-2'>
-          {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
-          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
-            {row.getValue('pais')}
-            {/* {row.getIsExpanded().toString()} */}
-          </span>
-        </div>
-      )
-    },
-  },
-  {
     accessorKey: 'provincia',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Provincia' />
@@ -91,6 +72,25 @@ export const columns: ColumnDef<Ciudad>[] = [
           {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
           <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
             {row.getValue('provincia')}
+            {/* {row.getIsExpanded().toString()} */}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'pais',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Pais' />
+    ),
+    cell: ({ row }) => {
+      // const label = labels.find((label) => label.value === row.original.label)
+
+      return (
+        <div className='flex space-x-2'>
+          {/* {label && <Badge variant='outline'>{label.label}</Badge>} */}
+          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+            {row.getValue('pais')}
             {/* {row.getIsExpanded().toString()} */}
           </span>
         </div>
