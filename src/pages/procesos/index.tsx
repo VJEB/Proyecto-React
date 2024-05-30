@@ -55,7 +55,7 @@ export default function PagProcesos({
       .catch((err) => {
         console.log('Error al cargar los oficios & profesiones:' + err)
       })
-  }, [])
+  }, [context.refrescar])
 
   useEffect(() => {
     const procEncontrado = procesos?.find(
