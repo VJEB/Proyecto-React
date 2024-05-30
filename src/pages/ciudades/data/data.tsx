@@ -97,10 +97,12 @@ interface Aduanas {
   adua_Codigo: string
   adua_Nombre: string
   adua_Direccion_Exacta: string
-  pvin_Id: number | null
+  pvin_Id: string | null
   ciud_Id: string | null
   usua_UsuarioCreacion: number
   adua_FechaCreacion: string
+  usarioCreacion: string,
+  usuarioModificacion: string | null,
   usua_UsuarioModificacion: number | null
   adua_FechaModificacion: string | null
   usua_UsuarioEliminacion: number | null
@@ -163,16 +165,22 @@ export const getAduana = async () => {
     )
 
     const data = await response.data
-    return data.data.map((aldea: Aduana) => {
+    
+
+    return data.data.map((aduana: Aduana) => {
       return {
-        adua_Id: aldea.adua_Id,
-        adua_Nombre: aldea.adua_Nombre,
-        adua_Codigo: aldea.adua_Codigo,
-        adua_Direccion_Exacta: aldea.adua_Direccion_Exacta,
-        ciud_Id: aldea.ciud_Id,
-        ciud_Nombre: aldea.ciud_Nombre,
-        pvin_Id: aldea.pvin_Id,
-        pvin_Nombre: aldea.pvin_Nombre,
+        adua_Id: aduana.adua_Id,
+        adua_Nombre: aduana.adua_Nombre,
+        adua_Codigo: aduana.adua_Codigo,
+        adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
+        ciud_Id: aduana.ciud_Id,
+        ciud_Nombre: aduana.ciud_Nombre,
+        pvin_Id: aduana.pvin_Id,
+        pvin_Nombre: aduana.pvin_Nombre,
+        usarioCreacion: aduana.usarioCreacion,
+        adua_FechaCreacion: aduana.adua_FechaCreacion,
+        usuarioModificacion: aduana.usuarioModificacion,
+        adua_FechaModificacion: aduana.adua_FechaModificacion,
         // status: 'in progress',
         // label: 'documentation',
         // priority: 'medium',
@@ -341,7 +349,8 @@ export const guardarAduana = async (Aduana: Aduanas) => {
       return
     }
 
-    console.log(Aduana, 'guardar Aduana')
+    Aduana.usua_UsuarioModificacion = 1
+    Aduana.adua_FechaModificacion = new Date().toISOString()
 
     const response = await axios.post(
       ` ${import.meta.env.VITE_API_SimexPro_Url}api/Aduanas/${Aduana.adua_Id === 0 ? 'Insertar' : 'Editar'}`,

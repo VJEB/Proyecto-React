@@ -235,7 +235,11 @@ export function DataTable<TData, TValue>({
                                   />
                                   Editar
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                onClick={() =>
+                                  context.setMostrarDetalle(aduana.adua_Id)
+                                }
+                                >
                                   <IconEye
                                     stroke={1.5}
                                     className='mr-1 h-5 w-5'

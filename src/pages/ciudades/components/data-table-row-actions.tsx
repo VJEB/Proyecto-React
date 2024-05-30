@@ -35,7 +35,7 @@ export function DataTableRowActions<TData>({
   const context = useContext(ThemeProviderContext)
   return (
     <>
-    <DropdownMenu>
+    {/* <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
@@ -109,8 +109,7 @@ export function DataTableRowActions<TData>({
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
       </>
-    
   )
 }

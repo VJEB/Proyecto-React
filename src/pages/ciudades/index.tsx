@@ -49,7 +49,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ThemeProviderContext } from '@/components/theme-provider'
-import { IconPlus } from '@tabler/icons-react'
+import { IconArrowBack, IconPlus } from '@tabler/icons-react'
 
 export default function PagCiudades({
   title = 'Ciudades por Aduanas',
@@ -93,6 +93,8 @@ export default function PagCiudades({
     adua_FechaModificacion: '2024-05-30',
     usua_UsuarioEliminacion: 1,
     adua_FechaEliminacion: '2024-05-30',
+    usarioCreacion: "",
+    usuarioModificacion: ""
   })
   useEffect(() => {
     cargarCiudades()
@@ -124,8 +126,6 @@ export default function PagCiudades({
     const aduaEncontrada = aduanas?.find(
       (item) => item.adua_Id === context.aduaId
     )
-    console.log(aduanas)
-    console.log(context.aduaId)
     if (aduaEncontrada) {
       setAduana(aduaEncontrada)
       setMostrarForm(true)
@@ -134,6 +134,15 @@ export default function PagCiudades({
       setDialogState(true)
     }
   }, [context.aduaId])
+
+  useEffect(() => {
+    const aduaEncontrada = aduanas?.find(
+      (item) => item.adua_Id === context.mostrarDetalle
+    )
+    if (aduaEncontrada) {
+      setAduana(aduaEncontrada)
+    }
+  }, [context.mostrarDetalle])
 
   return (
     <Layout>
@@ -147,7 +156,78 @@ export default function PagCiudades({
         </div>
       </LayoutHeader>
 
-      {mostrarForm ? (
+      {context.mostrarDetalle !== 0 ? 
+      (
+        <LayoutBody className='flex flex-col' fixedHeight>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+            <h2 className='text-2xl font-bold tracking-tight'>Detalle</h2>
+            <Button
+              variant={'outline'}
+              onClick={() => context.setMostrarDetalle(0)}
+            >
+              <IconArrowBack stroke={1.5} className='mr-1 h-5 w-5' />
+              Regresar
+            </Button>
+          </div>
+          {aduana && (
+            <div className='mb-2 flex flex-col items-center justify-between space-y-8 rounded border bg-slate-900 p-8'>
+              <div className='grid min-w-[100%] grid-cols-3 gap-3'>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Id</div>
+                  <div>{aduana.adua_Id}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Aduana</div>
+                  <div>{aduana.adua_Nombre}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>
+                    Código de la aduana
+                  </div>
+                  <div>{aduana.adua_Codigo}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Direccion completa</div>
+                  <div>{aduana.adua_Direccion_Exacta}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Ciudad</div>
+                  <div>{ciudades?.find(ciud=>ciud.id === aduana.ciud_Id)?.ciudad}</div>
+                </div>
+                <div>
+                  <div className='font-medium text-[#94a3b8]'>Provincia</div>
+                  <div>{ciudades?.find(ciud=>ciud.id === aduana.ciud_Id)?.provincia}</div>
+                </div>
+              </div>
+              <div className='grid min-w-[100%] grid-cols-3 rounded bg-slate-950 p-4'>
+                <div></div>
+                <div className='font-medium text-[#94a3b8]'>Usuario</div>
+                <div className='font-medium text-[#94a3b8]'>Fecha</div>
+
+                <div className='border-t py-2 font-medium text-[#94a3b8]'>
+                  Creacion
+                </div>
+                <div className='border-t py-2'>
+                  {aduana.usarioCreacion ?? ''}
+                </div>
+                <div className='border-t py-2'>
+                  {aduana.adua_FechaCreacion ?? ''}
+                </div>
+                <div className='border-t py-2 font-medium text-[#94a3b8]'>
+                  Modifica
+                </div>
+                <div className='border-t py-2'>
+                  {aduana.usuarioModificacion ?? ''}
+                </div>
+                <div className='border-t py-2'>
+                  {aduana.adua_FechaModificacion ?? ''}
+                </div>
+              </div>
+            </div>
+          )}
+        </LayoutBody>
+      )
+      : mostrarForm ? (
         <LayoutBody className='flex flex-col' fixedHeight>
           <Card>
             <CardHeader>
@@ -391,6 +471,8 @@ export default function PagCiudades({
                     adua_FechaModificacion: '2024-05-30',
                     usua_UsuarioEliminacion: 1,
                     adua_FechaEliminacion: '2024-05-30',
+                    usarioCreacion: "",
+                    usuarioModificacion: ""
                   })
                   setMostrarForm(true)
                 }}
