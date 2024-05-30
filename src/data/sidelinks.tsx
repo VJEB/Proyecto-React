@@ -22,7 +22,7 @@ import {
   IconUsers,
   IconWorld,
   IconTools,
-  IconTimelineEvent
+  IconTimelineEvent,
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -68,19 +68,13 @@ export const sidelinks: SideLink[] = [
     icon: <IconChecklist size={18} />,
   },
   {
-    title: 'Aduanas',
-    label: '3',
-    href: '/aduanas',
-    icon: <IconChecklist size={18} />,
-  },
-  {
     title: 'Chats',
     label: '9',
     href: '/chats',
     icon: <IconMessages size={18} />,
   },
   {
-    title: 'Ciudades',
+    title: 'Aduanas',
     label: '9',
     href: '/ciudades',
     icon: <IconWorld size={18} />,
