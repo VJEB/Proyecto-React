@@ -409,16 +409,37 @@ export default function PagCiudades({
               </Button>
               <Button
                 onClick={() => {
-                  if (
-                    aduana.adua_Codigo == '' ||
-                    aduana.adua_Nombre == '' ||
-                    aduana.adua_Direccion_Exacta == '' ||
-                    aduana.ciud_Id == ''
-                  ) {
+                  if (!aduana.adua_Codigo) {
                     toast({
                       title: 'Error: ',
                       variant: 'destructive',
-                      description: 'Todos los valores deven estar llenos',
+                      description: 'Por favor ingrese el codigo de la aduana',
+                    })
+                    return
+                  }
+                  if (!aduana.adua_Nombre) {
+                    toast({
+                      title: 'Error: ',
+                      variant: 'destructive',
+                      description: 'Por favor ingrese el nombre de la aduana',
+                    })
+                    return
+                  }
+
+                  if (!aduana.ciud_Id) {
+                    toast({
+                      title: 'Error: ',
+                      variant: 'destructive',
+                      description: 'Por favor seleccione la ciudad de la aduana',
+                    })
+                    return
+                  }
+
+                  if (!aduana.adua_Direccion_Exacta) {
+                    toast({
+                      title: 'Error: ',
+                      variant: 'destructive',
+                      description: 'Por favor ingrese la dirección exacta de la aduana',
                     })
                     return
                   }
