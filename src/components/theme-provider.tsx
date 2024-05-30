@@ -13,6 +13,8 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void
   ofiProId: number
   setOfiProId: (ofiProId: number) => void
+  aduaId: number
+  setAduId: (ofAduId: number) => void
   procId: number
   setProcId: (ofiProId: number) => void
   refrescar: boolean
@@ -28,6 +30,8 @@ const initialState: ThemeProviderState = {
   setOfiProId: () => null,
   procId: 0,
   setProcId: () => null,
+  aduaId: 0,
+  setAduId: () => null,
   refrescar: false,
   setRefrescar: () => null,
   mostrarDetalle: 0,
@@ -49,6 +53,7 @@ export function ThemeProvider({
   const [ofiProId, setOfiProId] = useState(0)
   const [procId, setProcId] = useState(0)
 
+  const [aduaId, setAduId] = useState(0)
   const [refrescar, setRefrescar] = useState(false)
   const [mostrarDetalle, setMostrarDetalle] = useState(0)
 
@@ -80,6 +85,8 @@ export function ThemeProvider({
     setOfiProId,
     procId,
     setProcId,
+    aduaId,
+    setAduId,
     refrescar,
     setRefrescar,
     mostrarDetalle,
