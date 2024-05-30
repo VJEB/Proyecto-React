@@ -93,6 +93,20 @@ interface Aduana {
   usuarioModificacion: string | null
 }
 
+interface Aduanas {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Id: string | null
+  ciud_Id: string | null
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  adua_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  adua_FechaEliminacion: string | null
+}
 
 interface Ciudad {
   ciud_Id: string | null
@@ -115,23 +129,21 @@ interface Ciudad {
   ciud_Estado: boolean | null
 }
 
-interface Aldea {
-  alde_Id: string
-  alde_Nombre: string
-  ciud_Id: string
-  ciud_Nombre: string
-  pvin_Id: string
-  pvin_Codigo: string
+
+interface Ciudadddl {
+  ciud_Id: number | null
+  ciud_Nombre: string | null
+}
+
+interface Pais {
+  pais_Id: number
+  pais_Nombre: string
+
+}
+
+interface Provincia {
+  pvin_Id: number
   pvin_Nombre: string
-  usua_UsuarioCreacion: number
-  usuarioCreacionNombre: string
-  alde_FechaCreacion: string
-  usua_UsuarioModificacion: number | null
-  usuarioModificacionNombre: string | null
-  alde_FechaModificacion: string | null
-  usua_UsuarioEliminacion: number | null
-  alde_FechaEliminacion: string | null
-  alde_Estado: boolean
 }
 
 export const getAduana = async () => {
@@ -175,6 +187,112 @@ export const getAduana = async () => {
   }
 }
 
+export const paisddl = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.get(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Paises/Listar?pais_EsAduana=true',
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+    return data.data.map((pais: Pais) => {
+      return {
+        pais_Id: pais.pais_Id,
+        pais_Nombre: pais.pais_Nombre,
+        // status: 'in progress',
+        // label: 'documentation',
+        // priority: 'medium',
+      }
+    })
+  }catch (error) {
+    return []
+  }
+}
+
+export const provinciaddl = async (pais_Id: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+    const url = `${import.meta.env.VITE_API_SimexPro_Url}api/Provincias/ProvinciasFiltradaPorPaisYesAduana?pais_Id=${pais_Id}&pvin_EsAduana=false`;
+    console.log('Generated URL:', url);
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Provincias/ProvinciasFiltradaPorPaisYesAduana?pais_Id=${pais_Id}&pvin_EsAduana=false`,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+    console.log(data)
+    return data.data.map((provincia: Provincia) => {
+      return {
+        pvin_Id: provincia.pvin_Id,
+        pvin_Nombre: provincia.pvin_Nombre,
+        // status: 'in progress',
+        // label: 'documentation',
+        // priority: 'medium',
+      }
+    })
+  }catch (error) {
+    return []
+  }
+}
+
+
+export const ciudadesddl = async (pvin_Id: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Ciudades/CiudadesFiltradaPorProvincias?pvin_Id=${pvin_Id}`,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+    return data.data.map((ciudadddl: Ciudadddl) => {
+      return {
+        ciud_Id: ciudadddl.ciud_Id,
+        ciud_Nombre: ciudadddl.ciud_Nombre,
+        // status: 'in progress',
+        // label: 'documentation',
+        // priority: 'medium',
+      }
+    })
+  }catch (error) {
+    return []
+  }
+}
+
+
 export const cargarCiudades = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
@@ -202,6 +320,8 @@ export const cargarCiudades = async () => {
           return {
             id: ciudad.ciud_Id,
             ciudad: ciudad.ciud_Nombre,
+            pais: ciudad.pais_Nombre,
+            provincia: ciudad.pvin_Nombre,
             subRows: aduana.filter((adu) => adu.ciud_Id === ciudad.ciud_Id),
             // status: 'in progress',
             // label: 'documentation',
@@ -219,7 +339,7 @@ export const cargarCiudades = async () => {
   }
 }
 
-export const guardarAduana = async (Aduana : Aduana) =>{
+export const guardarAduana = async (Aduana : Aduanas) =>{
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -239,7 +359,8 @@ export const guardarAduana = async (Aduana : Aduana) =>{
 
     )
     const data = await response.data
-    return data.datamessageStatus === "1"
+    console.log(data)
+    return data.messageStatus === "1"
 
   } catch (error) {
     console.error('Error in cargarCiudades:', error)
