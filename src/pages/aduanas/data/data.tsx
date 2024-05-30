@@ -8,8 +8,7 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from '@radix-ui/react-icons'
-
-import axios from 'axios';
+import axios from 'axios'
 
 export const labels = [
   {
@@ -72,28 +71,6 @@ export const priorities = [
   },
 ]
 
-
-interface Aduana {
-  adua_Id: number
-  adua_Codigo: string
-  adua_Nombre: string
-  adua_Direccion_Exacta: string
-  pvin_Nombre: string | null
-  pvin_Id: number | null
-  ciud_Id: number | null
-  ciud_Nombre: string | null
-  usua_UsuarioCreacion: number
-  adua_FechaCreacion: string
-  usua_UsuarioModificacion: number | null
-  adua_FechaModificacion: string | null
-  usua_UsuarioEliminacion: number | null
-  adua_FechaEliminacion: string | null
-  adua_Estado: boolean
-  usarioCreacion: string | null
-  usuarioModificacion: string | null
-}
-
-
 interface Ciudad {
   ciud_Id: string | null
   ciud_Nombre: string | null
@@ -115,26 +92,90 @@ interface Ciudad {
   ciud_Estado: boolean | null
 }
 
-interface Aldea {
-  alde_Id: string
-  alde_Nombre: string
-  ciud_Id: string
-  ciud_Nombre: string
-  pvin_Id: string
-  pvin_Codigo: string
-  pvin_Nombre: string
+interface Aduana {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Nombre: string | null
+  pvin_Id: string | null
+  ciud_Id: string | null
+  ciud_Nombre: string | null
   usua_UsuarioCreacion: number
-  usuarioCreacionNombre: string
-  alde_FechaCreacion: string
+  adua_FechaCreacion: string
   usua_UsuarioModificacion: number | null
-  usuarioModificacionNombre: string | null
-  alde_FechaModificacion: string | null
+  adua_FechaModificacion: string | null
   usua_UsuarioEliminacion: number | null
-  alde_FechaEliminacion: string | null
-  alde_Estado: boolean
+  adua_FechaEliminacion: string | null
+  adua_Estado: boolean
+  usarioCreacion: string | null
+  usuarioModificacion: string | null
 }
 
-export const getAduana = async () => {
+interface Aduanas {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Id: string | null
+  ciud_Id: string | null
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  adua_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  adua_FechaEliminacion: string | null
+}
+
+export const cargarCiudades = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar?ciud_EsAduana=true',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.data.map((ciudad: Ciudad) => {
+      return {
+        ciud_Id: ciudad.ciud_Id,
+        ciud_Nombre: ciudad.ciud_Nombre,
+        pvin_Id: ciudad.pvin_Id,
+        pvin_Nombre: ciudad.pvin_Nombre,
+        usua_UsuarioCreacion: ciudad.usua_UsuarioCreacion,
+        ciud_FechaCreacion: ciudad.ciud_FechaCreacion,
+        usua_UsuarioModificacion: ciudad.usua_UsuarioModificacion,
+        ciud_FechaModificacion: ciudad.ciud_FechaModificacion,
+        usua_UsuarioEliminacion: ciudad.usua_UsuarioEliminacion,
+        ciud_FechaEliminacion: ciudad.ciud_FechaEliminacion,
+        ciud_Estado: ciudad.ciud_Estado,
+        usarioCreacion: ciudad.usua_UsuarioCreacion,
+        usuarioModificacion: ciudad.usua_UsuarioModificacion
+      }
+    })
+  } catch (error) {
+    console.error(`Error al cargar las adunas: ${error}`)
+    return []
+  }
+}
+
+export const cargarAduanas = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -155,54 +196,27 @@ export const getAduana = async () => {
 
 
     const data = await response.data
-    return data.data.map((aldea: Aduana) => {
-      return {
-        adua_Id: aldea.adua_Id,
-        adua_Nombre: aldea.adua_Nombre,
-        adua_Codigo: aldea.adua_Codigo,
-        adua_Direccion_Exacta: aldea.adua_Direccion_Exacta,
-        ciud_Id: aldea.ciud_Id,
-        ciud_Nombre: aldea.ciud_Nombre,
-        pvin_Id: aldea.pvin_Id,
-        pvin_Nombre: aldea.pvin_Nombre,
-        // status: 'in progress',
-        // label: 'documentation',
-        // priority: 'medium',
-      }
-    })
-  } catch (error) {
-    return []
-  }
-}
 
-export const cargarCiudades = async () => {
-  try {
-    const apiKey = import.meta.env.VITE_ApiKey
-
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar?ciud_EsAduana=true',
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await response.data
-
-    return getAduana()
-      .then((aduana: Aduana[]) => {
-        return data.data.map((ciudad: Ciudad) => {
+    return cargarCiudades()
+      .then((ciudad : Ciudad[]) => {
+        return data.data.map((aduana: Aduana) => {
           return {
-            id: ciudad.ciud_Id,
-            ciudad: ciudad.ciud_Nombre,
-            subRows: aduana.filter((adu) => adu.ciud_Id === ciudad.ciud_Id),
+            adua_Id: aduana.adua_Id,
+            adua_Codigo: aduana.adua_Codigo,
+            adua_Nombre: aduana.adua_Nombre,
+            adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
+            pvin_Nombre: aduana.pvin_Nombre,
+            pvin_Id: aduana.pvin_Id,
+            usua_UsuarioCreacion: aduana.usua_UsuarioCreacion,
+            adua_FechaCreacion: aduana.adua_FechaCreacion,
+            usua_UsuarioModificacion: aduana.usua_UsuarioModificacion,
+            adua_FechaModificacion: aduana.adua_FechaModificacion,
+            usua_UsuarioEliminacion: aduana.usua_UsuarioEliminacion,
+            adua_FechaEliminacion: aduana.adua_FechaEliminacion,
+            adua_Estado: aduana.adua_Estado,
+            usarioCreacion: aduana.usarioCreacion,
+            usuarioModificacion: aduana.usuarioModificacion,
+            subRows: ciudad.filter((ciud) => aduana.ciud_Id === ciud.ciud_Id),
             // status: 'in progress',
             // label: 'documentation',
             // priority: 'medium',
@@ -210,16 +224,17 @@ export const cargarCiudades = async () => {
         })
       })
       .catch((err) => {
-        console.error('Error al cargar las ciudades:', err)
+        console.error('Error al cargar los cargos:', err)
         return [] // Return an empty array in case of error
       })
   } catch (error) {
-    console.error('Error in cargarCiudades:', error)
+    console.error('Error in cargarCargos:', error)
     return []
   }
 }
 
-export const guardarAduana = async (Aduana : Aduana) =>{
+
+export const guardarAduana = async (Aduana : Aduanas) =>{
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -239,6 +254,7 @@ export const guardarAduana = async (Aduana : Aduana) =>{
 
     )
     const data = await response.data
+    console.log(data)
     return data.datamessageStatus === "1"
 
   } catch (error) {

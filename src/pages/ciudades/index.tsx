@@ -5,10 +5,12 @@ import { Layout, LayoutBody, LayoutHeader } from '@/components/custom/layout'
 import { DataTable } from './components/data-table'
 import { columns } from './components/columns'
 import { useEffect, useState } from 'react'
-import { cargarCiudades } from './data/data'
+import { cargarCiudades, guardarAduana } from './data/data'
+
 
 export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) {
   const [ciudades, setCiudades] = useState()
+  
   useEffect(() => {
     cargarCiudades()
       .then((data) => {
@@ -32,6 +34,7 @@ export default function PagCiudades({ title = 'Ciudades' }: { title?: string }) 
       </LayoutHeader>
 
       <LayoutBody className='flex flex-col' fixedHeight>
+      
         <div className='mb-2 flex items-center justify-between space-y-2'>
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>
