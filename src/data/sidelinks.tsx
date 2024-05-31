@@ -62,6 +62,12 @@ export const sidelinks: SideLink[] = [
     icon: <IconChecklist size={18} />,
   },
   {
+    title: 'Reporte Adhe',
+    label: '3',
+    href: '/reporte-contratosadhe',
+    icon: <IconChecklist size={18} />,
+  },
+  {
     title: 'Cargos',
     label: '3',
     href: '/cargos',

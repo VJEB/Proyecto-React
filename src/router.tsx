@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       {
         path: 'tasks',
         lazy: async () => ({
-          Component: (await import('@/pages/tasks')).default,
+          Component: (await import('@/pages/reporte-contratosadhe')).default,
         }),
       },
       {
@@ -67,6 +67,12 @@ const router = createBrowserRouter([
         path: 'procesos',
         lazy: async () => ({
           Component: (await import('@/pages/procesos')).default,
+        }),
+      },
+      {
+        path: 'reporteAdhe',
+        lazy: async () => ({
+          Component: (await import('@/pages/reporte-contratosadhe')).default,
         }),
       },
       {
