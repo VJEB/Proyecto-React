@@ -22,7 +22,7 @@ import {
   IconUsers,
   IconWorld,
   IconTools,
-  IconTimelineEvent,
+  IconTimelineEvent
 } from '@tabler/icons-react'
 
 export interface NavLink {
@@ -56,6 +56,12 @@ export const sidelinks: SideLink[] = [
     icon: <IconTimelineEvent size={18} />,
   },
   {
+    title: 'Declaración de Valor',
+    label: '3',
+    href: '/deva',
+    icon: <IconTimelineEvent size={18} />,
+  },
+  {
     title: 'Tasks',
     label: '3',
     href: '/tasks',
@@ -74,7 +80,7 @@ export const sidelinks: SideLink[] = [
     icon: <IconMessages size={18} />,
   },
   {
-    title: 'Aduanas',
+    title: 'Ciudades',
     label: '9',
     href: '/ciudades',
     icon: <IconWorld size={18} />,
