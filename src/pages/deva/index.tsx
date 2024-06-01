@@ -28,6 +28,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Card } from '@/components/ui/card'
+import { Form } from '@/components/ui/form'
+import { DropdownMenu } from '@/components/ui/dropdown-menu'
 
 export default function PagDeva({
   title = 'Declaración de Valor',
@@ -230,17 +233,8 @@ export default function PagDeva({
             <div className='mb-2 flex flex-col items-center justify-between space-y-8 rounded border bg-slate-900 p-8'></div>
           )}
         </LayoutBody>
-      ) : mostrarForm ? (
-        <LayoutBody className='flex flex-col' fixedHeight>
-          <div className='mb-2 flex items-center justify-between space-y-2'>
-            <div>
-              <h2 className='text-2xl font-bold tracking-tight'>
-                Formulario de {title.toLowerCase()}
-              </h2>
-            </div>
-            <div></div>
-          </div>
-        </LayoutBody>
+      ) : mostrarForm && devas ? (
+        <FormDeva devas={devas} />
       ) : (
         <LayoutBody className='flex flex-col' fixedHeight>
           <div className='mb-2 flex items-center justify-between space-y-2'>
@@ -396,5 +390,89 @@ export default function PagDeva({
         </LayoutBody>
       )}
     </Layout>
+  )
+}
+
+function FormDeva({ devas }: { devas: Deva[] }) {
+  const [aduseling, setAduseling] = useState('Seleccionar Aduana de Ingreso')
+  const [aduselect, setAduselect] = useState('Seleccionar Aduana de Despacho')
+  const [dropdownOpen1, setDropdownOpen1] = useState(false)
+  const [dropdownOpen2, setDropdownOpen2] = useState(false)
+
+  const toggleDropdown1 = () => setDropdownOpen1((prevState) => !prevState)
+  const toggleDropdown2 = () => setDropdownOpen2((prevState) => !prevState)
+
+  const aduSelectIn = (id: number, aduana: string) => {
+    setAduseling(aduana)
+    // Handle selection logic
+  }
+
+  const aduSelect = (id: number, aduana: string) => {
+    setAduselect(aduana)
+    // Handle selection logic
+  }
+
+  const GuardarDeva = (event: React.FormEvent) => {
+    event.preventDefault()
+    // Handle form submission
+  }
+  return (
+    <LayoutBody className='flex flex-col' fixedHeight>
+      <div className='mb-2 flex items-center justify-between space-y-2'>
+        <div>
+          <h2 className='text-2xl font-bold tracking-tight'>
+            Formulario de Declaración de Valor
+          </h2>
+        </div>
+      </div>
+      <Card className='p-3'>
+        <h6>I. Información General</h6>
+        <h6>A. Información General de la Aduana</h6>
+        <div className='flex'>
+          <div className='flex flex-col'>
+            <Label>1. Aduana de Ingreso</Label>
+            {/* <DropdownMenu isOpen={dropdownOpen1} toggle={toggleDropdown1}>
+                    <DropdownMenuTrigger asChild>
+        <Button
+          variant='ghost'
+          className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+        >
+          <DotsHorizontalIcon className='h-4 w-4' />
+        </Button>
+      </DropdownMenuTrigger>
+                      <DropdownMenu>
+                        {aduanas.map((pais) => (
+                          <DropdownItem
+                            key={pais.Id}
+                            onClick={() => aduSelectIn(pais.Id, pais.Aduana)}
+                          >
+                            {pais.Aduana}
+                          </DropdownItem>
+                        ))}
+                      </DropdownMenu>
+                    </DropdownMenu> */}
+          </div>
+          <div className='flex flex-col'>
+            {/* <FormGroup>
+                  <Label for='aduanaDespacho'>2. Aduana de Despacho</Label>
+                  <Dropdown isOpen={dropdownOpen2} toggle={toggleDropdown2}>
+                    <DropdownToggle caret>{aduselect}</DropdownToggle>
+                    <DropdownMenu>
+                      {aduanas.map((pais) => (
+                        <DropdownItem
+                          key={pais.Id}
+                          onClick={() => aduSelect(pais.Id, pais.Aduana)}
+                        >
+                          {pais.Aduana}
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+                </FormGroup> */}
+          </div>
+        </div>
+        <Button type='submit'>Guardar</Button>
+      </Card>
+    </LayoutBody>
   )
 }
