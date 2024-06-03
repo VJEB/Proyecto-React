@@ -146,7 +146,7 @@ export default function PagReportes({
               />
 
             </div>
-{/*             
+             
             <div className='flex flex-col gap-1'>
                 <Label>Fecha de fin</Label>
                 <Popover>
@@ -182,12 +182,8 @@ export default function PagReportes({
                         setReporte((reporte) => {
                           return {
                             ...reporte,
-                            declaraciones_ValorViewModel: {
-                              ...reporte,
-                              fechaFin : e
-                                ? e.toISOString()
-                                : new Date().toISOString(),
-                            },
+                            fechaFin : e
+                            
                           }
                         })
                       }
@@ -195,9 +191,9 @@ export default function PagReportes({
                     />
                   </PopoverContent>
                 </Popover>
-              </div> */}
+              </div> 
 
-    <div className='grid grid-cols-2 gap-4 py-4'>
+    <div className='grid grid-cols-1 gap-4 py-4'>
               <div className="">
               <label>Tipo de Contrato</label>
                 <RadioGroup
@@ -228,44 +224,12 @@ export default function PagReportes({
                 </RadioGroup>
               </div>
             </div>
-            {/* <div className='flex flex-col space-y-1.5'>
-                    <Label htmlFor='framework'>Contrato</Label>
-
-                    <Select
-                     onValueChange={(value)=>{
-                          setReporte(reporte => {
-                          return {
-                            ...reporte,
-                            contrato: value
-                          }
-                        }
-                      )
-                    }
-                    }>
-                      <SelectTrigger id='framework'>
-                        <SelectValue placeholder='Seleccione' />
-                      </SelectTrigger>
-                      <SelectContent position='popper'>
-                        
-                          <SelectItem value='CI'>
-                            Comerciante individual
-                          </SelectItem>
-                          
-                          <SelectItem value='PJ'>
-                            Persona Juridica
-                          </SelectItem>
-                          
-                          <SelectItem value='PN'>
-                            Persona Natura
-                          </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div> */}
+            
           </div>
         </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button onClick={clickea}>Guardar</Button>
+          <Button onClick={clickea}>Generar PDF</Button>
         </CardFooter>
         </Card>
           <Card>

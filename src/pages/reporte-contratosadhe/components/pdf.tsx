@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   page: {
@@ -10,6 +10,8 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     flexGrow: 1,
+    display: 'flex',
+    
   },
   table: {
     display: 'flex',
@@ -90,13 +92,14 @@ interface PersonaNatural {
   peju_CorreoElectronicoAlternativo: string
   colo_Nombre: string
   alde_Nombre: string
-  peju_CiudadRepresentante: string 
-  ColoniaRepresentante: string
-  peju_AldeaRepresentante: string 
+  ciudadRepresentante: string 
+  coloniaRepresentante: string
+  aldeaRepresemtante: string 
   peju_NumeroLocalApart: string
   peju_FechaCreacion: string
   
   coin_Id: number
+    pers_RTN: string
     pers_FormaRepresentacion: string
     coin_TelefonoCelular: string
     coin_TelefonoFijo: string 
@@ -111,7 +114,7 @@ interface  PDFGeneratorProps {
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
   const [showPdf, setShowPdf] = useState(false);
-  const pageSize = 1; 
+  const pageSize = 26; 
   const totalPages = Math.ceil(data.length / pageSize);
   const hasPenaId = data.some((item) => 'pena_Id' in item);
   const hasCoinId = data.some((item) => 'coin_Id' in item);
@@ -120,30 +123,33 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
 
   let headers = [];
   let rowFields = [];
+  let titulo: string;
 
   if (hasPenaId) {
-    headers = ['DNI', 'Nombre', 'Ciudad', 'Dirección', 'Teléfono fijo', 'Teléfono Celular', 'Correo Electrónico', 'Correo Alternativo', 'RTN', 'Archivo RTN', 'Archivo DNI', 'Número de Recibo', 'Archivo Recibo'];
+    headers = ['DNI', 'Nombre',  'Dirección'];
     
-    rowFields = ['pena_DNI', 'pers_Nombre', 'ciud_Nombre', 'pena_DireccionExacta', 'pena_TelefonoFijo', 'pena_TelefonoCelular', 'pena_CorreoElectronico', 'pena_CorreoAlternativo', 'pena_RTN', 'pena_ArchivoRTN', 'pena_ArchivoDNI', 'pena_NumeroRecibo', 'pena_ArchivoNumeroRecibo'];
-
+    rowFields = ['pena_DNI', 'pers_Nombre', 'pena_DireccionExacta'];
+    titulo = "     Persona Natural"
   } else if (hasPejuId) {
-    headers = ['Punto Referencia', 'Número Local Representante', 'Punto Referencia Representante', 'Nombre', 'Teléfono Empresa', 'Teléfono Fijo Representante Legal', 'Teléfono Representante Legal', 'Correo Electrónico', 'Correo Electrónico Alternativo', 'Ciudad', 'Colonia Nombre', 'Aldea Nombre', 'Ciudad Representante', 'Colonia Representante', 'Aldea Representante', 'Número Local Apart', 'Fecha Creación'];
+    headers = ['RTN','Nombre', 'Dirección'];
     
-    rowFields = ['peju_PuntoReferencia', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante', 'pers_Nombre', 'peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico', 'peju_CorreoElectronicoAlternativo', 'ciud_Nombre', 'colo_Nombre', 'alde_Nombre', 'peju_CiudadRepresentante', 'ColoniaRepresentante', 'peju_AldeaRepresentante', 'peju_NumeroLocalApart', 'peju_FechaCreacion'];
+    rowFields = ['pers_RTN','pers_Nombre', 'ciud_Nombre'];
+    titulo = "     Persona Juridica"
 
   } else if (hasCoinId) {
     
-    headers = ['Forma Representación', 'Nombre', 'Ciudad', 'Colonia Nombre', 'Aldea Nombre', 'Teléfono Celular', 'Teléfono Fijo', 'Correo Electrónico', 'Correo Electrónico Alternativo', 'Fecha Creación'];
+    headers = ['RTN','Nombre', 'Dirección'];
     
-    rowFields = ['pers_FormaRepresentacion', 'pers_Nombre', 'ciud_Nombre', 'colo_Nombre', 'alde_Nombre', 'coin_TelefonoCelular', 'coin_TelefonoFijo', 'coin_CorreoElectronico', 'coin_CorreoElectronicoAlternativo', 'coin_FechaCreacion'];
+    rowFields = ['pers_RTN','pers_Nombre', 'ciud_Nombre'];
+   
+    titulo = "Comerciante Individual"
   }
 
-  console.log("esta mierda llega?:",JSON.stringify(data, null, 2))
+  console.log("llega?:",JSON.stringify(data, null, 2))
 
   useEffect(() => {
     if (data.length > 0) {
       setShowPdf(true);
-      console.log("entra")
     }
   }, [data]);
 
@@ -155,26 +161,30 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
     <PDFViewer width="100%" height="500px">
       <Document>
         {Array.from({ length: totalPages }).map((_, index) => (
-          <Page key={index} size="A4" style={styles.page}>
+          <Page key={index} size="A4" wrap={true} style={styles.page}>
+            
             <View style={styles.section}>
-              <Text style={{ fontSize: 18, marginBottom: 10 }}>Reporte de Contratos de Adhesión</Text>
-              <View style={styles.table}>
-              <View style={styles.tableRow}>
+              <Text style={{ fontSize: 18, marginHorizontal: '33%', marginBottom: 5}}>Contratos de Adhesión</Text>
+              <Text style={{ fontSize: 18,marginHorizontal: '32%'}}> {titulo}</Text>
+
+              <View style={styles.table} >
+               <View style={styles.tableRow} >
                 {headers.map((header, idx) => (
                     <Text key={idx} style={styles.tableHeader}>{header}</Text>
                   ))}
-                </View>
+                </View> 
                 {data
                   .slice(index * pageSize, (index + 1) * pageSize)
                   .map((item, i) => (
-                    <View style={styles.tableRow} key={i}>
-                      {rowFields.map((field, idx) => (
-                        <Text key={idx} style={styles.tableCell}>{item[field]}</Text>
+                    <View  style={styles.tableRow}  key={i}>
+                      {
+                      rowFields.map((field, idx)  => (
+                        <Text key={idx} style={styles.tableCell}>{item[field]} </Text>
                       ))}
+
                     </View>
                   ))}
               </View>
-             
               <Text style={styles.pagination}>
                 Página {index + 1} de {totalPages}
               </Text>

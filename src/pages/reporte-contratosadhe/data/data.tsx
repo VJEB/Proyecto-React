@@ -11,7 +11,7 @@ interface enviarReporte {
 
 interface PersonaNatural {
     pena_Id: number
-    pers_Nombre: string
+    pers_Nombre: string 
     pena_DireccionExacta: string
     ciud_Nombre: string
     pena_TelefonoFijo: string
@@ -32,6 +32,7 @@ interface PersonaNatural {
 
 interface PersonaJuridica {
     peju_Id: number
+    pers_RTN: string
     pers_Nombre: string
     peju_PuntoReferencia: string
     peju_NumeroLocalRepresentante: string
@@ -44,9 +45,9 @@ interface PersonaJuridica {
     ciud_Nombre: string
     colo_Nombre: string
     alde_Nombre: string
-    peju_CiudadRepresentante: string 
-    ColoniaRepresentante: string
-    peju_AldeaRepresentante: string 
+    ciudadRepresemtante: string 
+    coloniaRepresentante: string
+    aldeaRepresentante: string 
     peju_NumeroLocalApart: string
     peju_FechaCreacion: string
 }
@@ -54,6 +55,7 @@ interface PersonaJuridica {
 interface ComercianteIndividual{
     coin_Id: number
     pers_Nombre: string
+    pers_RTN: string
     pers_FormaRepresentacion: string
     ciud_Nombre: string
     colo_Nombre: string
