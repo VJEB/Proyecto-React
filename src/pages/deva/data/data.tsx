@@ -343,3 +343,336 @@ export const cancelarDeva = async (
     return false
   }
 }
+
+interface Aduana {
+  adua_Id: number
+  adua_Codigo: string
+  adua_Nombre: string
+  adua_Direccion_Exacta: string
+  pvin_Nombre: string
+  pvin_Id: string
+  ciud_Id: string
+  ciud_Nombre: string
+  usua_UsuarioCreacion: number
+  adua_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  adua_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  adua_FechaEliminacion: string | null
+  usarioCreacion: string
+  usuarioModificacion: string | null
+}
+
+export const getAduanas = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.get(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+    return data.data.map((aduana: Aduana) => {
+      return {
+        adua_Id: aduana.adua_Id,
+        adua_Codigo: aduana.adua_Codigo,
+        adua_Nombre: aduana.adua_Nombre,
+        adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
+        pvin_Nombre: aduana.pvin_Nombre,
+        pvin_Id: aduana.pvin_Id,
+        ciud_Id: aduana.ciud_Id,
+        ciud_Nombre: aduana.ciud_Nombre,
+        usua_UsuarioCreacion: aduana.usua_UsuarioCreacion,
+        adua_FechaCreacion: aduana.adua_FechaCreacion,
+        usua_UsuarioModificacion: aduana.usua_UsuarioModificacion,
+        adua_FechaModificacion: aduana.adua_FechaModificacion,
+        usua_UsuarioEliminacion: aduana.usua_UsuarioEliminacion,
+        adua_FechaEliminacion: aduana.adua_FechaEliminacion,
+        usarioCreacion: aduana.usarioCreacion,
+        usuarioModificacion: aduana.usuarioModificacion,
+      }
+    })
+  } catch (error) {
+    return []
+  }
+}
+
+interface Ciudad {
+  ciud_Id: number
+  ciud_Nombre: string
+  pvin_Id: number
+  pvin_Nombre: string
+  pvin_Codigo: string
+  pais_Codigo: string
+  pais_Nombre: string
+  pais_Id: number
+  ciud_EsAduana: boolean | null
+  usua_UsuarioCreacion: number
+  usua_UsuarioModificacion: number | null
+  usuarioCreacionNombre: string
+  ciud_FechaCreacion: string
+  usuarioModificacionNombre: string | null
+  ciud_FechaModificacion: string | null
+  usua_UsuarioEliminacion: string | null
+  ciud_FechaEliminacion: string | null
+  ciud_Estado: boolean | null
+}
+
+export const getCiudades = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((ciudad: Ciudad) => {
+      return {
+        ciud_Id: ciudad.ciud_Id,
+        ciud_Nombre: ciudad.ciud_Nombre,
+        pvin_Id: ciudad.pvin_Id,
+        pvin_Nombre: ciudad.pvin_Nombre,
+        pvin_Codigo: ciudad.pvin_Codigo,
+        pais_Codigo: ciudad.pais_Codigo,
+        pais_Nombre: ciudad.pais_Nombre,
+        pais_Id: ciudad.pais_Id,
+        ciud_EsAduana: ciudad.ciud_EsAduana,
+        usua_UsuarioCreacion: ciudad.usua_UsuarioCreacion,
+        usua_UsuarioModificacion: ciudad.usua_UsuarioModificacion,
+        usuarioCreacionNombre: ciudad.usuarioCreacionNombre,
+        ciud_FechaCreacion: ciudad.ciud_FechaCreacion,
+        usuarioModificacionNombre: ciudad.usuarioModificacionNombre,
+        ciud_FechaModificacion: ciudad.ciud_FechaModificacion,
+        usua_UsuarioEliminacion: ciudad.usua_UsuarioEliminacion,
+        ciud_FechaEliminacion: ciudad.ciud_FechaEliminacion,
+        ciud_Estado: ciudad.ciud_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las ciudades:', error)
+    return []
+  }
+}
+
+interface NivelComercial {
+  nico_Id: number
+  nico_Codigo: string
+  nico_Descripcion: string
+  usua_UsuarioCreacion: number
+  usuarioCreacionNombre: string
+  nico_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioModificacionNombre: string | null
+  nico_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  usuarioEliminacionNombre: string | null
+  nico_FechaEliminacion: string | null
+  nico_Estado: boolean
+}
+
+export const getNivelesComerciales = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/NivelesComerciales/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((nico: NivelComercial) => {
+      return {
+        nico_Id: nico.nico_Id,
+        nico_Codigo: nico.nico_Codigo,
+        nico_Descripcion: nico.nico_Descripcion,
+        usua_UsuarioCreacion: nico.usua_UsuarioCreacion,
+        usuarioCreacionNombre: nico.usuarioCreacionNombre,
+        nico_FechaCreacion: nico.nico_FechaCreacion,
+        usua_UsuarioModificacion: nico.usua_UsuarioModificacion,
+        usuarioModificacionNombre: nico.usuarioModificacionNombre,
+        nico_FechaModificacion: nico.nico_FechaModificacion,
+        usua_UsuarioEliminacion: nico.usua_UsuarioEliminacion,
+        usuarioEliminacionNombre: nico.usuarioEliminacionNombre,
+        nico_FechaEliminacion: nico.nico_FechaEliminacion,
+        nico_Estado: nico.nico_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los niveles comerciales:', error)
+    return []
+  }
+}
+
+interface CondicionComercial {
+  coco_Id: number
+  coco_Codigo: string
+  coco_Descripcion: string
+  usua_UsuarioCreacion: number
+  usuarioNombreCreacion: string
+  coco_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioModificadorNombre: string | null
+  coco_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  usuarioNombreEliminacion: string | null
+  coco_FechaEliminacion: string | null
+  coco_Estado: boolean
+}
+
+export const getCondicionesComerciales = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        'api/CondicionesComerciales/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((coco: CondicionComercial) => {
+      return {
+        coco_Id: coco.coco_Id,
+        coco_Codigo: coco.coco_Codigo,
+        coco_Descripcion: coco.coco_Descripcion,
+        usua_UsuarioCreacion: coco.usua_UsuarioCreacion,
+        usuarioNombreCreacion: coco.usuarioNombreCreacion,
+        coco_FechaCreacion: coco.coco_FechaCreacion,
+        usua_UsuarioModificacion: coco.usua_UsuarioModificacion,
+        usuarioModificadorNombre: coco.usuarioModificadorNombre,
+        coco_FechaModificacion: coco.coco_FechaModificacion,
+        usua_UsuarioEliminacion: coco.usua_UsuarioEliminacion,
+        usuarioNombreEliminacion: coco.usuarioNombreEliminacion,
+        coco_FechaEliminacion: coco.coco_FechaEliminacion,
+        coco_Estado: coco.coco_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las condiciones comerciales:', error)
+    return []
+  }
+}
+
+interface TipoDeIntermediario {
+  tite_Id: number
+  tite_Codigo: string
+  tite_Descripcion: string
+  usua_UsuarioCreacion: number
+  tite_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  tite_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  tite_FechaEliminacion: string | null
+  tite_Estado: boolean
+  usarioCreacion: string
+  usuarioModificacion: string | null
+}
+
+export const getTiposDeIntermediarios = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/TipoIntermediario/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((tiin: TipoDeIntermediario) => {
+      return {
+        tite_Id: tiin.tite_Id,
+        tite_Codigo: tiin.tite_Codigo,
+        tite_Descripcion: tiin.tite_Descripcion,
+        usua_UsuarioCreacion: tiin.usua_UsuarioCreacion,
+        tite_FechaCreacion: tiin.tite_FechaCreacion,
+        usua_UsuarioModificacion: tiin.usua_UsuarioModificacion,
+        tite_FechaModificacion: tiin.tite_FechaModificacion,
+        usua_UsuarioEliminacion: tiin.usua_UsuarioEliminacion,
+        tite_FechaEliminacion: tiin.tite_FechaEliminacion,
+        tite_Estado: tiin.tite_Estado,
+        usarioCreacion: tiin.usarioCreacion,
+        usuarioModificacion: tiin.usuarioModificacion,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los tipos de intermediarios:', error)
+    return []
+  }
+}
