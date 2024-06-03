@@ -9,7 +9,13 @@ import {
   getCiudades,
   getCondicionesComerciales,
   getDevas,
+  getEmbarques,
+  getFormasDeEnvio,
+  getFormasDePago,
+  getIncoterms,
+  getMonedas,
   getNivelesComerciales,
+  getPaises,
   getTiposDeIntermediarios,
 } from './data/data'
 import { Button } from '@/components/custom/button'
@@ -35,7 +41,13 @@ import {
   CondicionComercial,
   Deva,
   DevaCompuesta,
+  Embarque,
+  FormaDeEnvio,
+  FormaDePago,
+  Incoterm,
+  Moneda,
   NivelComercial,
+  Pais,
   TipoDeIntermediario,
 } from './data/schema'
 import { useToast } from '@/components/ui/use-toast'
@@ -69,11 +81,13 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import { cn } from '@/lib/utils'
 import { Calendar } from '@/components/ui/calendar'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export default function PagDeva({
   title = 'Declaración de Valor',
@@ -651,17 +665,30 @@ function FormDeva({
     useState(false)
 
   const [cbbPaisEntregaState, setCbbPaisEntregaState] = useState(false)
+  const [cbbPaisEmbarqueState, setCbbPaisEmbarqueState] = useState(false)
+  const [cbbEmbarqueState, setCbbEmbarqueState] = useState(false)
+  const [cbbPaisExportacionState, setCbbPaisExportacionState] = useState(false)
+  const [cbbIncotermState, setCbbIncotermState] = useState(false)
+  const [cbbFoenState, setCbbFoenState] = useState(false)
+  const [cbbFopaState, setCbbFopaState] = useState(false)
+  const [cbbMonedaState, setCbbMonedaState] = useState(false)
+  const [dialogState, setDialogState] = useState(false)
 
   const [ciudades, setCiudades] = useState<Ciudad[]>([])
   const [nicos, setNicos] = useState<NivelComercial[]>([])
   const [condiciones, setCondiciones] = useState<CondicionComercial[]>([])
-  // const [incoterms, setIncoterms] = useState<Incoterm[]>([])
+  const [incoterms, setIncoterms] = useState<Incoterm[]>([])
+  const [formasDeEnvio, setFormasDeEnvio] = useState<FormaDeEnvio[]>([])
+  const [formasDePago, setFormasDePago] = useState<FormaDePago[]>([])
+  const [embarques, setEmbarques] = useState<Embarque[]>([])
+  const [monedas, setMonedas] = useState<Moneda[]>([])
   const [tiposDeIntermediarios, setTiposDeIntermediarios] = useState<
     TipoDeIntermediario[]
   >([])
   const [paises, setPaises] = useState<
     { pais_Id: number; pais_Codigo: string; pais_Nombre: string }[]
   >([])
+  const [paises2, setPaises2] = useState<Pais[]>([])
 
   const [paisImportador, setPaisImportador] = useState<{
     pais_Id: number
@@ -674,6 +701,11 @@ function FormDeva({
     pais_Nombre: string
   } | null>(null)
   const [paisIntermediario, setPaisIntermediario] = useState<{
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null>(null)
+  const [paisEmbarque, setPaisEmbarque] = useState<{
     pais_Id: number
     pais_Codigo: string
     pais_Nombre: string
@@ -793,6 +825,13 @@ function FormDeva({
       .catch((err) => {
         console.log('Error al cargar los tipos de intermediarios: ' + err)
       })
+    getPaises()
+      .then((data) => {
+        setPaises2(data)
+      })
+      .catch((err) => {
+        console.log('Error al cargar los paises: ' + err)
+      })
     getCiudades()
       .then((data) => {
         setCiudades(data)
@@ -824,6 +863,34 @@ function FormDeva({
       .catch((err) => {
         console.log('Error al cargar las ciudades: ' + err)
       })
+    getIncoterms()
+      .then((data) => {
+        setIncoterms(data)
+      })
+      .catch((err) => {
+        console.log('Error al cargar los incoterms: ' + err)
+      })
+    getFormasDeEnvio()
+      .then((data) => {
+        setFormasDeEnvio(data)
+      })
+      .catch((err) => {
+        console.log('Error al cargar las formas de envío: ' + err)
+      })
+    getFormasDePago()
+      .then((data) => {
+        setFormasDePago(data)
+      })
+      .catch((err) => {
+        console.log('Error al cargar las formas de pago: ' + err)
+      })
+    getMonedas()
+      .then((data) => {
+        setMonedas(data)
+      })
+      .catch((err) => {
+        console.log('Error al cargar las monedas: ' + err)
+      })
   }, [])
 
   return (
@@ -837,11 +904,12 @@ function FormDeva({
       </div>
 
       <Tabs value={tab} onValueChange={onTabChange}>
-        <TabsList className='grid w-full grid-cols-2'>
+        <TabsList className='grid w-full grid-cols-5'>
           <TabsTrigger value='general'>Información General</TabsTrigger>
-          <TabsTrigger value='caracteristicas'>
-            Características de la Transacción
-          </TabsTrigger>
+          <TabsTrigger value='caracteristicas'>Características</TabsTrigger>
+          <TabsTrigger value='facturas'>Facturas</TabsTrigger>
+          <TabsTrigger value='condiciones'>Condiciones</TabsTrigger>
+          <TabsTrigger value='finalizar'>Finalizar</TabsTrigger>
         </TabsList>
         <TabsContent value='general'>
           <Card className='p-3'>
@@ -1940,6 +2008,10 @@ function FormDeva({
                       ? deva.proveedoresDeclaracionViewModel.pvde_Condicion_Otra
                       : ''
                   }
+                  disabled={
+                    deva.declaraciones_ValorViewModel.coco_Descripcion !==
+                    'Otro'
+                  }
                   onChange={(e) => {
                     const regex = /^[\w\s-]*$/
                     if (regex.test(e.target.value)) {
@@ -2338,12 +2410,21 @@ function FormDeva({
                 <Label>Otro Tipo Intermediario</Label>
                 <Input
                   ref={(input) => (inputGeneralRefs.current[32] = input)}
+                  disabled={
+                    tiposDeIntermediarios.find(
+                      (tite) =>
+                        tite.tite_Id ===
+                        deva.declaraciones_ValorViewModel.tite_Id
+                    )?.tite_Descripcion !== 'Otro'
+                  }
                   value={
                     deva.intermediarioViewModel.inte_Tipo_Otro
                       ? deva.intermediarioViewModel.inte_Tipo_Otro
                       : ''
                   }
                   onChange={(e) => {
+                    console.log()
+
                     const regex = /^[\w\s-]*$/
                     if (regex.test(e.target.value)) {
                       setDeva((deva) => {
@@ -2429,12 +2510,12 @@ function FormDeva({
                           : false
                       }
                     >
-                      {paises.find(
+                      {paises2.find(
                         (pais) =>
                           pais.pais_Id ===
                           deva.declaraciones_ValorViewModel.pais_EntregaId
                       )?.pais_Nombre
-                        ? paises.find(
+                        ? paises2.find(
                             (pais) =>
                               pais.pais_Id ===
                               deva.declaraciones_ValorViewModel.pais_EntregaId
@@ -2446,37 +2527,107 @@ function FormDeva({
                   <PopoverContent className='w-[200px] p-0'>
                     <Command>
                       <CommandInput placeholder='Buscar país...' />
-                      <CommandEmpty>No hay paises.</CommandEmpty>
-                      <CommandGroup>
-                        {paises.map((pais) => (
-                          <CommandItem
-                            key={pais.pais_Id}
-                            onSelect={() => {
-                              setDeva((deva) => {
-                                return {
-                                  ...deva,
-                                  declaraciones_ValorViewModel: {
-                                    ...deva.declaraciones_ValorViewModel,
-                                    pais_EntregaId: pais.pais_Id,
-                                  },
-                                }
-                              })
-                              setCbbPaisEntregaState(false)
-                            }}
-                          >
-                            <IconCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                deva.declaraciones_ValorViewModel
-                                  .pais_EntregaId === pais.pais_Id
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
-                              )}
-                            />
-                            {pais.pais_Codigo} | {pais.pais_Nombre}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      <CommandList>
+                        <CommandEmpty>No hay paises.</CommandEmpty>
+                        <CommandGroup>
+                          {paises2.map((pais) => (
+                            <CommandItem
+                              key={pais.pais_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      pais_EntregaId: pais.pais_Id,
+                                    },
+                                  }
+                                })
+                                setCbbPaisEntregaState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel
+                                    .pais_EntregaId === pais.pais_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {pais.pais_Codigo} | {pais.pais_Nombre}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <Label>15.1. Incoterm</Label>
+                <Popover
+                  open={cbbIncotermState}
+                  onOpenChange={setCbbIncotermState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[2] = input)
+                      }
+                      data-selected={
+                        deva?.declaraciones_ValorViewModel.inco_Id
+                          ? true
+                          : false
+                      }
+                    >
+                      {deva?.declaraciones_ValorViewModel.inco_Descripcion
+                        ? deva?.declaraciones_ValorViewModel.inco_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar incoterm...' />
+                      <CommandList>
+                        <CommandEmpty>No hay registros.</CommandEmpty>
+                        <CommandGroup>
+                          {incoterms.map((inco) => (
+                            <CommandItem
+                              key={inco.inco_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      inco_Id: inco.inco_Id,
+                                      inco_Descripcion: inco.inco_Descripcion,
+                                    },
+                                  }
+                                })
+                                setCbbIncotermState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel.inco_Id ===
+                                    inco.inco_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {inco.inco_Descripcion}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -2485,31 +2636,1302 @@ function FormDeva({
               <div className='flex flex-col gap-1'>
                 <Label>Versión</Label>
                 <Input
+                  ref={(input) => (inputCaracteristicasRefs.current[3] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inco_Version
                       ? deva.declaraciones_ValorViewModel.inco_Version
                       : ''
                   }
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const regex = /^[\w\s-]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inco_Version: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>17. Número de Contrato</Label>
+                <Input
+                  ref={(input) => (inputCaracteristicasRefs.current[4] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.deva_NumeroContrato
+                      ? deva.declaraciones_ValorViewModel.deva_NumeroContrato
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\s-]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            deva_NumeroContrato: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>17.1. Fecha de Contrato</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-[200px] justify-start text-left font-normal',
+                        !deva.declaraciones_ValorViewModel.deva_FechaContrato &&
+                          'text-muted-foreground'
+                      )}
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[5] = input)
+                      }
+                      data-selected={
+                        deva.declaraciones_ValorViewModel.deva_FechaContrato
+                          ? true
+                          : false
+                      }
+                    >
+                      <CalendarIcon className='mr-2 h-4 w-4' />
+                      {deva.declaraciones_ValorViewModel.deva_FechaContrato ? (
+                        <span>
+                          {
+                            deva.declaraciones_ValorViewModel.deva_FechaContrato.split(
+                              'T'
+                            )[0]
+                          }
+                        </span>
+                      ) : (
+                        // format(date, 'PPP')
+                        <span>Seleccione una fecha</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0'>
+                    <Calendar
+                      mode='single'
+                      selected={
+                        deva.declaraciones_ValorViewModel.deva_FechaContrato
+                          ? new Date(
+                              deva.declaraciones_ValorViewModel.deva_FechaContrato
+                            )
+                          : undefined
+                      }
+                      onSelect={(e) =>
+                        setDeva((deva) => {
+                          return {
+                            ...deva,
+                            declaraciones_ValorViewModel: {
+                              ...deva.declaraciones_ValorViewModel,
+                              deva_FechaContrato: e
+                                ? e.toISOString()
+                                : new Date().toISOString(),
+                            },
+                          }
+                        })
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>18. Forma de Envío</Label>
+                <Popover open={cbbFoenState} onOpenChange={setCbbFoenState}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[6] = input)
+                      }
+                      data-selected={
+                        deva?.declaraciones_ValorViewModel.foen_Id
+                          ? true
+                          : false
+                      }
+                    >
+                      {deva?.declaraciones_ValorViewModel.foen_Descripcion
+                        ? deva?.declaraciones_ValorViewModel.foen_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar forma de envío...' />
+                      <CommandEmpty>No hay registros.</CommandEmpty>
+                      <CommandGroup>
+                        {formasDeEnvio.map((foen) => (
+                          <CommandItem
+                            key={foen.foen_Id}
+                            onSelect={() => {
+                              setDeva((deva) => {
+                                return {
+                                  ...deva,
+                                  declaraciones_ValorViewModel: {
+                                    ...deva.declaraciones_ValorViewModel,
+                                    foen_Id: foen.foen_Id,
+                                    foen_Descripcion: foen.foen_Descripcion,
+                                  },
+                                }
+                              })
+                              setCbbFoenState(false)
+                            }}
+                          >
+                            <IconCheck
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                deva.declaraciones_ValorViewModel.foen_Id ===
+                                  foen.foen_Id
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {foen.foen_Descripcion}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Otra Forma de Envío</Label>
+                <Input
+                  ref={(input) => (inputCaracteristicasRefs.current[7] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
+                      ? deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
+                      : ''
+                  }
+                  disabled={
+                    deva.declaraciones_ValorViewModel.foen_Descripcion !==
+                    'Otro'
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\s-]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            deva_FormaEnvioOtra: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Pago Efectuado</Label>
+                <RadioGroup
+                  className='flex w-[200px]'
+                  value={
+                    deva.declaraciones_ValorViewModel.deva_PagoEfectuado
+                      ? 'Si'
+                      : 'No'
+                  }
+                  onValueChange={(val) =>
                     setDeva((deva) => {
                       return {
                         ...deva,
                         declaraciones_ValorViewModel: {
                           ...deva.declaraciones_ValorViewModel,
-                          inco_Version: e.target.value,
+                          deva_PagoEfectuado: val === 'Si',
                         },
                       }
                     })
                   }
+                >
+                  <div className='flex items-center space-x-2'>
+                    <RadioGroupItem value='Si' id='paefSi' />
+                    <Label htmlFor='paefSi'>Si</Label>
+                  </div>
+                  <div className='flex items-center space-x-2'>
+                    <RadioGroupItem value='No' id='paefNo' />
+                    <Label htmlFor='paefNo'>No</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>19. Forma de Pago</Label>
+                <Popover open={cbbFopaState} onOpenChange={setCbbFopaState}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[8] = input)
+                      }
+                      data-selected={
+                        deva?.declaraciones_ValorViewModel.fopa_Id
+                          ? true
+                          : false
+                      }
+                    >
+                      {formasDePago.find(
+                        (fopa) =>
+                          fopa.fopa_Id ===
+                          deva.declaraciones_ValorViewModel.fopa_Id
+                      )?.fopa_Descripcion
+                        ? formasDePago.find(
+                            (fopa) =>
+                              fopa.fopa_Id ===
+                              deva.declaraciones_ValorViewModel.fopa_Id
+                          )?.fopa_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar forma de pago...' />
+                      <CommandEmpty>No hay registros.</CommandEmpty>
+                      <CommandGroup>
+                        {formasDePago.map((fopa) => (
+                          <CommandItem
+                            key={fopa.fopa_Id}
+                            onSelect={() => {
+                              setDeva((deva) => {
+                                return {
+                                  ...deva,
+                                  declaraciones_ValorViewModel: {
+                                    ...deva.declaraciones_ValorViewModel,
+                                    fopa_Id: fopa.fopa_Id,
+                                  },
+                                }
+                              })
+                              setCbbFopaState(false)
+                            }}
+                          >
+                            <IconCheck
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                deva.declaraciones_ValorViewModel.fopa_Id ===
+                                  fopa.fopa_Id
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {fopa.fopa_Descripcion}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Otra Forma de Pago</Label>
+                <Input
+                  ref={(input) => (inputCaracteristicasRefs.current[9] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
+                      ? deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
+                      : ''
+                  }
+                  disabled={
+                    deva.declaraciones_ValorViewModel.fopa_Id
+                      ? formasDePago.find(
+                          (fopa) =>
+                            fopa.fopa_Id ===
+                            deva.declaraciones_ValorViewModel.fopa_Id
+                        )?.fopa_Descripcion !== 'Otro'
+                      : true
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\s-]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            deva_FormaPagoOtra: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
                 />
               </div>
+              <div className='flex flex-col gap-1'>
+                <Label>21. País de Embarque</Label>
+                <Popover
+                  open={cbbPaisEmbarqueState}
+                  onOpenChange={setCbbPaisEmbarqueState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[10] = input)
+                      }
+                      data-selected={
+                        paisEmbarque
+                          ? paisEmbarque.pais_Id
+                            ? true
+                            : false
+                          : false
+                      }
+                    >
+                      {paises2.find(
+                        (pais) => pais.pais_Id === paisEmbarque?.pais_Id
+                      )?.pais_Nombre
+                        ? paises2.find(
+                            (pais) => pais.pais_Id === paisEmbarque?.pais_Id
+                          )?.pais_Nombre
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar país...' />
+                      <CommandList>
+                        <CommandEmpty>No hay paises.</CommandEmpty>
+                        <CommandGroup>
+                          {paises2.map((pais) => (
+                            <CommandItem
+                              key={pais.pais_Id}
+                              onSelect={() => {
+                                setPaisEmbarque(pais)
+                                getEmbarques(pais.pais_Codigo)
+                                  .then((data) => {
+                                    setEmbarques(data)
+                                  })
+                                  .catch((err) => {
+                                    console.log(
+                                      'Error al cargar los embarques: ' + err
+                                    )
+                                  })
+                                setCbbPaisEmbarqueState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  paisEmbarque?.pais_Id === pais.pais_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {pais.pais_Codigo} | {pais.pais_Nombre}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>20. Lugar de Embarque</Label>
+                <Popover
+                  open={cbbEmbarqueState}
+                  onOpenChange={setCbbEmbarqueState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[11] = input)
+                      }
+                      data-selected={
+                        deva?.declaraciones_ValorViewModel.emba_Id
+                          ? true
+                          : false
+                      }
+                    >
+                      {embarques.find(
+                        (emba) =>
+                          emba.emba_Id ===
+                          deva?.declaraciones_ValorViewModel.emba_Id
+                      )?.emba_Descripcion
+                        ? embarques.find(
+                            (emba) =>
+                              emba.emba_Id ===
+                              deva?.declaraciones_ValorViewModel.emba_Id
+                          )?.emba_Codigo +
+                          ' | ' +
+                          embarques.find(
+                            (emba) =>
+                              emba.emba_Id ===
+                              deva?.declaraciones_ValorViewModel.emba_Id
+                          )?.emba_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar embarque...' />
+                      <CommandList>
+                        <CommandEmpty>No hay registros.</CommandEmpty>
+                        <CommandGroup>
+                          {embarques.map((emba) => (
+                            <CommandItem
+                              key={emba.emba_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      emba_Id: emba.emba_Id,
+                                    },
+                                  }
+                                })
+                                setCbbEmbarqueState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel.emba_Id ===
+                                    emba.emba_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {emba.emba_Codigo} | {emba.emba_Descripcion}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>País de Exportación</Label>
+                <Popover
+                  open={cbbPaisExportacionState}
+                  onOpenChange={setCbbPaisExportacionState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[12] = input)
+                      }
+                      data-selected={
+                        deva.declaraciones_ValorViewModel.pais_ExportacionId
+                          ? true
+                          : false
+                      }
+                    >
+                      {paises2.find(
+                        (pais) =>
+                          pais.pais_Id ===
+                          deva.declaraciones_ValorViewModel.pais_ExportacionId
+                      )?.pais_Nombre
+                        ? paises2.find(
+                            (pais) =>
+                              pais.pais_Id ===
+                              deva.declaraciones_ValorViewModel
+                                .pais_ExportacionId
+                          )?.pais_Nombre
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar país...' />
+                      <CommandList>
+                        <CommandEmpty>No hay paises.</CommandEmpty>
+                        <CommandGroup>
+                          {paises2.map((pais) => (
+                            <CommandItem
+                              key={pais.pais_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      pais_ExportacionId: pais.pais_Id,
+                                    },
+                                  }
+                                })
+                                setCbbPaisExportacionState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel
+                                    .pais_ExportacionId === pais.pais_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {pais.pais_Codigo} | {pais.pais_Nombre}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Fecha de Exportación</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-[200px] justify-start text-left font-normal',
+                        !deva.declaraciones_ValorViewModel
+                          .deva_FechaExportacion && 'text-muted-foreground'
+                      )}
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[13] = input)
+                      }
+                      data-selected={
+                        deva.declaraciones_ValorViewModel.deva_FechaExportacion
+                          ? true
+                          : false
+                      }
+                    >
+                      <CalendarIcon className='mr-2 h-4 w-4' />
+                      {deva.declaraciones_ValorViewModel
+                        .deva_FechaExportacion ? (
+                        <span>
+                          {
+                            deva.declaraciones_ValorViewModel.deva_FechaExportacion.split(
+                              'T'
+                            )[0]
+                          }
+                        </span>
+                      ) : (
+                        // format(date, 'PPP')
+                        <span>Seleccione una fecha</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0'>
+                    <Calendar
+                      mode='single'
+                      selected={
+                        deva.declaraciones_ValorViewModel.deva_FechaExportacion
+                          ? new Date(
+                              deva.declaraciones_ValorViewModel.deva_FechaExportacion
+                            )
+                          : undefined
+                      }
+                      onSelect={(e) =>
+                        setDeva((deva) => {
+                          return {
+                            ...deva,
+                            declaraciones_ValorViewModel: {
+                              ...deva.declaraciones_ValorViewModel,
+                              deva_FechaExportacion: e
+                                ? e.toISOString()
+                                : new Date().toISOString(),
+                            },
+                          }
+                        })
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>22. Moneda</Label>
+                <Popover open={cbbMonedaState} onOpenChange={setCbbMonedaState}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) =>
+                        (inputCaracteristicasRefs.current[14] = input)
+                      }
+                      data-selected={
+                        deva?.declaraciones_ValorViewModel.mone_Id
+                          ? true
+                          : false
+                      }
+                    >
+                      {monedas.find(
+                        (mone) =>
+                          mone.mone_Id ===
+                          deva?.declaraciones_ValorViewModel.mone_Id
+                      )?.mone_Descripcion
+                        ? monedas.find(
+                            (mone) =>
+                              mone.mone_Id ===
+                              deva?.declaraciones_ValorViewModel.mone_Id
+                          )?.mone_Codigo +
+                          ' | ' +
+                          monedas.find(
+                            (mone) =>
+                              mone.mone_Id ===
+                              deva?.declaraciones_ValorViewModel.mone_Id
+                          )?.mone_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar moneda...' />
+                      <CommandList>
+                        <CommandEmpty>No hay registros.</CommandEmpty>
+                        <CommandGroup>
+                          {monedas.map((mone) => (
+                            <CommandItem
+                              key={mone.mone_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      mone_Id: mone.mone_Id,
+                                    },
+                                  }
+                                })
+                                setCbbMonedaState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel.mone_Id ===
+                                    mone.mone_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {mone.mone_Codigo} | {mone.mone_Descripcion}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              {/* <div className='flex flex-col gap-1'>
+                <Label>23. Tipo de Cambio de Moneda Extranejera a Dólares USD</Label>
+                <Input
+                  ref={(input) => (inputCaracteristicasRefs.current[15] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.
+                      ? deva.declaraciones_ValorViewModel.impo_Fax
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\d.]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            impo_Fax: e.target.value,
+                          },
+                          declarantesImpo_ViewModel: {
+                            ...deva.declarantesImpo_ViewModel,
+                            decl_Fax: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div> */}
             </div>
 
-            <div className='flex justify-end gap-2'>
+            <div className='mr-4 flex justify-end gap-2'>
               <Button variant={'outline'} onClick={() => console.log('Tab1?')}>
                 Regresar
               </Button>
-              <Button>Continuar</Button>
+              <Button
+                onClick={() => {
+                  onTabChange('facturas')
+                }}
+              >
+                Continuar
+              </Button>
+            </div>
+          </Card>
+        </TabsContent>
+        <TabsContent value='facturas'>
+          <Card className='p-3'>
+            <Dialog open={dialogState} onOpenChange={setDialogState}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setDialogState(true)}>
+                <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
+                  Agregar Factura
+                </Button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-[425px]'>
+                <DialogHeader>
+                  <DialogTitle>Agregar Facturas</DialogTitle>
+                </DialogHeader>
+                <div className='flex py-4'>
+                  
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={() => setDialogState(false)}
+                    variant='outline'
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setDialogState(false)
+                    }}
+                  >
+                    Cancelar Deva
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>#</TableHead>
+                  <TableHead>CONDICIÓN</TableHead>
+                  <TableHead>VALOR ASIGNADO CONDICIÓN</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>24</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+            <div className='mr-4 flex justify-end gap-2'>
+              <Button variant={'outline'} onClick={() => console.log('Tab1?')}>
+                Regresar
+              </Button>
+              <Button
+                onClick={() => {
+                  onTabChange('condiciones')
+                }}
+              >
+                Continuar
+              </Button>
+            </div>
+          </Card>
+        </TabsContent>
+        <TabsContent value='condiciones'>
+          <Card className='p-3'>
+            <h6>II. Condiciones de la Transacción</h6>
+            <div className='overflow-x-auto'>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>#</TableHead>
+                    <TableHead>CONDICIÓN</TableHead>
+                    <TableHead>VALOR ASIGNADO CONDICIÓN</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>24</TableCell>
+                    <TableCell>
+                      Existen restricciones a la cesión o utilización de las
+                      mercancías por el comprador, distintas de las excepciones
+                      previstas en el artículo 1.1 a) del Acuerdo
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='24Si' />
+                          <Label htmlFor='24Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='24No' />
+                          <Label htmlFor='24No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>24.1</TableCell>
+                    <TableCell>
+                      Indicar en que consiste la o las restricciones
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        id='24.1Input'
+                        placeholder='- VALOR -'
+                        disabled={true}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>25</TableCell>
+                    <TableCell>
+                      Depende la venta o el precio de alguna condición o
+                      contraprestación, con relación a las mercancías a valorar
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='25Si' />
+                          <Label htmlFor='25Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='25No' />
+                          <Label htmlFor='25No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>25.1</TableCell>
+                    <TableCell>
+                      Indicar en que consiste la condición o contrapresentación,
+                      y si es cuantificable consignar el monto en la casilla
+                      Nro. 42.1
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        id='25.1Input'
+                        placeholder='- VALOR -'
+                        disabled={true}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>26</TableCell>
+                    <TableCell>
+                      Está la venta condicionada a revertir directa o
+                      indirectamente al vendedor parte alguna del producto de la
+                      reventa o de cualquier cesión o utilización posterior de
+                      las mercancías, por el comprador, en caso afirmativo,
+                      declara el monto de la reversión en la casilla Nro. 42
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='26Si' />
+                          <Label htmlFor='26Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='26No' />
+                          <Label htmlFor='26No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>27</TableCell>
+                    <TableCell>
+                      Existe vinculación entre el vendedor y el comprador
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='27Si' />
+                          <Label htmlFor='27Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='27No' />
+                          <Label htmlFor='27No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>27.1</TableCell>
+                    <TableCell>Indicar el tipo de vinculación</TableCell>
+                    <TableCell>
+                      <Input
+                        id='27.1Input'
+                        type='text'
+                        placeholder='- VALOR -'
+                        disabled={true}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>27.2</TableCell>
+                    <TableCell>
+                      Indicar si la vinculación ha influido en el precio
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='27.2Si' />
+                          <Label htmlFor='27.2Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='27.2No' />
+                          <Label htmlFor='27.2No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>28</TableCell>
+                    <TableCell>
+                      Existen pagos indirectos y/o descuentos retroactivos
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='28Si' />
+                          <Label htmlFor='28Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='28No' />
+                          <Label htmlFor='28No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>28.1</TableCell>
+                    <TableCell>
+                      Indicar en que concepto y el monto declarado en la casilla
+                      Nro. 40
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        id='28.1Input'
+                        placeholder='- VALOR -'
+                        disabled={true}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>29</TableCell>
+                    <TableCell>
+                      Existen cánones y derechos de licencia que el comprador
+                      tenga que pagar directa o indirectamente
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup className='flex w-[200px]' defaultValue='No'>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='Si' id='29Si' />
+                          <Label htmlFor='29Si'>Si</Label>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          <RadioGroupItem value='No' id='29No' />
+                          <Label htmlFor='29No'>No</Label>
+                        </div>
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>29.1</TableCell>
+                    <TableCell>
+                      Indicar su naturaleza y el monto declarado en la casilla
+                      Nro. 42.9
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        id='29.1Input'
+                        placeholder='- VALOR -'
+                        disabled={true}
+                      />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+            <h6>
+              III. Determinación del Valor en Aduana, en Pesos Centroamericanos
+            </h6>
+            <div className='overflow-x-auto'>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>#</TableHead>
+                    <TableHead>BASE DE CÁLCULO</TableHead>
+                    <TableHead>VALOR PESO C.A. (USD)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>39</TableCell>
+                    <TableCell>Precio según factura</TableCell>
+                    <TableCell>
+                      <Input value={'0'} />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>40</TableCell>
+                    <TableCell>
+                      Pagos indirectos y/o descuentos retroactivos
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' id='40Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>41</TableCell>
+                    <TableCell>
+                      Precio realmente pagado o por pagar por las mercancías
+                      importadas (39 + 40)
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' disabled id='41Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className='font-semibold'>
+                    <TableCell>42</TableCell>
+                    <TableCell colSpan={2}>
+                      ADICIONES AL PRECIO REALMENTE PAGADO O POR PAGAR POR LAS
+                      MERCANCÍAS IMPORTADAS
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.1</TableCell>
+                    <TableCell>
+                      Montro de la condición o contraprestación a que se refiere
+                      la casilla 25.1
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.1Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.2</TableCell>
+                    <TableCell>
+                      Monto de la reversión a la que se refiere la casilla 25
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.2Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.3</TableCell>
+                    <TableCell>
+                      Gastos por comisiones y correlajes, salvo los de
+                      comisiones de compra
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.3Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.4</TableCell>
+                    <TableCell>
+                      Gastos y costos de envases y embalajes
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.4Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.5</TableCell>
+                    <TableCell>
+                      Valor de los materiales consumidos en la producción de las
+                      mercancías importadas
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.6</TableCell>
+                    <TableCell>
+                      Valor de las herramientos, matrices, moldes, y elementos
+                      análogos utilizados para la producción de las mercancías
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.7</TableCell>
+                    <TableCell>
+                      Valor de los materiales consumidos en la producción de las
+                      mercancías importadas
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.8</TableCell>
+                    <TableCell>
+                      Valor de ingeniería, creación y perferccionamiento,
+                      trabajos artísticos, diseños y planos y croquis realizados
+                      fuera del país de importación y necesarios para la
+                      producción de mercancías importadas
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.9</TableCell>
+                    <TableCell>
+                      Valor de los cánones y derechos de licencia, a que se
+                      refiere la casilla 29.1
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.10</TableCell>
+                    <TableCell>
+                      Gastos de transporte de la mercadería importada hasta el
+                      puerto o lugar de importación
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.10Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.11</TableCell>
+                    <TableCell>
+                      Gastos de carga, descarga y manipulación ocasionadas por
+                      el transporte de las mercaderías importadas hasta el
+                      puerto o lugar de importación
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.11Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>42.12</TableCell>
+                    <TableCell>Costos del Seguro</TableCell>
+                    <TableCell>
+                      <Input value='0' id='42.12Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>43</TableCell>
+                    <TableCell>
+                      Total de ajustes al precio realmente pagado o por pagar
+                      (sumatoria de 42.1 a 42.12)
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' disabled value='0' id='43Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className='font-semibold'>
+                    <TableCell>44</TableCell>
+                    <TableCell colSpan={2}>
+                      DEDUCCIONES AL PRECIO REALMENTE PAGADO O POR PAGAR POR LAS
+                      MERCANCÍAS IMPORTADAS
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>44.1</TableCell>
+                    <TableCell>
+                      Gastos de construcción, armado, montaje, mantenimiento o
+                      asistencia técnica realizados después de la importación,
+                      en relación con las mercancías importadas
+                    </TableCell>
+                    <TableCell>
+                      <Input type='text' value='0' id='44.1Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>44.2</TableCell>
+                    <TableCell>
+                      Costos de transporte posterior al puerto o lugar de
+                      importación
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='44.2Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>44.3</TableCell>
+                    <TableCell>
+                      Derechos e impuestos aplicables en el país de importación
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='44.3Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>44.4</TableCell>
+                    <TableCell>Monto de intereses</TableCell>
+                    <TableCell>
+                      <Input value='0' id='44.4Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>44.5</TableCell>
+                    <TableCell>
+                      Otras deducciones legalmente aplicables
+                    </TableCell>
+                    <TableCell>
+                      <Input value='0' id='44.5Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>45</TableCell>
+                    <TableCell>
+                      Total deducciones al precio realmente pagado o por pagar
+                      por las mercancías importadas
+                    </TableCell>
+                    <TableCell>
+                      <Input placeholder='0' disabled id='45Input' />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>46</TableCell>
+                    <TableCell>VALOR EN ADUANA (41 + 43 - 45)</TableCell>
+                    <TableCell>
+                      <Input placeholder='0' disabled id='46Input' />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+            <div className='mr-6 flex justify-between gap-2'>
+              <small>
+                Cuando alguno/s de los ajustes de las casillas 42.1 a 42.12 se
+                declaren con base en resolución o disposición administrativa,
+                indicar el número y fecha de estas, así como el número de la
+                casilla/s a la que corresponde.
+              </small>
+              <div className='flex gap-2'>
+                <Button
+                  variant={'outline'}
+                  onClick={() => setMostrarForm(false)}
+                >
+                  Regresar
+                </Button>
+                <Button
+                  onClick={() => {
+                    onTabChange('finalizar')
+                  }}
+                >
+                  Continuar
+                </Button>
+              </div>
             </div>
           </Card>
         </TabsContent>

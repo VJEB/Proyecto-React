@@ -676,3 +676,392 @@ export const getTiposDeIntermediarios = async () => {
     return []
   }
 }
+
+interface Incoterm {
+  inco_Id: number
+  inco_Codigo: string
+  inco_Descripcion: string
+  usua_UsuarioCreacion: number
+  inco_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  inco_FechaModificacion: string | null
+  usuarioCreacionNombre: string
+  usuarioModificadorNombre: string | null
+  usua_UsuarioEliminacion: number | null
+  inco_FechaEliminacion: string | null
+  inco_Estado: boolean
+}
+
+export const getIncoterms = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Incoterm/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((inco: Incoterm) => {
+      return {
+        inco_Id: inco.inco_Id,
+        inco_Codigo: inco.inco_Codigo,
+        inco_Descripcion: inco.inco_Descripcion,
+        usua_UsuarioCreacion: inco.usua_UsuarioCreacion,
+        inco_FechaCreacion: inco.inco_FechaCreacion,
+        usua_UsuarioModificacion: inco.usua_UsuarioModificacion,
+        inco_FechaModificacion: inco.inco_FechaModificacion,
+        usuarioCreacionNombre: inco.usuarioCreacionNombre,
+        usuarioModificadorNombre: inco.usuarioModificadorNombre,
+        usua_UsuarioEliminacion: inco.usua_UsuarioEliminacion,
+        inco_FechaEliminacion: inco.inco_FechaEliminacion,
+        inco_Estado: inco.inco_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los incoterms:', error)
+    return []
+  }
+}
+
+interface FormaDeEnvio {
+  foen_Id: number
+  foen_Codigo: string
+  foen_Descripcion: string
+  usua_UsuarioCreacion: number
+  foen_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  foen_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  usuarioCreacionNombre: string
+  usuarioModificacionNombre: string | null
+  usuarioEliminacionNombre: string | null
+  foen_FechaEliminacion: string | null
+  foen_Estado: boolean
+}
+
+export const getFormasDeEnvio = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/FormasEnvio/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((foen: FormaDeEnvio) => {
+      return {
+        foen_Id: foen.foen_Id,
+        foen_Codigo: foen.foen_Codigo,
+        foen_Descripcion: foen.foen_Descripcion,
+        usua_UsuarioCreacion: foen.usua_UsuarioCreacion,
+        foen_FechaCreacion: foen.foen_FechaCreacion,
+        usua_UsuarioModificacion: foen.usua_UsuarioModificacion,
+        foen_FechaModificacion: foen.foen_FechaModificacion,
+        usua_UsuarioEliminacion: foen.usua_UsuarioEliminacion,
+        usuarioCreacionNombre: foen.usuarioCreacionNombre,
+        usuarioModificacionNombre: foen.usuarioModificacionNombre,
+        usuarioEliminacionNombre: foen.usuarioEliminacionNombre,
+        foen_FechaEliminacion: foen.foen_FechaEliminacion,
+        foen_Estado: foen.foen_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las formas de envío:', error)
+    return []
+  }
+}
+
+interface FormaDePago {
+  fopa_Id: number
+  fopa_Descripcion: string
+  usua_UsuarioCreacion: number
+  fopa_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  fopa_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  fopa_FechaEliminacion: string | null
+  fopa_Estado: boolean
+  usua_NombreCreacion: string
+  usua_NombreModificacion: string | null
+}
+
+export const getFormasDePago = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/FormasDePago/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((fopa: FormaDePago) => {
+      return {
+        fopa_Id: fopa.fopa_Id,
+        fopa_Descripcion: fopa.fopa_Descripcion,
+        usua_UsuarioCreacion: fopa.usua_UsuarioCreacion,
+        fopa_FechaCreacion: fopa.fopa_FechaCreacion,
+        usua_UsuarioModificacion: fopa.usua_UsuarioModificacion,
+        fopa_FechaModificacion: fopa.fopa_FechaModificacion,
+        usua_UsuarioEliminacion: fopa.usua_UsuarioEliminacion,
+        fopa_FechaEliminacion: fopa.fopa_FechaEliminacion,
+        fopa_Estado: fopa.fopa_Estado,
+        usua_NombreCreacion: fopa.usua_NombreCreacion,
+        usua_NombreModificacion: fopa.usua_NombreModificacion,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las formas de pago:', error)
+    return []
+  }
+}
+
+interface Moneda {
+  mone_Id: number
+  mone_Codigo: string
+  mone_Descripcion: string
+  mone_EsAduana: boolean
+  usua_UsuarioCreacion: number
+  usuarioModificacionNombre: string | null
+  mone_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioCreacionNombre: string
+  mone_FechaModificacion: string | null
+  mone_Estado: boolean
+}
+
+export const getMonedas = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Moneda/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((mone: Moneda) => {
+      return {
+        mone_Id: mone.mone_Id,
+        mone_Codigo: mone.mone_Codigo,
+        mone_Descripcion: mone.mone_Descripcion,
+        mone_EsAduana: mone.mone_EsAduana,
+        usua_UsuarioCreacion: mone.usua_UsuarioCreacion,
+        usuarioModificacionNombre: mone.usuarioModificacionNombre,
+        mone_FechaCreacion: mone.mone_FechaCreacion,
+        usua_UsuarioModificacion: mone.usua_UsuarioModificacion,
+        usuarioCreacionNombre: mone.usuarioCreacionNombre,
+        mone_FechaModificacion: mone.mone_FechaModificacion,
+        mone_Estado: mone.mone_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las monedas:', error)
+    return []
+  }
+}
+
+interface Pais {
+  pais_Id: number
+  pais_Codigo: string
+  pais_Nombre: string
+  pais_prefijo: string
+  pais_EsAduana: boolean
+  usua_UsuarioCreacion: number
+  usuarioCreacionNombre: string
+  pais_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioModificadorNombre: string | null
+  pais_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  pais_FechaEliminacion: string | null
+  pais_Estado: boolean
+  fechaInicio: string
+  fechaFin: string
+  detalles: string | null
+}
+
+export const getPaises = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Paises/Listar',
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((pais: Pais) => {
+      return {
+        pais_Id: pais.pais_Id,
+        pais_Codigo: pais.pais_Codigo,
+        pais_Nombre: pais.pais_Nombre,
+        pais_prefijo: pais.pais_prefijo,
+        pais_EsAduana: pais.pais_EsAduana,
+        usua_UsuarioCreacion: pais.usua_UsuarioCreacion,
+        usuarioCreacionNombre: pais.usuarioCreacionNombre,
+        pais_FechaCreacion: pais.pais_FechaCreacion,
+        usua_UsuarioModificacion: pais.usua_UsuarioModificacion,
+        usuarioModificadorNombre: pais.usuarioModificadorNombre,
+        pais_FechaModificacion: pais.pais_FechaModificacion,
+        usua_UsuarioEliminacion: pais.usua_UsuarioEliminacion,
+        pais_FechaEliminacion: pais.pais_FechaEliminacion,
+        pais_Estado: pais.pais_Estado,
+        fechaInicio: pais.fechaInicio,
+        fechaFin: pais.fechaFin,
+        detalles: pais.detalles,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los paises:', error)
+    return []
+  }
+}
+
+interface Embarque {
+  emba_Id: number
+  emba_Codigo: string
+  emba_Descripcion: string
+  usua_UsuarioCreacion: number
+  usuarioCreacionNombre: string
+  emba_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioModificacionNombre: string | null
+  emba_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  usuarioEliminacionNombre: string | null
+  emba_FechaEliminacion: string | null
+  emba_Estado: boolean
+}
+
+export const getEmbarques = async (pais_Codigo: string) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/LugaresEmbarque/Listar?codigo=${pais_Codigo}`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((emba: Embarque) => {
+      return {
+        emba_Id: emba.emba_Id,
+        emba_Codigo: emba.emba_Codigo,
+        emba_Descripcion: emba.emba_Descripcion,
+        usua_UsuarioCreacion: emba.usua_UsuarioCreacion,
+        usuarioCreacionNombre: emba.usuarioCreacionNombre,
+        emba_FechaCreacion: emba.emba_FechaCreacion,
+        usua_UsuarioModificacion: emba.usua_UsuarioModificacion,
+        usuarioModificacionNombre: emba.usuarioModificacionNombre,
+        emba_FechaModificacion: emba.emba_FechaEliminacion,
+        usua_UsuarioEliminacion: emba.usua_UsuarioEliminacion,
+        usuarioEliminacionNombre: emba.usuarioEliminacionNombre,
+        emba_FechaEliminacion: emba.emba_FechaEliminacion,
+        emba_Estado: emba.emba_Estado,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los embarques:', error)
+    return []
+  }
+}

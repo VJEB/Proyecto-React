@@ -404,7 +404,7 @@ const cocoSchema = z.object({
   usuarioNombreEliminacion: z.string().nullable(),
   coco_FechaEliminacion: z.string().nullable(),
   coco_Estado: z.boolean(),
-});
+})
 
 const tiinSchema = z.object({
   tite_Id: z.number(),
@@ -419,7 +419,102 @@ const tiinSchema = z.object({
   tite_Estado: z.boolean(),
   usarioCreacion: z.string(),
   usuarioModificacion: z.string().nullable(),
-});
+})
+
+const incoSchema = z.object({
+  inco_Id: z.number(),
+  inco_Codigo: z.string(),
+  inco_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  inco_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  inco_FechaModificacion: z.string().nullable(),
+  usuarioCreacionNombre: z.string(),
+  usuarioModificadorNombre: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  inco_FechaEliminacion: z.string().nullable(),
+  inco_Estado: z.boolean(),
+})
+
+const foenSchema = z.object({
+  foen_Id: z.number(),
+  foen_Codigo: z.string(),
+  foen_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  foen_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  foen_FechaModificacion: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  usuarioCreacionNombre: z.string(),
+  usuarioModificacionNombre: z.string().nullable(),
+  usuarioEliminacionNombre: z.string().nullable(),
+  foen_FechaEliminacion: z.string().nullable(),
+  foen_Estado: z.boolean(),
+})
+
+const fopaSchema = z.object({
+  fopa_Id: z.number(),
+  fopa_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  fopa_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  fopa_FechaModificacion: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  fopa_FechaEliminacion: z.string().nullable(),
+  fopa_Estado: z.boolean(),
+  usua_NombreCreacion: z.string(),
+  usua_NombreModificacion: z.string().nullable(),
+})
+
+const moneSchema = z.object({
+  mone_Id: z.number(),
+  mone_Codigo: z.string(),
+  mone_Descripcion: z.string(),
+  mone_EsAduana: z.boolean(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioModificacionNombre: z.string().nullable(),
+  mone_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioCreacionNombre: z.string(),
+  mone_FechaModificacion: z.string().nullable(),
+  mone_Estado: z.boolean(),
+})
+
+const embaSchema = z.object({
+  emba_Id: z.number(),
+  emba_Codigo: z.string(),
+  emba_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioCreacionNombre: z.string(),
+  emba_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioModificacionNombre: z.string().nullable(),
+  emba_FechaModificacion: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  usuarioEliminacionNombre: z.string().nullable(),
+  emba_FechaEliminacion: z.string().nullable(),
+  emba_Estado: z.boolean(),
+})
+
+const paisSchema = z.object({
+  pais_Id: z.number(),
+  pais_Codigo: z.string(),
+  pais_Nombre: z.string(),
+  pais_prefijo: z.string(),
+  pais_EsAduana: z.boolean(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioCreacionNombre: z.string(),
+  pais_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioModificadorNombre: z.string().nullable(),
+  pais_FechaModificacion: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  pais_FechaEliminacion: z.string().nullable(),
+  pais_Estado: z.boolean(),
+  fechaInicio: z.string(),
+  fechaFin: z.string(),
+  detalles: z.string().nullable(),
+})
 
 export type Deva = z.infer<typeof devaSchema>
 export type DevaCompuesta = z.infer<typeof devaCompuestaSchema>
@@ -428,3 +523,9 @@ export type Ciudad = z.infer<typeof ciudadSchema>
 export type NivelComercial = z.infer<typeof nicoSchema>
 export type CondicionComercial = z.infer<typeof cocoSchema>
 export type TipoDeIntermediario = z.infer<typeof tiinSchema>
+export type Incoterm = z.infer<typeof incoSchema>
+export type FormaDeEnvio = z.infer<typeof foenSchema>
+export type FormaDePago = z.infer<typeof fopaSchema>
+export type Moneda = z.infer<typeof moneSchema>
+export type Embarque = z.infer<typeof embaSchema>
+export type Pais = z.infer<typeof paisSchema>
