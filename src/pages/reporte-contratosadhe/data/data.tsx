@@ -1,5 +1,8 @@
 import axios from 'axios'
+import React, { useState }  from 'react';
+import PDFGenerator from '../components/pdf';  
 
+  
 interface enviarReporte {
     fechaInicio: string
     fechaFin: string
@@ -67,7 +70,7 @@ export const getReporte = async (enviar : enviarReporte) =>{
     try{
         const apiKey = import.meta.env.VITE_ApiKey
         if(!apiKey){
-            console.error('API key is undefined.')
+            console.error('API key es indefinida.')
             return
         }
 
@@ -82,75 +85,28 @@ export const getReporte = async (enviar : enviarReporte) =>{
         )
 
         const data = await response.data
-        console.log(data)
-        if(enviar.contrato == "CI"){
-            return data.data.map((comeriante: ComercianteIndividual)=>{
-                return{
-                    coin_Id: comeriante.coin_Id,
-                    pers_Nombre: comeriante.pers_Nombre,
-                    pers_FormaRepresentacion: comeriante.pers_FormaRepresentacion,
-                    ciud_Nombre: comeriante.ciud_Nombre,
-                    colo_Nombre: comeriante.colo_Nombre,
-                    alde_Nombre: comeriante.alde_Nombre,
-                    coin_TelefonoCelular: comeriante.coin_TelefonoCelular,
-                    coin_TelefonoFijo: comeriante.coin_TelefonoFijo,
-                    coin_CorreoElectronico: comeriante.coin_CorreoElectronico,
-                    coin_CorreoElectronicoAlternativo: comeriante.coin_CorreoElectronicoAlternativo,
-                    coin_FechaCreacion: comeriante.coin_FechaCreacion
-                }
-            })
-        }
-        else if(enviar.contrato == "PJ"){
-            return data.data.map((personajuridica: PersonaJuridica)=>{
-                return{
-                    peju_Id: personajuridica.peju_Id,
-                    pers_Nombre: personajuridica.pers_Nombre,
-                    peju_PuntoReferencia: personajuridica.peju_PuntoReferencia,
-                    peju_NumeroLocalRepresentante: personajuridica.peju_NumeroLocalRepresentante,
-                    peju_PuntoReferenciaRepresentante: personajuridica.peju_PuntoReferencia,
-                    peju_TelefonoEmpresa: personajuridica.peju_TelefonoEmpresa,
-                    peju_TelefonoFijoRepresentanteLegal: personajuridica.peju_TelefonoFijoRepresentanteLegal,
-                    peju_TelefonoRepresentanteLegal: personajuridica.peju_TelefonoRepresentanteLegal,
-                    peju_CorreoElectronico: personajuridica.peju_CorreoElectronico,
-                    peju_CorreoElectronicoAlternativo: personajuridica.peju_CorreoElectronicoAlternativo,
-                    ciud_Nombre: personajuridica.ciud_Nombre,
-                    colo_Nombre: personajuridica.colo_Nombre,
-                    alde_Nombre: personajuridica.alde_Nombre,
-                    peju_CiudadRepresentante: personajuridica.peju_CiudadRepresentante,
-                    ColoniaRepresentante: personajuridica.ColoniaRepresentante,
-                    peju_AldeaRepresentante: personajuridica.peju_AldeaRepresentante,
-                    peju_NumeroLocalApart: personajuridica.peju_NumeroLocalApart,
-                    peju_FechaCreacion: personajuridica.peju_FechaCreacion
-                }
-            })
-        }
-        else{
-            return data.data.map((personanatural: PersonaNatural)=>{
-                return{
-                    pena_Id: personanatural.pena_Id,
-                    pers_Nombre: personanatural.pers_Nombre,
-                    pena_DireccionExacta: personanatural.pena_DireccionExacta,
-                    ciud_Nombre: personanatural.ciud_Nombre,
-                    pena_TelefonoFijo: personanatural.pena_TelefonoFijo,
-                    pena_TelefonoCelular : personanatural.pena_TelefonoCelular,
-                    pena_CorreoElectronico: personanatural.pena_CorreoElectronico,
-                    pena_CorreoAlternativo: personanatural.pena_CorreoAlternativo,
-                    pena_RTN: personanatural.pena_RTN,
-                    pena_ArchivoRTN: personanatural.pena_ArchivoRTN,
-                    pena_DNI: personanatural.pena_DNI,
-                    pena_ArchivoDNI: personanatural.pena_ArchivoDNI,
-                    pena_NumeroRecibo: personanatural.pena_NumeroRecibo,
-                    pena_ArchivoNumeroRecibo: personanatural.pena_ArchivoNumeroRecibo,
-                    pena_NombreArchDNI: personanatural.pena_ArchivoDNI,
-                    pena_NombreArchRTN: personanatural.pena_NombreArchRTN,
-                    pena_NombreArchRecibo: personanatural.pena_NombreArchRecibo,
-                    pena_FechaCreacion: personanatural.pena_FechaCreacion
-                }
-            })
-        }
+        console.log (data)
+        let  resultado;
+        switch (enviar.contrato) {
+            case 'CI':
+                resultado = data.data as ComercianteIndividual[];
+                break;
+              case 'PJ':
+                resultado = data.data as PersonaJuridica[];
+                break;
+              case 'PN':
+                resultado = data.data as PersonaNatural[];
+                break;
+              default:
+                resultado = [];
+                break;
+          }
+        console.log('Mapped resultado:', JSON.stringify(resultado, null, 2));
+        return resultado
 
     }
     catch(err){
-        return []
+    console.error('Error in cargar reporte:', err)
+    return []
     }
 }
