@@ -17,12 +17,28 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import { CalendarIcon } from '@radix-ui/react-icons'
-  import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "@/components/ui/calendar"
+  
+import { cn } from "@/lib/utils"
+ 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import {
     Select,
     SelectContent,
@@ -44,11 +60,27 @@ export default function PagReportes({
 
 
     const clickea = async () =>{
-      if((!reporte.fechaInicio)||(!reporte.fechaFin)||(!reporte.contrato)){
+      if((!reporte.fechaInicio)){
         toast({
           title: "Error: ",
           variant: "destructive",
-          description: "Error Al ingresar Aduana",
+          description: "La fecha inicio debe estar llena",
+        })
+        return;
+      }
+      if((!reporte.fechaFin)){
+        toast({
+          title: "Error: ",
+          variant: "destructive",
+          description: "La fecha fin debe estar llena",
+        })
+        return;
+      }
+      if((!reporte.contrato)){
+        toast({
+          title: "Error: ",
+          variant: "destructive",
+          description: "El contrato debe estar seleccionado",
         })
         return;
       }
@@ -114,21 +146,18 @@ export default function PagReportes({
               />
 
             </div>
-            
-            {/* <div className='flex flex-col gap-1'>
-                <Label>Fecha de inicio</Label>
+{/*             
+            <div className='flex flex-col gap-1'>
+                <Label>Fecha de fin</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant={'outline'}
                       className={cn(
                         'w-[200px] justify-start text-left font-normal',
-                        !reporte.declaraciones_ValorViewModel.deva_FechaContrato &&
+                        !reporte.fechaFin &&
                           'text-muted-foreground'
                       )}
-                      ref={(input) =>
-                        (inputCaracteristicasRefs.current[5] = input)
-                      }
                       data-selected={
                         reporte.fechaFin
                           ? true
@@ -136,18 +165,7 @@ export default function PagReportes({
                       }
                     >
                       <CalendarIcon className='mr-2 h-4 w-4' />
-                      {deva.declaraciones_ValorViewModel.deva_FechaContrato ? (
-                        <span>
-                          {
-                            deva.declaraciones_ValorViewModel.deva_FechaContrato.split(
-                              'T'
-                            )[0]
-                          }
-                        </span>
-                      ) : (
-                        // format(date, 'PPP')
-                        <span>Seleccione una fecha</span>
-                      )}
+                      
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className='w-auto p-0'>
@@ -161,12 +179,12 @@ export default function PagReportes({
                           : undefined
                       }
                       onSelect={(e) =>
-                        setDeva((reporte) => {
+                        setReporte((reporte) => {
                           return {
                             ...reporte,
                             declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              deva_FechaContrato: e
+                              ...reporte,
+                              fechaFin : e
                                 ? e.toISOString()
                                 : new Date().toISOString(),
                             },
@@ -178,8 +196,40 @@ export default function PagReportes({
                   </PopoverContent>
                 </Popover>
               </div> */}
-            <div className='flex flex-col space-y-1.5'>
-                    <Label htmlFor='framework'>Pais</Label>
+
+    <div className='grid grid-cols-2 gap-4 py-4'>
+              <div className="">
+              <label>Tipo de Contrato</label>
+                <RadioGroup
+                  onValueChange={(value)=>{
+                    setReporte(reporte => {
+                    return {
+                      ...reporte,
+                      contrato: value
+                    }
+                  }
+                )
+              }
+              }
+                  className='col-span-3'  
+                >
+                    <label>
+                      <RadioGroupItem value="PJ" />
+                      _Persona Juridica
+                    </label>
+                    <Label>
+                      <RadioGroupItem value="PN" />
+                      _Persona Natural
+                    </Label>
+                    <Label >
+                    <RadioGroupItem value="CI" />
+                      _Comerciante Individual
+                      </Label>
+                </RadioGroup>
+              </div>
+            </div>
+            {/* <div className='flex flex-col space-y-1.5'>
+                    <Label htmlFor='framework'>Contrato</Label>
 
                     <Select
                      onValueChange={(value)=>{
@@ -210,7 +260,7 @@ export default function PagReportes({
                           </SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
           </div>
         </form>
         </CardContent>
