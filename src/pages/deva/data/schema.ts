@@ -518,6 +518,7 @@ const paisSchema = z.object({
 
 const itemSchema = z.object({
   item_Id: z.number(),
+  item_Numero: z.number(),
   fact_Id: z.number(),
   item_Cantidad: z.number(),
   item_Cantidad_Bultos: z.number(),
