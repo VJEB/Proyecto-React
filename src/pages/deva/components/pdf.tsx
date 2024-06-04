@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     
   },
   linea: {
-    paddingTop: 5,
+    paddingTop: 8,
     paddingRight: -10,
     fontSize: 12,
   },
@@ -409,11 +409,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     <Text style={styles.linea}>Descripción de Incoterms : {item.inco_Descripcion}</Text>
                     <Text style={styles.linea}>Versión de Incoterms : {item.inco_Version}</Text>
                     <Text style={styles.linea}>Número de Contrato : {item.deva_NumeroContrato}</Text>
+                    </text>
+                        <text style={styles.tableCell}>
                     <Text style={styles.linea}>Fecha de Contrato : {item.deva_FechaContrato}</Text>
                     <Text style={styles.linea}>Forma de Envío : {item.foen_Descripcion}</Text>
                     <Text style={styles.linea}>Forma de Pago : {item.fopa_Descripcion}</Text>
-                    </text>
-                        <text style={styles.tableCell}>
+                    
                     <Text style={styles.linea}>Restricciones de Utilización : {item.codi_Restricciones_Utilizacion}</Text>
                     <Text style={styles.linea}>Restricciones de Utilización Indicadas: {item.codi_Indicar_Restricciones_Utilizacion ? 'Si' : 'No'}</Text>
                     <Text style={styles.linea}>Depende Precio Condición : {item.codi_Depende_Precio_Condicion ? 'Si' : 'No'}</Text>
