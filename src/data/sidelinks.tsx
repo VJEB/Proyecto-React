@@ -51,13 +51,13 @@ export const sidelinks: SideLink[] = [
   },
   {
     title: 'Procesos',
-    label: '3',
+    label: '0',
     href: '/procesos',
     icon: <IconTimelineEvent size={18} />,
   },
   {
-    title: 'Tasks',
-    label: '3',
+    title: 'Reporte',
+    label: '0',
     href: '/tasks',
     icon: <IconChecklist size={18} />,
   },

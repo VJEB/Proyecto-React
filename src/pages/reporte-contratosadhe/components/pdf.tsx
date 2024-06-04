@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
+import backgroundImage from './fondo.jpg'; // Asegúrate de que esta ruta sea correcta
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     padding: 10,
+    position: 'relative', // Ensure the positioning context for the background image
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: -20,
+    left: -20,
+    width: '120%',
+    height: '130%',
+    zIndex: -1, // Send the image to the background
   },
   section: {
     margin: 10,
     padding: 10,
     flexGrow: 1,
     display: 'flex',
-    
   },
   table: {
     display: 'flex',
@@ -24,6 +33,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    backgroundColor: '#fdfdfd',
   },
   tableCell: {
     fontSize: '12px',
@@ -45,9 +55,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#a3d1fe',
     padding: 5,
     fontWeight: 'bold',
+    
   },
   pagination: {
     position: 'absolute',
@@ -60,92 +71,80 @@ const styles = StyleSheet.create({
   },
 });
 
-
 interface PersonaNatural {
-  pena_Id: number
-  pers_Nombre: string
-  pena_DireccionExacta: string
-  ciud_Nombre: string
-  pena_TelefonoFijo: string
-  pena_TelefonoCelular : string
-  pena_CorreoElectronico: string 
-  pena_CorreoAlternativo: string
-  pena_RTN: string
-  pena_ArchivoRTN: string
-  pena_DNI: string
-  pena_ArchivoDNI: string
-  pena_NumeroRecibo: string
-  pena_ArchivoNumeroRecibo: string
-  pena_NombreArchDNI: string
-  pena_NombreArchRTN: string
-  pena_NombreArchRecibo: string
-  pena_FechaCreacion: string
-
-  peju_Id: number
-  peju_PuntoReferencia: string
-  peju_NumeroLocalRepresentante: string
-  peju_PuntoReferenciaRepresentante: string
-  peju_TelefonoEmpresa: string
-  peju_TelefonoFijoRepresentanteLegal: string
-  peju_TelefonoRepresentanteLegal: string
-  peju_CorreoElectronico: string
-  peju_CorreoElectronicoAlternativo: string
-  colo_Nombre: string
-  alde_Nombre: string
-  ciudadRepresentante: string 
-  coloniaRepresentante: string
-  aldeaRepresemtante: string 
-  peju_NumeroLocalApart: string
-  peju_FechaCreacion: string
-  
-  coin_Id: number
-    pers_RTN: string
-    pers_FormaRepresentacion: string
-    coin_TelefonoCelular: string
-    coin_TelefonoFijo: string 
-    coin_CorreoElectronico: string
-    coin_CorreoElectronicoAlternativo: string
-    coin_FechaCreacion: string
+  pena_Id: number;
+  pers_Nombre: string;
+  pena_DireccionExacta: string;
+  ciud_Nombre: string;
+  pena_TelefonoFijo: string;
+  pena_TelefonoCelular: string;
+  pena_CorreoElectronico: string;
+  pena_CorreoAlternativo: string;
+  pena_RTN: string;
+  pena_ArchivoRTN: string;
+  pena_DNI: string;
+  pena_ArchivoDNI: string;
+  pena_NumeroRecibo: string;
+  pena_ArchivoNumeroRecibo: string;
+  pena_NombreArchDNI: string;
+  pena_NombreArchRTN: string;
+  pena_NombreArchRecibo: string;
+  pena_FechaCreacion: string;
+  peju_Id: number;
+  peju_PuntoReferencia: string;
+  peju_NumeroLocalRepresentante: string;
+  peju_PuntoReferenciaRepresentante: string;
+  peju_TelefonoEmpresa: string;
+  peju_TelefonoFijoRepresentanteLegal: string;
+  peju_TelefonoRepresentanteLegal: string;
+  peju_CorreoElectronico: string;
+  peju_CorreoElectronicoAlternativo: string;
+  colo_Nombre: string;
+  alde_Nombre: string;
+  ciudadRepresentante: string;
+  coloniaRepresentante: string;
+  aldeaRepresemtante: string;
+  peju_NumeroLocalApart: string;
+  peju_FechaCreacion: string;
+  coin_Id: number;
+  pers_RTN: string;
+  pers_FormaRepresentacion: string;
+  coin_TelefonoCelular: string;
+  coin_TelefonoFijo: string;
+  coin_CorreoElectronico: string;
+  coin_CorreoElectronicoAlternativo: string;
+  coin_FechaCreacion: string;
 }
 
-interface  PDFGeneratorProps {
+interface PDFGeneratorProps {
   data: PersonaNatural[];
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = [] }) => {
   const [showPdf, setShowPdf] = useState(false);
-  const pageSize = 26; 
+  const pageSize = 20;
   const totalPages = Math.ceil(data.length / pageSize);
   const hasPenaId = data.some((item) => 'pena_Id' in item);
   const hasCoinId = data.some((item) => 'coin_Id' in item);
   const hasPejuId = data.some((item) => 'peju_Id' in item);
-
 
   let headers = [];
   let rowFields = [];
   let titulo: string;
 
   if (hasPenaId) {
-    headers = ['DNI', 'Nombre',  'Dirección'];
-    
+    headers = ['DNI', 'Nombre', 'Dirección'];
     rowFields = ['pena_DNI', 'pers_Nombre', 'pena_DireccionExacta'];
-    titulo = "     Persona Natural"
+    titulo = '------Persona Natural------';
   } else if (hasPejuId) {
-    headers = ['RTN','Nombre', 'Dirección'];
-    
-    rowFields = ['pers_RTN','pers_Nombre', 'ciud_Nombre'];
-    titulo = "     Persona Juridica"
-
+    headers = ['RTN', 'Nombre', 'Dirección'];
+    rowFields = ['pers_RTN', 'pers_Nombre', 'ciud_Nombre'];
+    titulo = "-----Persona Juridica-----";
   } else if (hasCoinId) {
-    
-    headers = ['RTN','Nombre', 'Dirección'];
-    
-    rowFields = ['pers_RTN','pers_Nombre', 'ciud_Nombre'];
-   
-    titulo = "Comerciante Individual"
+    headers = ['RTN', 'Nombre', 'Dirección'];
+    rowFields = ['pers_RTN', 'pers_Nombre', 'ciud_Nombre'];
+    titulo = '-Comerciante Individual-';
   }
-
-  console.log("llega?:",JSON.stringify(data, null, 2))
 
   useEffect(() => {
     if (data.length > 0) {
@@ -153,35 +152,37 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
     }
   }, [data]);
 
-   
-
-
-
   const generatePDF = () => (
     <PDFViewer width="100%" height="500px">
       <Document>
         {Array.from({ length: totalPages }).map((_, index) => (
           <Page key={index} size="A4" wrap={true} style={styles.page}>
-            
             <View style={styles.section}>
-              <Text style={{ fontSize: 18, marginHorizontal: '33%', marginBottom: 5}}>Contratos de Adhesión</Text>
-              <Text style={{ fontSize: 18,marginHorizontal: '32%'}}> {titulo}</Text>
+              {/* Fondo de página */}
+              <Image
+                style={styles.backgroundImage}
+                src={backgroundImage} // Usar la imagen importada
+              />
+              <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 5 }}>Contratos de Adhesión</Text>
+              <Text style={{ fontSize: 18, marginHorizontal: '31%' , marginBottom: 35 }}>{titulo}</Text>
 
-              <View style={styles.table} >
-               <View style={styles.tableRow} >
-                {headers.map((header, idx) => (
-                    <Text key={idx} style={styles.tableHeader}>{header}</Text>
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  {headers.map((header, idx) => (
+                    <Text key={idx} style={styles.tableHeader}>
+                    <Text style={{ fontWeight: 'bold' }}>{header}</Text>
+                  </Text>
                   ))}
-                </View> 
+                </View>
                 {data
                   .slice(index * pageSize, (index + 1) * pageSize)
                   .map((item, i) => (
-                    <View  style={styles.tableRow}  key={i}>
-                      {
-                      rowFields.map((field, idx)  => (
-                        <Text key={idx} style={styles.tableCell}>{item[field]} </Text>
+                    <View style={styles.tableRow} key={i}>
+                      {rowFields.map((field, idx) => (
+                        <Text key={idx} style={styles.tableCell}>
+                          {item[field]}
+                        </Text>
                       ))}
-
                     </View>
                   ))}
               </View>
@@ -195,17 +196,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ data = []}) => {
     </PDFViewer>
   );
 
-
   return (
     <div>
       {showPdf && generatePDF()}
       {showPdf && (
-        <div style={{ textAlign: 'center', marginTop: '10px' }}>
-          
-        </div>
+        <div style={{ textAlign: 'center', marginTop: '10px' }}></div>
       )}
     </div>
   );
+};
 
-}
 export default PDFGenerator;

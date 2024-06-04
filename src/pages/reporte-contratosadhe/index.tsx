@@ -57,7 +57,27 @@ export default function PagReportes({
       })
     
       const [resultado, setResultado] = useState<any>(null); 
+      
+    const [date, setDate] = useState({
+      from: undefined,
+      to: undefined
+    });
 
+    const handleRangeSelect = (range) => {
+      // Asegurarse de que range está definido y tiene la estructura correcta
+      if (range && range.from) {
+        if (range.to && range.from.getTime() === range.to.getTime()) {
+          range = { from: range.from, to: undefined };
+        }
+        setDate(range);
+        setReporte((prevReporte) => ({
+          ...prevReporte,
+          fechaInicio: range.from ? range.from.toISOString() : "",
+          fechaFin: range.to ? range.to.toISOString() : ""
+        }));
+      }
+    };
+      
 
     const clickea = async () =>{
       if((!reporte.fechaInicio)){
@@ -85,10 +105,18 @@ export default function PagReportes({
         return;
       }
       var aja = await getReporte(reporte);
-
+      
       setResultado(aja);
+      const hasCompaId = aja.some((item) => 'ciud_Nombre' in item);
 
-      console.log("que pedo?:",JSON.stringify(aja, null, 2));
+      if(!hasCompaId){
+        toast({
+          title: "Error: ",
+          variant: "destructive",
+          description: "No hay contratos en ese rango de fechas",
+        })
+        return;
+      }
      
     }
   return (
@@ -108,89 +136,50 @@ export default function PagReportes({
          
       <Card>
       <CardHeader>
-        <CardTitle>Mostrar reporte</CardTitle>
+        <CardTitle>Generar reporte</CardTitle>
       </CardHeader>
       <CardContent>
       <form>
       <div className='grid grid-cols-2 gap-4 py-4'>
-                  <div className='flex flex-col space-y-1.5'>
-              <Label htmlFor="name">fecha inicio</Label>
-              <Input type='calendary' id="name" placeholder="fecha inicio" className='col-span-3'
-              onChange={
-                (e)=>{
-                    setReporte(reporte => {
-                    return {
-                      ...reporte,
-                      fechaInicio: e.target.value,
-                    }
-                  }
-                )
-              }
-              }
-              />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">fecha fin</Label>
-              <Input id="name" placeholder="fecha fin" className='col-span-3'
-              onChange={
-                (e)=>{
-                    setReporte(reporte => {
-                    return {
-                      ...reporte,
-                      fechaFin: e.target.value,
-                    }
-                  }
-                )
-              }
-              }
-              />
-
-            </div>
+                  
              
             <div className='flex flex-col gap-1'>
-                <Label>Fecha de fin</Label>
+                <Label>Rango de fechas</Label>
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={'outline'}
-                      className={cn(
-                        'w-[200px] justify-start text-left font-normal',
-                        !reporte.fechaFin &&
-                          'text-muted-foreground'
-                      )}
-                      data-selected={
-                        reporte.fechaFin
-                          ? true
-                          : false
-                      }
-                    >
-                      <CalendarIcon className='mr-2 h-4 w-4' />
-                      
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className='w-auto p-0'>
-                    <Calendar
-                      mode='single'
-                      selected={
-                        reporte.fechaFin
-                          ? new Date(
-                              reporte.fechaFin
-                            )
-                          : undefined
-                      }
-                      onSelect={(e) =>
-                        setReporte((reporte) => {
-                          return {
-                            ...reporte,
-                            fechaFin : e
-                            
-                          }
-                        })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            type="button" // Asegura que el botón no actúe como submit
+            variant={"outline"}
+            className={`w-[300px] justify-start text-left font-normal ${
+              !date.from && !date.to ? "text-muted-foreground" : ""
+            }`}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Pick a date</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date.from}
+            selected={date}
+            onSelect={handleRangeSelect}
+            numberOfMonths={2}
+          />
+        </PopoverContent>
+      </Popover>
               </div> 
 
     <div className='grid grid-cols-1 gap-4 py-4'>
