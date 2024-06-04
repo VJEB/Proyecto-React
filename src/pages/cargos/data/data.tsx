@@ -94,7 +94,7 @@ interface Empleado {
   escv_Nombre: string
   empl_NombreCompleto: string
   empl_Sexo: string
-  empl_FechaNacimiento: string
+  empl_FechaNacimiento: string // Date in ISO format
   empl_Telefono: string
   empl_DireccionExacta: string
   pvin_Id: number
@@ -162,11 +162,12 @@ export const cargarEmpleados = async () => {
         pais_Nombre: empleado.pais_Nombre,
         empl_CorreoElectronico: empleado.empl_CorreoElectronico,
         carg_Id: empleado.carg_Id,
+        // status: 'in progress',
+        // label: 'documentation',
+        // priority: 'medium',
       }
     })
   } catch (error) {
-    console.error(`Error al cargar empleados: ${error}`);
-    
     return []
   }
 }

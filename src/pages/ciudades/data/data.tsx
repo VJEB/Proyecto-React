@@ -9,7 +9,7 @@ import {
   StopwatchIcon,
 } from '@radix-ui/react-icons'
 
-import axios from 'axios'
+import axios from 'axios';
 
 export const labels = [
   {
@@ -71,48 +71,10 @@ export const priorities = [
     icon: ArrowUpIcon,
   },
 ]
-
-interface Aduana {
-  adua_Id: number
-  adua_Codigo: string
-  adua_Nombre: string
-  adua_Direccion_Exacta: string
-  pvin_Nombre: string | null
-  pvin_Id: number | null
-  ciud_Id: number | null
-  ciud_Nombre: string | null
-  usua_UsuarioCreacion: number
-  adua_FechaCreacion: string
-  usua_UsuarioModificacion: number | null
-  adua_FechaModificacion: string | null
-  usua_UsuarioEliminacion: number | null
-  adua_FechaEliminacion: string | null
-  adua_Estado: boolean
-  usarioCreacion: string | null
-  usuarioModificacion: string | null
-}
-
-interface Aduanas {
-  adua_Id: number
-  adua_Codigo: string
-  adua_Nombre: string
-  adua_Direccion_Exacta: string
-  pvin_Id: string | null
-  ciud_Id: string | null
-  usua_UsuarioCreacion: number
-  adua_FechaCreacion: string
-  usarioCreacion: string,
-  usuarioModificacion: string | null,
-  usua_UsuarioModificacion: number | null
-  adua_FechaModificacion: string | null
-  usua_UsuarioEliminacion: number | null
-  adua_FechaEliminacion: string | null
-}
-
 interface Ciudad {
   ciud_Id: string | null
   ciud_Nombre: string | null
-  pvin_Id: number | null
+  pvin_Id: string | null
   pvin_Nombre: string | null
   pvin_Codigo: string | null
   pais_Codigo: string | null
@@ -130,22 +92,26 @@ interface Ciudad {
   ciud_Estado: boolean | null
 }
 
-interface Ciudadddl {
-  ciud_Id: number | null
-  ciud_Nombre: string | null
-}
-
-interface Pais {
-  pais_Id: number
-  pais_Nombre: string
-}
-
-interface Provincia {
-  pvin_Id: number
+interface Aldea {
+  alde_Id: string
+  alde_Nombre: string
+  ciud_Id: string
+  ciud_Nombre: string
+  pvin_Id: string
+  pvin_Codigo: string
   pvin_Nombre: string
+  usua_UsuarioCreacion: number
+  usuarioCreacionNombre: string
+  alde_FechaCreacion: string
+  usua_UsuarioModificacion: number | null
+  usuarioModificacionNombre: string | null
+  alde_FechaModificacion: string | null
+  usua_UsuarioEliminacion: number | null
+  alde_FechaEliminacion: string | null
+  alde_Estado: boolean
 }
 
-export const getAduana = async () => {
+export const getAldeas = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -155,7 +121,7 @@ export const getAduana = async () => {
     }
 
     const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Aduanas/Listar',
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Aldea/Listar',
       {
         headers: {
           XApiKey: apiKey,
@@ -164,125 +130,16 @@ export const getAduana = async () => {
       }
     )
 
-    const data = await response.data
-    
-
-    return data.data.map((aduana: Aduana) => {
-      return {
-        adua_Id: aduana.adua_Id,
-        adua_Nombre: aduana.adua_Nombre,
-        adua_Codigo: aduana.adua_Codigo,
-        adua_Direccion_Exacta: aduana.adua_Direccion_Exacta,
-        ciud_Id: aduana.ciud_Id,
-        ciud_Nombre: aduana.ciud_Nombre,
-        pvin_Id: aduana.pvin_Id,
-        pvin_Nombre: aduana.pvin_Nombre,
-        usarioCreacion: aduana.usarioCreacion,
-        adua_FechaCreacion: aduana.adua_FechaCreacion,
-        usuarioModificacion: aduana.usuarioModificacion,
-        adua_FechaModificacion: aduana.adua_FechaModificacion,
-        // status: 'in progress',
-        // label: 'documentation',
-        // priority: 'medium',
-      }
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-export const paisddl = async () => {
-  try {
-    const apiKey = import.meta.env.VITE_ApiKey
-
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url +
-        'api/Paises/Listar?pais_EsAduana=true',
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
 
     const data = await response.data
-    return data.data.map((pais: Pais) => {
+    return data.data.map((aldea: Aldea) => {
       return {
-        pais_Id: pais.pais_Id,
-        pais_Nombre: pais.pais_Nombre,
-        // status: 'in progress',
-        // label: 'documentation',
-        // priority: 'medium',
-      }
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-export const provinciaddl = async (pais_Id: number) => {
-  try {
-    const apiKey = import.meta.env.VITE_ApiKey
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_SimexPro_Url}api/Provincias/ProvinciasFiltradaPorPaisYesAduana?pais_Id=${pais_Id}&pvin_EsAduana=false`,
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await response.data
-    return data.data.map((provincia: Provincia) => {
-      return {
-        pvin_Id: provincia.pvin_Id,
-        pvin_Nombre: provincia.pvin_Nombre,
-        // status: 'in progress',
-        // label: 'documentation',
-        // priority: 'medium',
-      }
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-export const ciudadesddl = async (pvin_Id: number) => {
-  try {
-    const apiKey = import.meta.env.VITE_ApiKey
-
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_SimexPro_Url}api/Ciudades/CiudadesFiltradaPorProvincias?pvin_Id=${pvin_Id}`,
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await response.data
-    return data.data.map((ciudadddl: Ciudadddl) => {
-      return {
-        ciud_Id: ciudadddl.ciud_Id,
-        ciud_Nombre: ciudadddl.ciud_Nombre,
+        alde_Id: aldea.alde_Id,
+        alde_Nombre: aldea.alde_Nombre,
+        ciud_Id: aldea.ciud_Id,
+        ciud_Nombre: aldea.ciud_Nombre,
+        pvin_Id: aldea.pvin_Id,
+        pvin_Nombre: aldea.pvin_Nombre,
         // status: 'in progress',
         // label: 'documentation',
         // priority: 'medium',
@@ -302,10 +159,10 @@ export const cargarCiudades = async () => {
       return
     }
 
-    const response = await axios.get(
-      import.meta.env.VITE_API_SimexPro_Url +
-        'api/Ciudades/Listar?ciud_EsAduana=true',
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar?ciud_EsAduana=true',
       {
+        method: 'GET',
         headers: {
           XApiKey: apiKey,
           'Content-Type': 'application/json',
@@ -313,17 +170,19 @@ export const cargarCiudades = async () => {
       }
     )
 
-    const data = await response.data
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
 
-    return getAduana()
-      .then((aduana: Aduana[]) => {
+    const data = await response.json()
+
+    return getAldeas()
+      .then((aldea: Aldea[]) => {
         return data.data.map((ciudad: Ciudad) => {
           return {
             id: ciudad.ciud_Id,
             ciudad: ciudad.ciud_Nombre,
-            pais: ciudad.pais_Nombre,
-            provincia: ciudad.pvin_Nombre,
-            subRows: aduana.filter((adu) => adu.ciud_Id === ciudad.ciud_Id),
+            subRows: aldea.filter((ald) => ald.ciud_Id === ciudad.ciud_Id),
             // status: 'in progress',
             // label: 'documentation',
             // priority: 'medium',
@@ -334,84 +193,6 @@ export const cargarCiudades = async () => {
         console.error('Error al cargar las ciudades:', err)
         return [] // Return an empty array in case of error
       })
-  } catch (error) {
-    console.error('Error in cargarCiudades:', error)
-    return []
-  }
-}
-
-export const guardarAduana = async (Aduana: Aduanas) => {
-  try {
-    const apiKey = import.meta.env.VITE_ApiKey
-
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    Aduana.usua_UsuarioModificacion = 1
-    Aduana.adua_FechaModificacion = new Date().toISOString()
-
-    const response = await axios.post(
-      ` ${import.meta.env.VITE_API_SimexPro_Url}api/Aduanas/${Aduana.adua_Id === 0 ? 'Insertar' : 'Editar'}`,
-      Aduana,
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    const data = await response.data
-    console.log(data.messageStatus)
-    return data.messageStatus === '1'
-  } catch (error) {
-    console.error('Error in cargarCiudades:', error)
-    return []
-  }
-}
-
-export const eliminarAduana = async (adua_Id: number) => {
-  try {
-    console.log(adua_Id)
-    const apiKey = import.meta.env.VITE_ApiKey
-
-    if (!apiKey) {
-      console.error('API key is undefined.')
-      return
-    }
-
-    const response = await axios.post(
-      ` ${import.meta.env.VITE_API_SimexPro_Url}api/Aduanas/Eliminar`,
-      {
-        adua_Id: adua_Id,
-        adua_Codigo: '',
-        adua_Nombre: '',
-        adua_Direccion_Exacta: '',
-        pvin_Nombre: '',
-        pvin_Id: 0,
-        ciud_Id: 0,
-        ciud_Nombre: '',
-        usua_UsuarioCreacion: 1,
-        adua_FechaCreacion: new Date().toISOString(),
-        usua_UsuarioModificacion: 1,
-        adua_FechaModificacion: new Date().toISOString(),
-        usua_UsuarioEliminacion: 1,
-        adua_FechaEliminacion: new Date().toISOString(),
-        adua_Estado: true,
-        usarioCreacion: '',
-        usuarioModificacion: '',
-      },
-      {
-        headers: {
-          XApiKey: apiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await response.data
-    return data.data.messageStatus === '1'
   } catch (error) {
     console.error('Error in cargarCiudades:', error)
     return []

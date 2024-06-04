@@ -3,83 +3,32 @@ import { z } from 'zod'
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
 
-const aduanaSchema = z.object({
-  adua_Id: z.number(),
-  adua_Codigo: z.string(),
-  adua_Nombre: z.string(),
-  adua_Direccion_Exacta: z.string(),
-  pvin_Nombre: z.string(),
-  pvin_Id: z.number(),
-  ciud_Id: z.number(),
-  ciud_Nombre: z.string(),
-  usua_UsuarioCreacion: z.number(),
-  adua_FechaCreacion: z.string(),
-  usua_UsuarioModificacion: z.number(),
-  adua_FechaModificacion: z.string(),
-  usua_UsuarioEliminacion: z.number(),
-  adua_FechaEliminacion: z.string(),
-  adua_Estado: z.boolean(),
-  usarioCreacion: z.string(),
-  usuarioModificacion: z.string()
-})
-
-export const aduanasSchema = z.object({
-  adua_Id: z.number(),
-  adua_Codigo: z.string(),
-  adua_Nombre: z.string(),
-  adua_Direccion_Exacta: z.string(),
-  pvin_Id: z.string(),
+const aldeaSchema = z.object({
+  alde_Id: z.string(),
+  alde_Nombres: z.string(),
   ciud_Id: z.string(),
-  usua_UsuarioCreacion: z.number(),
-  usarioCreacion: z.string(),
-  adua_FechaCreacion: z.string(),
-  usua_UsuarioModificacion: z.number().nullable(),
-  usuarioModificacion: z.string().nullable(),
-  adua_FechaModificacion: z.string().nullable(),
-  usua_UsuarioEliminacion: z.number().nullable(),
-  adua_FechaEliminacion: z.string().nullable(),
-  // status: z.string(),
-  // label: z.string(),
-  // priority: z.string(),
-})
-
-export const paisSchema = z.object({
-  pais_Id: z.number(),
-  pais_Nombre: z.string(),
-  // status: z.string(),
-  // label: z.string(),
-  // priority: z.string(),
-})
-
-export const provinSchema = z.object({
+  ciud_Nombre: z.string(),
   pvin_Id: z.number(),
+  pvin_Codigo: z.string(),
   pvin_Nombre: z.string(),
-  // status: z.string(),
-  // label: z.string(),
-  // priority: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioCreacionNombre: z.string(),
+  alde_FechaCreacion: z.string(), // Date in ISO format
+  usua_UsuarioModificacion: z.number(),
+  usuarioModificacionNombre: z.string(),
+  alde_FechaModificacion: z.string(), // Date in ISO format
+  usua_UsuarioEliminacion: z.number().nullable(),
+  alde_FechaEliminacion: z.string().nullable(), // Date in ISO format
+  alde_Estado: z.boolean(),
 })
 
 export const ciudadSchema = z.object({
   id: z.string(),
   ciudad: z.string(),
-  provincia: z.string(),
-  pais: z.string(),
-  subRows: z.array(aduanaSchema),
-  // status: z.string(),
-  // label: z.string(),
-  // priority: z.string(),
-})
-
-export const ciudadesSchema = z.object({
-  ciud_Id: z.number(),
-  ciud_Nombre: z.string(),
+  subRows: z.array(aldeaSchema),
   // status: z.string(),
   // label: z.string(),
   // priority: z.string(),
 })
 
 export type Ciudad = z.infer<typeof ciudadSchema>
-export type Ciudades = z.infer<typeof ciudadesSchema>
-export type Aduanas = z.infer<typeof aduanasSchema>
-export type Pais = z.infer<typeof paisSchema>
-export type Provincia = z.infer<typeof provinSchema>

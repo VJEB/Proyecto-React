@@ -32,12 +32,12 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-interface Aldea {
-  alde_Id: string
-  ciud_Id: string
-  alde_Nombre: string
-  pvin_Nombre: string
-}
+// interface Aldea {
+//   alde_Id: string
+//   ciud_Id: string
+//   alde_Nombre: string
+//   pvin_Nombre: string
+// }
 
 export function DataTable<TData, TValue>({
   columns,
@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
-    console.clear()
+    // console.clear()
   }, [])
 
   return (
@@ -107,60 +107,19 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <>
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <>
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                        {cell.column.id === 'ciudad' && (
-                          <>
-                            {/* <TableCell key={cell.id + 1}></TableCell> */}
-                            {/* <TableCell key={cell.id + 2}></TableCell> */}
-                            {/* <TableCell key={cell.id + 3}></TableCell> */}
-                          </>
-                        )}
-                      </>
-                    ))}
-                  </TableRow>
-                  {row.getIsExpanded() && (
-                    <TableRow
-                      key={row.id + 1}
-                      className='bg-[#11141d] font-bold'
-                    >
-                      <TableCell key={row.id + 2} className='pl-[2%]'>
-                        Id
-                      </TableCell>
-                      <TableCell key={row.id + 3}>Aldea</TableCell>
-                      <TableCell key={row.id + 4}>Provincia</TableCell>
-                    </TableRow>
-                  )}
-                  {row.getIsExpanded() &&
-                    row.original.subRows.map((aldea: Aldea, index: number) => (
-                      <TableRow key={aldea.ciud_Id + index}>
-                        <TableCell
-                          className='pl-[2%]'
-                          key={aldea.alde_Id + index}
-                        >
-                          {aldea.alde_Id}
-                        </TableCell>
-                        <TableCell key={aldea.alde_Nombre + index}>
-                          {aldea.alde_Nombre}
-                        </TableCell>
-
-                        <TableCell key={aldea.pvin_Nombre + index}>
-                          {aldea.pvin_Nombre}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : (
               <TableRow>
