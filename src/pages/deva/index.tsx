@@ -239,135 +239,6 @@ export default function PagDeva({
     deva_Estado: false,
   })
 
-  const quepedoconesto = (deva) =>{
-  const devaArray = [
-    deva.deva_Id,
-    deva.deva_AduanaIngresoId,
-    deva.adua_IngresoNombre,
-    deva.adua_IngresoCodigo,
-    deva.adua_DespachoCodigo,
-    deva.regi_Id,
-    deva.regi_Codigo,
-    deva.regi_Descripcion,
-    deva.inco_Codigo,
-    deva.duca_No_DUCA,
-    deva.deva_AduanaDespachoId,
-    deva.adua_DespachoNombre,
-    deva.deva_DeclaracionMercancia,
-    deva.deva_FechaAceptacion,
-    deva.deva_Finalizacion,
-    deva.deva_PagoEfectuado,
-    deva.pais_ExportacionId,
-    deva.pais_ExportacionNombre,
-    deva.deva_FechaExportacion,
-    deva.mone_Id,
-    deva.mone_Otra,
-    deva.monedaNombre,
-    deva.deva_ConversionDolares,
-    deva.emba_Id,
-    deva.lugarEmbarque,
-    deva.nico_Id,
-    deva.nico_Descripcion,
-    deva.emba_Codigo,
-    deva.impo_Id,
-    deva.impo_NumRegistro,
-    deva.impo_RTN,
-    deva.impo_NivelComercial_Otro,
-    deva.impo_Nombre_Raso,
-    deva.impo_Direccion_Exacta,
-    deva.impo_CiudadNombre,
-    deva.impo_PaisNombre,
-    deva.impo_Correo_Electronico,
-    deva.impo_Telefono,
-    deva.impo_Fax,
-    deva.impo_ciudId,
-    deva.impo_paisId,
-    deva.coco_Id,
-    deva.coco_Descripcion,
-    deva.pvde_Condicion_Otra,
-    deva.pvde_Id,
-    deva.prov_NumeroIdentificacion,
-    deva.prov_Nombre_Raso,
-    deva.prov_Direccion_Exacta,
-    deva.prov_CiudadNombre,
-    deva.prov_PaisNombre,
-    deva.prov_Correo_Electronico,
-    deva.prov_Telefono,
-    deva.prov_Fax,
-    deva.prov_ciudId,
-    deva.prov_paisId,
-    deva.tite_Id,
-    deva.tipoIntermediario,
-    deva.inte_Id,
-    deva.inte_ciudId,
-    deva.inte_paisId,
-    deva.inte_Tipo_Otro,
-    deva.inte_NumeroIdentificacion,
-    deva.inte_Nombre_Raso,
-    deva.inte_Direccion_Exacta,
-    deva.inte_Correo_Electronico,
-    deva.inte_CiudadNombre,
-    deva.inte_PaisNombre,
-    deva.inte_Telefono,
-    deva.inte_Fax,
-    deva.deva_LugarEntrega,
-    deva.pais_EntregaId,
-    deva.pais_EntregaNombre,
-    deva.inco_Descripcion,
-    deva.inco_Version,
-    deva.deva_NumeroContrato,
-    deva.deva_FechaContrato,
-    deva.foen_Id,
-    deva.foen_Descripcion,
-    deva.deva_FormaEnvioOtra,
-    deva.fopa_Id,
-    deva.fopa_Descripcion,
-    deva.deva_FormaPagoOtra,
-    deva.codi_Id,
-    deva.codi_Restricciones_Utilizacion,
-    deva.codi_Indicar_Restricciones_Utilizacion,
-    deva.codi_Depende_Precio_Condicion,
-    deva.codi_Indicar_Existe_Condicion,
-    deva.codi_Condicionada_Revertir,
-    deva.codi_Vinculacion_Comprador_Vendedor,
-    deva.codi_Tipo_Vinculacion,
-    deva.codi_Vinculacion_Influye_Precio,
-    deva.codi_Pagos_Descuentos_Indirectos,
-    deva.codi_Concepto_Monto_Declarado,
-    deva.codi_Existen_Canones,
-    deva.codi_Indicar_Canones,
-    deva.base_Id,
-    deva.base_PrecioFactura,
-    deva.base_PagosIndirectos,
-    deva.base_PrecioReal,
-    deva.base_MontCondicion,
-    deva.base_MontoReversion,
-    deva.base_ComisionCorrelaje,
-    deva.base_Gasto_Envase_Embalaje,
-    deva.base_ValoresMateriales_Incorporado,
-    deva.base_Valor_Materiales_Utilizados,
-    deva.base_Valor_Materiales_Consumidos,
-    deva.base_Valor_Ingenieria_Importado,
-    deva.base_Valor_Canones,
-    deva.base_Gasto_TransporteM_Importada,
-    deva.base_Gastos_Carga_Importada,
-    deva.base_Costos_Seguro,
-    deva.base_Total_Ajustes_Precio_Pagado,
-    deva.base_Gastos_Asistencia_Tecnica,
-    deva.base_Gastos_Transporte_Posterior,
-    deva.base_Derechos_Impuestos,
-    deva.base_Monto_Intereses,
-    deva.base_Deducciones_Legales,
-    deva.base_Total_Deducciones_Precio,
-    deva.base_Valor_Aduana,
-    deva.usua_UsuarioCreacion,
-    deva.usua_CreacionNombre,
-    deva.deva_FechaCreacion,
-    deva.usua_ModificacionNombre,
-    deva.deva_FechaModificacion,
-    deva.deva_Estado,
-  ];}
-
   useEffect(() => {
     context.setMostrarDetalle(0)
     getDevas()
@@ -417,7 +288,7 @@ export default function PagDeva({
       {context.mostrarDetalle !== 0 ? (
         <LayoutBody className='flex flex-col' fixedHeight>
           <div className='mb-2 flex items-center justify-between space-y-2'>
-            <h2 className='text-2xl font-bold tracking-tight'>Detalles</h2>
+            <h2 className='text-2xl font-bold tracking-tight'> Imprimir</h2>
             <Button
               variant={'outline'}
               onClick={() => context.setMostrarDetalle(0)}
@@ -427,10 +298,8 @@ export default function PagDeva({
             </Button>
           </div>
           {deva && (
-            <div className='mb-2 flex flex-col items-center justify-between space-y-8 rounded border bg-slate-900 p-8'>
-              <h1>{deva.adua_DespachoCodigo}</h1>
-
-              <PDFGenerator data={deva}/>
+            <div className=''>
+              <PDFGenerator dato={deva}/>
 
             </div>
           )}

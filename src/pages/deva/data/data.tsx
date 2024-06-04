@@ -148,8 +148,6 @@ export const getDevas = async () => {
     )
 
     const data = await response.data
-    let casi = data.data as Deva[];
-    console.log("casi:",JSON.stringify(casi, null, 2))
     return data.data.map((deva: Deva) => {
       return {
         deva_Id: deva.deva_Id,
