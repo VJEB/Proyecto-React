@@ -1,9 +1,11 @@
 import ThemeSwitch from '@/components/theme-switch'
 import { UserNav } from '@/components/user-nav'
 import { Layout, LayoutBody, LayoutHeader } from '@/components/custom/layout'
+import { FactDataTable } from './facturaComponents/data-table'
 import { DataTable } from './components/data-table'
 import PDFGenerator from './components/pdf'
 import { columns } from './components/columns'
+import { factColumns } from './facturaComponents/columns'
 import {
   Dispatch,
   SetStateAction,
@@ -666,7 +668,7 @@ function FormDeva({
     condiciones: boolean
     valorAduana: boolean
   }>({
-    general: false,
+    general: true,
     proveedor: true,
     caracteristicas: true,
     facturas: true,
@@ -685,7 +687,6 @@ function FormDeva({
   const onTabChange = (value: string) => {
     switch (value) {
       case 'proveedor':
-        console.log(validar)
         if (formsValidados.general) {
           setTab(value)
         } else {
@@ -693,19 +694,40 @@ function FormDeva({
         }
         break
       case 'caracteristicas':
+        if (formsValidados.general) {
+          setTab(value)
+        } else {
+          setValidar(true)
+        }
         formsValidados.proveedor && setTab(value)
         break
       case 'facturas':
-        formsValidados.caracteristicas && setTab(value)
+        if (formsValidados.caracteristicas) {
+          setTab(value)
+        } else {
+          setValidar(true)
+        }
         break
       case 'condiciones':
-        formsValidados.facturas && setTab(value)
+        if (formsValidados.facturas) {
+          setTab(value)
+        } else {
+          setValidar(true)
+        }
         break
       case 'valorAduana':
-        formsValidados.condiciones && setTab(value)
+        if (formsValidados.condiciones) {
+          setTab(value)
+        } else {
+          setValidar(true)
+        }
         break
       case 'finalizar':
-        formsValidados.valorAduana && setTab(value)
+        if (formsValidados.valorAduana) {
+          setTab(value)
+        } else {
+          setValidar(true)
+        }
         break
       default:
         setTab(value)
@@ -757,6 +779,13 @@ function FormDeva({
       })
   }, [])
 
+  // useEffect(() => {
+  //   console.log(validar, 'useEffect')
+  //   if (validar) {
+  //     setValidar(false)
+  //     console.log(validar, 'useEffect')
+  //   }
+  // }, [validar])
   return (
     <LayoutBody className='flex flex-col' fixedHeight>
       <div className='mb-2 flex items-center justify-between space-y-2'>
@@ -809,6 +838,8 @@ function FormDeva({
         </TabsContent>
         <TabsContent value='facturas'>
           <FormFactura
+            validar={validar}
+            setValidar={setValidar}
             deva={deva}
             errorToast={errorToast}
             onTabChange={onTabChange}
@@ -914,11 +945,9 @@ function FormGeneral({
   }, [])
 
   useEffect(() => {
+    validar && setTimeout(() => setValidar((prev) => false), 2000)
     if (validar) {
       validarInfoGeneral()
-      console.log('hola?')
-
-      setValidar(false)
     }
   }, [validar])
 
@@ -3501,10 +3530,14 @@ function FormCaracteristicas({
 }
 
 function FormFactura({
+  validar,
+  setValidar,
   deva,
   errorToast,
   onTabChange,
 }: {
+  validar: boolean
+  setValidar: (bool: boolean | ((bool: boolean) => boolean)) => void
   deva: DevaCompuesta
   errorToast: (message: string) => void
   onTabChange: (str: string) => void
@@ -3565,11 +3598,16 @@ function FormFactura({
     // return huboError
   }
 
-  console.log(facturas)
+  useEffect(() => {
+    validar && setTimeout(() => setValidar((prev) => false), 2000)
+    if (validar) {
+      validarInputsFacturas()
+    }
+  }, [validar])
 
   return (
     <Card className='flex flex-col items-center p-3'>
-      <div className='flex max-w-[700px] flex-wrap'>
+      <div className='my-3 flex max-w-[500px] flex-wrap justify-center gap-4'>
         <div className='flex flex-col gap-1'>
           <Label>16. Número de Factura</Label>
           <Input
@@ -3646,7 +3684,7 @@ function FormFactura({
             <DialogHeader>
               <DialogTitle>Agregar Facturas</DialogTitle>
             </DialogHeader>
-            <div className='flex py-4'></div>
+            <div className='flex flex-wrap py-4'></div>
             <DialogFooter>
               <Button onClick={() => setDialogState(false)} variant='outline'>
                 Cancelar
@@ -3662,20 +3700,9 @@ function FormFactura({
           </DialogContent>
         </Dialog>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>#</TableHead>
-            <TableHead>CONDICIÓN</TableHead>
-            <TableHead>VALOR ASIGNADO CONDICIÓN</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>24</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+        <FactDataTable data={facturas} columns={factColumns} />
+      </div>
       <div className='mr-4 flex justify-end gap-2 self-end'>
         <Button
           variant={'outline'}
