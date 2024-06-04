@@ -516,6 +516,94 @@ const paisSchema = z.object({
   detalles: z.string().nullable(),
 })
 
+const itemSchema = z.object({
+  item_Id: z.number(),
+  fact_Id: z.number(),
+  item_Cantidad: z.number(),
+  item_Cantidad_Bultos: z.number(),
+  item_ClaseBulto: z.string().nullable(),
+  item_Acuerdo: z.string().nullable(),
+  item_PesoNeto: z.number().nullable(),
+  item_PesoBruto: z.number().nullable(),
+  unme_Id: z.number(),
+  item_IdentificacionComercialMercancias: z.string(),
+  item_CaracteristicasMercancias: z.string(),
+  item_Marca: z.string(),
+  item_Modelo: z.string(),
+  merc_Id: z.number(),
+  mate_SubCategoria: z.number(),
+  subc_Descripcion: z.string().nullable(),
+  mate_Imagen: z.string().nullable(),
+  pais_IdOrigenMercancia: z.number(),
+  item_ClasificacionArancelaria: z.string(),
+  aran_Id: z.number(),
+  aran_Descripcion: z.string().nullable(),
+  aran_Codigo: z.string().nullable(),
+  unme_Descripcion: z.string().nullable(),
+  merc_Descripcion: z.string().nullable(),
+  item_ValorUnitario: z.number(),
+  item_GastosDeTransporte: z.number().nullable(),
+  item_ValorTransaccion: z.number(),
+  item_Seguro: z.number().nullable(),
+  item_OtrosGastos: z.number().nullable(),
+  item_ValorAduana: z.number().nullable(),
+  item_CuotaContingente: z.number().nullable(),
+  item_ReglasAccesorias: z.string().nullable(),
+  item_CriterioCertificarOrigen: z.string().nullable(),
+  item_EsNuevo: z.boolean(),
+  item_EsHibrido: z.boolean(),
+  item_LitrosTotales: z.number(),
+  item_CigarrosTotales: z.number(),
+  usua_UsuarioCreacion: z.number(),
+  nombrePaisOrigen: z.string(),
+  usuarioCreacionNombre: z.string(),
+  item_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioModificacionNombre: z.string().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  item_FechaEliminacion: z.string().nullable(),
+  item_FechaModificacion: z.string().nullable(),
+  item_Estado: z.boolean()
+})
+
+const factSchema = z.object({
+  fact_Id: z.number(),
+  deva_Id: z.number(),
+  fact_Numero: z.string(),
+  fact_Fecha: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  fact_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  fact_FechaModificacion: z.string().nullable(),
+  fact_Estado: z.boolean(),
+  usuarioCreacionNombre: z.string(),
+  usuarioModificacionNombre: z.string().nullable(),
+  deva: z.string().nullable(),
+  tbItems: z.array(itemSchema)
+})
+
+const condicionesSchema = z.object({
+  codi_Id: z.number(),
+  deva_Id: z.number(),
+  codi_Restricciones_Utilizacion: z.boolean(),
+  codi_Indicar_Restricciones_Utilizacion: z.string(),
+  codi_Depende_Precio_Condicion: z.boolean(),
+  codi_Indicar_Existe_Condicion: z.string(),
+  codi_Condicionada_Revertir: z.boolean(),
+  codi_Vinculacion_Comprador_Vendedor: z.boolean(),
+  codi_Tipo_Vinculacion: z.string(),
+  codi_Vinculacion_Influye_Precio: z.boolean(),
+  codi_Pagos_Descuentos_Indirectos: z.boolean(),
+  codi_Concepto_Monto_Declarado: z.string(),
+  codi_Existen_Canones: z.boolean(),
+  codi_Indicar_Canones: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  codi_FechaCreacion: z.string(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  codi_FechaModificacion: z.string().nullable(),
+  codi_Estado: z.boolean()
+})
+
 export type Deva = z.infer<typeof devaSchema>
 export type DevaCompuesta = z.infer<typeof devaCompuestaSchema>
 export type Aduana = z.infer<typeof aduanaSchema>
@@ -529,3 +617,6 @@ export type FormaDePago = z.infer<typeof fopaSchema>
 export type Moneda = z.infer<typeof moneSchema>
 export type Embarque = z.infer<typeof embaSchema>
 export type Pais = z.infer<typeof paisSchema>
+export type Factura = z.infer<typeof factSchema>
+export type Item = z.infer<typeof itemSchema>
+export type Condiciones = z.infer<typeof condicionesSchema>

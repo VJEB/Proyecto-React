@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Factura } from './schema'
 
 interface Deva {
   deva_Id: number
@@ -1060,6 +1061,40 @@ export const getEmbarques = async (pais_Codigo: string) => {
         emba_Estado: emba.emba_Estado,
       }
     })
+  } catch (error) {
+    console.error('Error al cargar los embarques:', error)
+    return []
+  }
+}
+
+export const getFacturas = async (deva_Id: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api//api/Facturas/Listar/Listar?deva_Id=${deva_Id}`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((fact: Factura) => fact)
   } catch (error) {
     console.error('Error al cargar los embarques:', error)
     return []

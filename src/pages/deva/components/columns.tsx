@@ -46,6 +46,36 @@ export const columns: ColumnDef<Deva>[] = [
     },
   },
   {
+    accessorKey: 'deva_DeclaracionMercancia',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Declaración de mercancía' />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className='flex space-x-2'>
+          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+            {row.getValue('deva_DeclaracionMercancia')}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'deva_FechaAceptacion',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Fecha de aceptación' />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className='flex space-x-2'>
+          <span className='max-w-32 truncate font-medium sm:max-w-72 md:max-w-[31rem]'>
+            {row.getValue('deva_FechaAceptacion').split('T')[0]}
+          </span>
+        </div>
+      )
+    },
+  },
+  {
     id: 'actions',
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
