@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderLeftWidth: 0,
     borderTopWidth: 0,
-    padding: 5,
+    padding: 4,
   },
   tableHeader: {
     fontSize: '12px',
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     backgroundColor: '#a3d1fe',
     padding: 5,
-    marginTop: 7,
+    marginTop: 3,
     fontWeight: 'bold',
     
   },
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     backgroundColor: '#a3d1fe',
     padding: 5,
-    marginTop: -1,
-    marginBottom: -20,
+    marginTop: 12,
+    marginBottom: -12,
     fontWeight: 'bold',
     
   },
@@ -236,8 +236,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   else{
     data = ["nada"];
   }
-  const pageSize = 20;
-  const totalPages = Math.ceil(data.length / pageSize);
 
 
   // console.log("entra al pdf?",JSON.stringify(data, null, 2))
@@ -251,15 +249,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   const generatePDF = () => (
     <PDFViewer width="100%" height="500px">
       <Document>
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <Page key={index} size="LEGAL" wrap={true} style={styles.page}>
+          <Page  size="LEGAL" wrap={true} style={styles.page}>
             <View style={styles.section}>
-            {/* <Image
+             {/* <Image
                 style={styles.backgroundImage}
                 src={backgroundImage} 
-              /> */}
+              />  */}
               
-              <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 5 }}>Declaración de Valor</Text>
+              <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 2, marginTop: -3 }}>Declaración de Valor</Text>
               <View style={styles.tableRow}>
                   
                     <Text style={styles.tableHeader1}>
@@ -269,7 +266,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                 </View>
               <View style={styles.section}>
                 {data
-                  .slice(index * pageSize, (index + 1) * pageSize)
                   .map((item, i) => (
                     <View style={{fontSize: 12}} key={i}>
                       <text style={styles.tableRow}>
@@ -482,7 +478,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                       </text>
                       <text style={styles.tableCell}>
                         <Text style={styles.linea}>Fecha de Contrato : </Text>
-                        <Text style={{fontSize: 12}}>{item.deva_FechaContrato.split('T')[0]}</Text>
+                        <Text style={{fontSize: 12}}>{item.deva_FechaContrato}</Text>
                       </text>                   
                     </text>
                     <text style={styles.tableRow}>
@@ -510,7 +506,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                       </text>
                       <text style={styles.tableCell}>
                           <Text style={styles.linea}>Fecha de Exportación : </Text>
-                          <Text style={{fontSize: 12}}>{item.deva_FechaExportacion.split('T')[0]}</Text>
+                          <Text style={{fontSize: 12}}>{item.deva_FechaExportacion}</Text>
                         </text>
                     </text>
                    <text style={styles.tableRow}>
@@ -530,8 +526,15 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                   
                   ))}
               </View>
-
-
+              
+</View>
+<Text style={styles.pagination}>
+                Página 1 de 1
+              </Text>
+</Page>
+<Page  size="LEGAL" wrap={true} style={styles.page}>
+  
+  <View>
               <View style={styles.tableRow}>
                   
                   <Text style={styles.tableHeader1}>
@@ -541,7 +544,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
               </View>
               <View style={styles.section}>
               {data
-                .slice(index * pageSize, (index + 1) * pageSize)
                 .map((item, i) => (
                   <View style={{fontSize: 12}} key={i}>
                     <text style={styles.tableRow}>
@@ -759,12 +761,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
               </View>
 
 
-              <Text style={styles.pagination}>
-                Página {index + 1} de {totalPages}
-              </Text>
             </View>
+
+            <Text style={styles.pagination}>
+                Página 2 de 2
+              </Text>
           </Page>
-        ))}
       </Document>
     </PDFViewer>
   );
