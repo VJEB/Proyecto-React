@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: '50%',
     borderStyle: 'solid',
     borderColor: '#bfbfbf',
-    borderWidth: 1,
+    borderWidth: 0,
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
@@ -57,6 +57,22 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     backgroundColor: '#a3d1fe',
     padding: 5,
+    marginTop: 7,
+    fontWeight: 'bold',
+    
+  },
+  tableHeader1: {
+    fontSize: '12px',
+    flex: 1,
+    width: '50%',
+    borderStyle: 'solid',
+    borderColor: '#bfbfbf',
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+    backgroundColor: '#a3d1fe',
+    padding: 5,
+    marginTop: 5,
     fontWeight: 'bold',
     
   },
@@ -214,126 +230,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   if(dato != null){
   data = [
     dato
-    //#region cagada
-    // dato.deva_AduanaIngresoId,
-    // dato.adua_IngresoNombre,
-    // dato.adua_IngresoCodigo,
-    // dato.adua_DespachoCodigo,
-    // dato.regi_Id,
-    // dato.regi_Codigo,
-    // dato.regi_Descripcion,
-    // dato.inco_Codigo, 
-    // dato.duca_No_DUCA, 
-    // dato.deva_AduanaDespachoId,
-    // dato.adua_DespachoNombre,
-    // dato.deva_DeclaracionMercancia,
-    // dato.deva_FechaAceptacion,
-    // dato.deva_Finalizacion,
-    // dato.deva_PagoEfectuado, 
-    // dato.pais_ExportacionId, 
-    // dato.pais_ExportacionNombre, 
-    // dato.deva_FechaExportacion, 
-    // dato.mone_Id, 
-    // dato.mone_Otra, 
-    // dato.monedaNombre, 
-    // dato.deva_ConversionDolares, 
-    // dato.emba_Id, 
-    // dato.lugarEmbarque, 
-    // dato.nico_Id,
-    // dato.nico_Descripcion,
-    // dato.emba_Codigo, 
-    // dato.impo_Id,
-    // dato.impo_NumRegistro,
-    // dato.impo_RTN,
-    // dato.impo_NivelComercial_Otro, 
-    // dato.impo_Nombre_Raso,
-    // dato.impo_Direccion_Exacta,
-    // dato.impo_CiudadNombre,
-    // dato.impo_PaisNombre,
-    // dato.impo_Correo_Electronico,
-    // dato.impo_Telefono,
-    // dato.impo_Fax, 
-    // dato.impo_ciudId,
-    // dato.impo_paisId,
-    // dato.coco_Id,
-    // dato.coco_Descripcion,
-    // dato.pvde_Condicion_Otra, 
-    // dato.pvde_Id,
-    // dato.prov_NumeroIdentificacion,
-    // dato.prov_Nombre_Raso,
-    // dato.prov_Direccion_Exacta,
-    // dato.prov_CiudadNombre,
-    // dato.prov_PaisNombre,
-    // dato.prov_Correo_Electronico,
-    // dato.prov_Telefono,
-    // dato.prov_Fax, 
-    // dato.prov_ciudId,
-    // dato.prov_paisId,
-    // dato.tite_Id, 
-    // dato.tipoIntermediario, 
-    // dato.inte_Id, 
-    // dato.inte_ciudId, 
-    // dato.inte_paisId, 
-    // dato.inte_Tipo_Otro, 
-    // dato.inte_NumeroIdentificacion, 
-    // dato.inte_Nombre_Raso, 
-    // dato.inte_Direccion_Exacta, 
-    // dato.inte_Correo_Electronico, 
-    // dato.inte_CiudadNombre, 
-    // dato.inte_PaisNombre, 
-    // dato.inte_Telefono, 
-    // dato.inte_Fax, 
-    // dato.deva_LugarEntrega, 
-    // dato.pais_EntregaId, 
-    // dato.pais_EntregaNombre, 
-    // dato.inco_Descripcion, 
-    // dato.inco_Version, 
-    // dato.deva_NumeroContrato, 
-    // dato.deva_FechaContrato, 
-    // dato.foen_Id, 
-    // dato.foen_Descripcion, 
-    // dato.deva_FormaEnvioOtra, 
-    // dato.fopa_Id, 
-    // dato.fopa_Descripcion, 
-    // dato.deva_FormaPagoOtra, 
-    // dato.codi_Id, 
-    // dato.codi_Restricciones_Utilizacion, 
-    // dato.codi_Indicar_Restricciones_Utilizacion, 
-    // dato.codi_Depende_Precio_Condicion, 
-    // dato.codi_Indicar_Existe_Condicion, 
-    // dato.codi_Condicionada_Revertir, 
-    // dato.codi_Vinculacion_Comprador_Vendedor, 
-    // dato.codi_Tipo_Vinculacion, 
-    // dato.codi_Vinculacion_Influye_Precio, 
-    // dato.codi_Pagos_Descuentos_Indirectos, 
-    // dato.codi_Concepto_Monto_Declarado, 
-    // dato.codi_Existen_Canones, 
-    // dato.codi_Indicar_Canones, 
-    // dato.base_Id, 
-    // dato.base_PrecioFactura, 
-    // dato.base_PagosIndirectos, 
-    // dato.base_PrecioReal, 
-    // dato.base_MontCondicion, 
-    // dato.base_MontoReversion, 
-    // dato.base_ComisionCorrelaje, 
-    // dato.base_Gasto_Envase_Embalaje, 
-    // dato.base_ValoresMateriales_Incorporado, 
-    // dato.base_Valor_Materiales_Utilizados, 
-    // dato.base_Valor_Materiales_Consumidos, 
-    // dato.base_Valor_Ingenieria_Importado, 
-    // dato.base_Valor_Canones, 
-    // dato.base_Gasto_TransporteM_Importada, 
-    // dato.base_Gastos_Carga_Importada, 
-    // dato.base_Costos_Seguro, 
-    // dato.base_Total_Ajustes_Precio_Pagado, 
-    // dato.base_Gastos_Asistencia_Tecnica, 
-    // dato.base_Gastos_Transporte_Posterior, 
-    // dato.base_Derechos_Impuestos, 
-    // dato.base_Monto_Intereses, 
-    // dato.base_Deducciones_Legales, 
-    // dato.base_Total_Deducciones_Precio, 
-    // dato.base_Valor_Aduana, 
-    //#endregion
     ]
   }
   else{
@@ -343,7 +239,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   const totalPages = Math.ceil(data.length / pageSize);
 
 
-  console.log("entra al pdf?",JSON.stringify(data, null, 2))
+  // console.log("entra al pdf?",JSON.stringify(data, null, 2))
 
   useEffect(() => {
     if (data.length > 0) {
@@ -357,107 +253,511 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
         {Array.from({ length: totalPages }).map((_, index) => (
           <Page key={index} size="LEGAL" wrap={true} style={styles.page}>
             <View style={styles.section}>
-            <Image
+            {/* <Image
                 style={styles.backgroundImage}
                 src={backgroundImage} 
-              />
+              /> */}
               
               <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 5 }}>Declaración de Valor</Text>
+              <View style={styles.tableRow}>
+                  
+                    <Text style={styles.tableHeader1}>
+                      <Text style={{ fontWeight: 'bold' }}>Generales</Text>
+                    </Text>
 
+                </View>
               <View style={styles.section}>
                 {data
                   .slice(index * pageSize, (index + 1) * pageSize)
                   .map((item, i) => (
                     <View style={{fontSize: 12}} key={i}>
                       <text style={styles.tableRow}>
-                        <text style={styles.tableCell}>
-                    <Text style={styles.linea}>Aduana Nombre : {item.adua_IngresoNombre}</Text>
-                    <Text style={styles.linea}>Aduana Código : {item.adua_IngresoCodigo}</Text>
-                    <Text style={styles.linea}>Código de Despacho : {item.adua_DespachoCodigo}</Text>
-                    <Text style={styles.linea}>Región : {item.regi_Descripcion}</Text>
-                    <Text style={styles.linea}>Código de Incoterms : {item.inco_Codigo}</Text>
-                    <Text style={styles.linea}>Número DUCA : {item.duca_No_DUCA}</Text>
-                    <Text style={styles.linea}>Despacho Nombre : {item.adua_DespachoNombre}</Text>
-                    <Text style={styles.linea}>Declaración de Mercancía : {item.deva_DeclaracionMercancia}</Text>
-                    <Text style={styles.linea}>Fecha de Aceptación : {item.deva_FechaAceptacion}</Text>
-                    <Text style={styles.linea}>Finalización : {item.deva_Finalizacion ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Pago Efectuado : {item.deva_PagoEfectuado !== null ? (item.deva_PagoEfectuado ? 'Si' : 'No') : 'null'}</Text>
-                    <Text style={styles.linea}>País de Exportación : {item.pais_ExportacionNombre}</Text>
-                    <Text style={styles.linea}>Fecha de Exportación : {item.deva_FechaExportacion}</Text>
-                    <Text style={styles.linea}>Moneda : {item.monedaNombre}</Text>
-                    <Text style={styles.linea}>Conversión a Dólares : {item.deva_ConversionDolares}</Text>
-                    <Text style={styles.linea}>Lugar de Embarque : {item.lugarEmbarque}</Text>
-                    <Text style={styles.linea}>Nombre Raso Comprador : {item.nico_Descripcion}</Text>
-                    <Text style={styles.linea}>Dirección Comprador : {item.impo_Direccion_Exacta}</Text>
-                    <Text style={styles.linea}>Ciudad  : {item.impo_CiudadNombre}</Text>
-                    <Text style={styles.linea}>País  : {item.impo_PaisNombre}</Text>
-                    <Text style={styles.linea}>Correo Electrónico Comprador : {item.impo_Correo_Electronico}</Text>
-                    <Text style={styles.linea}>Teléfono Comprador : {item.impo_Telefono}</Text>
-                    <Text style={styles.linea}>Fax Comprador : {item.impo_Fax}</Text>
-                    <Text style={styles.linea}>Ciudad Proveedor : {item.prov_CiudadNombre}</Text>
-                    <Text style={styles.linea}>País Proveedor : {item.prov_PaisNombre}</Text>
-                    <Text style={styles.linea}>Identificación Intermediario : {item.prov_NumeroIdentificacion}</Text>
-                    <Text style={styles.linea}>Nombre Intermediario : {item.prov_Nombre_Raso}</Text>
-                    <Text style={styles.linea}>Dirección Intermediario : {item.prov_Direccion_Exacta}</Text>
-                    <Text style={styles.linea}>Correo Intermediario : {item.prov_Correo_Electronico}</Text>
-                    <Text style={styles.linea}>Ciudad Intermediario : {item.inte_CiudadNombre}</Text>
-                    <Text style={styles.linea}>País Intermediario : {item.inte_PaisNombre}</Text>
-                    <Text style={styles.linea}>Teléfono Intermediario : {item.prov_Telefono}</Text>
-                    <Text style={styles.linea}>Fax Intermediario : {item.prov_Fax}</Text>
-                    <Text style={styles.linea}>Lugar de Entrega : {item.deva_LugarEntrega}</Text>
-                    <Text style={styles.linea}>País de Entrega : {item.pais_EntregaNombre}</Text>
-                    <Text style={styles.linea}>Descripción de Incoterms : {item.inco_Descripcion}</Text>
-                    <Text style={styles.linea}>Versión de Incoterms : {item.inco_Version}</Text>
-                    <Text style={styles.linea}>Número de Contrato : {item.deva_NumeroContrato}</Text>
+                      <Text style={styles.tableHeader}>
+                        <Text style={{ fontWeight: 'bold' }}>Informacion Aduana</Text>
+                      </Text>
                     </text>
+                      <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                    <Text style={styles.linea}>Fecha de Contrato : {item.deva_FechaContrato}</Text>
-                    <Text style={styles.linea}>Forma de Envío : {item.foen_Descripcion}</Text>
-                    <Text style={styles.linea}>Forma de Pago : {item.fopa_Descripcion}</Text>
+                          <Text style={styles.linea}>Aduana Ingreso : </Text>
+                          <Text style={{fontSize: 12}}>{item.adua_IngresoNombre}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Despacho Nombre : </Text>
+                          <Text style={{fontSize: 12}}>{item.adua_DespachoNombre}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Declaración de Mercancía : </Text>
+                          <Text style={{fontSize: 12}}>{item.deva_DeclaracionMercancia}</Text>
+                        </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Fecha de Aceptación : </Text>
+                          <Text style={{fontSize: 12}}>{item.deva_FechaAceptacion}</Text>
+                        </text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                      <Text style={styles.tableHeader}>
+                        <Text style={{ fontWeight: 'bold' }}>Informacion Importador</Text>
+                      </Text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Nombre o Razón Social: </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_Nombre_Raso}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>RTN : </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_RTN}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Número de Registro : </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_NumRegistro}</Text>
+                        </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Dirección Importador : </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_Direccion_Exacta}</Text>
+                        </text>
+
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Ciudad Importador : </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_CiudadNombre}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>País Importador: </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_PaisNombre}</Text>
+                        </text>
+                        </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>IMail Importador : </Text>
+                          <Text style={{fontSize: 12}}>{item.impo_Correo_Electronico}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Teléfono Importador : </Text>
+                        <Text style={{fontSize: 12}}>{item.impo_Telefono}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Fax Importador : </Text>
+                        <Text style={{fontSize: 12}}>{item.impo_Fax}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Nivel Comercial : </Text>
+                          <Text style={{fontSize: 12}}>{item.nico_Descripcion}</Text>
+                        </text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                      <Text style={styles.tableHeader}>
+                        <Text style={{ fontWeight: 'bold' }}>Informacion Proveedor</Text>
+                      </Text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Nombre Proveedor : </Text>
+                          <Text style={{fontSize: 12}}>{item.prov_Nombre_Raso}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Dirección Proveedor : </Text>
+                          <Text style={{fontSize: 12}}>{item.prov_Direccion_Exacta}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>País Proveedor : </Text>
+                          <Text style={{fontSize: 12}}>{item.prov_PaisNombre}</Text>
+                        </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                     <text style={styles.tableCell}>
+                       <Text style={styles.linea}>Ciudad Proveedor : </Text>
+                       <Text style={{fontSize: 12}}>{item.prov_CiudadNombre}</Text>
+                     </text>
+                     <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Correo Proveedor : </Text>
+                       <Text style={{fontSize: 12}}>{item.prov_Correo_Electronico}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Teléfono Proveedor : </Text> 
+                        <Text style={{fontSize: 12}}>{item.prov_Telefono}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Fax Proveedor : </Text>
+                          <Text  style={{fontSize: 12}}> {item.prov_Fax}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Condicion Comercial : </Text>
+                          <Text  style={{fontSize: 12}}>{item.coco_Descripcion}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}> </Text>
+                          <Text></Text>
+                        </text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                      <Text style={styles.tableHeader}>
+                        <Text style={{ fontWeight: 'bold' }}>Información Intermediario</Text>
+                      </Text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Nombre o Razón social : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Nombre_Raso}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Ciudad Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Direccion_Exacta}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Ciudad Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_CiudadNombre}</Text>
+                        </text>
+                      </text>
+                      <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>País Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_PaisNombre}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Correo Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Correo_Electronico}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Teléfono Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Telefono}</Text>
+                        </text>
+                      </text>
+                      <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Fax Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Fax}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Tipo Intermediario : </Text>
+                          <Text style={{fontSize: 12}}>{item.inte_Tipo_Otro}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}> </Text>
+                        </text>
+                      </text>
+
+
+                    <text style={styles.tableRow}>
+                      <Text style={styles.tableHeader}>
+                        <Text style={{ fontWeight: 'bold' }}>Características de Transacción</Text>
+                      </Text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Lugar de Entrega : </Text> 
+                        <Text> {item.deva_LugarEntrega}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>País de Entrega : </Text> 
+                        <Text> {item.pais_EntregaNombre}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Incoterm : </Text>
+                        <Text style={{fontSize: 12}}>{item.inco_Descripcion}</Text>
+                      </text>
+                    </text>
+
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Versión de Incoterms :</Text>
+                        <Text> {item.inco_Version}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Número de Contrato : </Text>
+                        <Text style={{fontSize: 12}}>{item.deva_NumeroContrato}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Fecha de Contrato : </Text>
+                        <Text style={{fontSize: 12}}>{item.deva_FechaContrato}</Text>
+                      </text>                   
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Forma de Envío : </Text>
+                        <Text style={{fontSize: 12}}>{item.foen_Descripcion}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Pago Efectuado : </Text>
+                          <Text style={{fontSize: 12}}>{item.deva_PagoEfectuado !== null ? (item.deva_PagoEfectuado ? 'Si' : 'No') : 'null'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Forma de Pago : </Text>
+                        <Text style={{fontSize: 12}}>{item.fopa_Descripcion}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                            <Text style={styles.linea}>Lugar de Embarque : </Text>
+                            <Text style={{fontSize: 12}}>{item.lugarEmbarque}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>País de Exportación : </Text>
+                        <Text style={{fontSize: 12}}>{item.pais_ExportacionNombre}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Fecha de Exportación : </Text>
+                          <Text style={{fontSize: 12}}>{item.deva_FechaExportacion}</Text>
+                        </text>
+                    </text>
+                   <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Moneda : </Text>
+                        <Text style={{fontSize: 11}}>{item.monedaNombre}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}></Text>
+                      </text>
+                    </text>
+                   
                     
-                    <Text style={styles.linea}>Restricciones de Utilización : {item.codi_Restricciones_Utilizacion}</Text>
-                    <Text style={styles.linea}>Restricciones de Utilización Indicadas: {item.codi_Indicar_Restricciones_Utilizacion ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Depende Precio Condición : {item.codi_Depende_Precio_Condicion ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Indicar Existe Condición : {item.codi_Indicar_Existe_Condicion ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Condicionada Revertir : {item.codi_Condicionada_Revertir ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Vinculación Comprador Vendedor : {item.codi_Vinculacion_Comprador_Vendedor ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Tipo de Vinculación : {item.codi_Tipo_Vinculacion}</Text>
-                    <Text style={styles.linea}>Vinculación Influye Precio : {item.codi_Vinculacion_Influye_Precio ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Pagos Descuentos Indirectos : {item.codi_Pagos_Descuentos_Indirectos ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Concepto Monto Declarado : {item.codi_Concepto_Monto_Declarado}</Text>
-                    <Text style={styles.linea}>Existen Cánones : {item.codi_Existen_Canones ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Indicar Cánones : {item.codi_Indicar_Canones ? 'Si' : 'No'}</Text>
-                    <Text style={styles.linea}>Precio Factura : {item.base_PrecioFactura}</Text>
-                    <Text style={styles.linea}>Pagos Indirectos : {item.base_PagosIndirectos}</Text>
-                    <Text style={styles.linea}>Precio Real : {item.base_PrecioReal}</Text>
-                    <Text style={styles.linea}>Monto Condición : {item.base_MontCondicion}</Text>
-                    <Text style={styles.linea}>Monto de Reversión : {item.base_MontoReversion}</Text>
-                    <Text style={styles.linea}>Comisión Correlaje : {item.base_ComisionCorrelaje}</Text>
-                    <Text style={styles.linea}>Gasto Envase Embalaje : {item.base_Gasto_Envase_Embalaje}</Text>
-                    <Text style={styles.linea}>Valores Materiales Incorporado : {item.base_ValoresMateriales_Incorporado}</Text>
-                    <Text style={styles.linea}>Valor Materiales Utilizados : {item.base_Valor_Materiales_Utilizados}</Text>
-                    <Text style={styles.linea}>Valor Materiales Consumidos : {item.base_Valor_Materiales_Consumidos}</Text>
-                    <Text style={styles.linea}>Valor Ingeniería Importado : {item.base_Valor_Ingenieria_Importado}</Text>
-                    <Text style={styles.linea}>Valor Cánones : {item.base_Valor_Canones}</Text>
-                    <Text style={styles.linea}>Gasto Transporte Importada : {item.base_Gasto_TransporteM_Importada}</Text>
-                    <Text style={styles.linea}>Gastos Carga Importada : {item.base_Gastos_Carga_Importada}</Text>
-                    <Text style={styles.linea}>Costos Seguro : {item.base_Costos_Seguro}</Text>
-                    <Text style={styles.linea}>Total Ajustes Precio Pagado : {item.base_Total_Ajustes_Precio_Pagado}</Text>
-                    <Text style={styles.linea}>Gastos Asistencia Técnica : {item.base_Gastos_Asistencia_Tecnica}</Text>
-                    <Text style={styles.linea}>Gastos Transporte Posterior : {item.base_Gastos_Transporte_Posterior}</Text>
-                    <Text style={styles.linea}>Derechos Impuestos : {item.base_Derechos_Impuestos}</Text>
-                    <Text style={styles.linea}>Monto Intereses : {item.base_Monto_Intereses}</Text>
-                    <Text style={styles.linea}>Deducciones Legales : {item.base_Deducciones_Legales}</Text>
-                    <Text style={styles.linea}>Total Deducciones : {item.base_Total_Deducciones_Precio}</Text>
-                    <Text style={styles.linea}>Valor Aduana : {item.base_Valor_Aduana}</Text>
-                    </text>
-</text>
                     </View>
                    
                    
                   
                   ))}
               </View>
+
+
+              <View style={styles.tableRow}>
+                  
+                  <Text style={styles.tableHeader1}>
+                    <Text style={{ fontWeight: 'bold' }}>Transacción</Text>
+                  </Text>
+
+              </View>
+              <View style={styles.section}>
+              {data
+                .slice(index * pageSize, (index + 1) * pageSize)
+                .map((item, i) => (
+                  <View style={{fontSize: 12}} key={i}>
+                    <text style={styles.tableRow}>
+                    <Text style={styles.tableHeader}>
+                      <Text style={{ fontWeight: 'bold' }}>Condiciones de Transacción</Text>
+                    </Text>
+                  </text>
+
+
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Finalización : </Text>
+                        <Text style={{fontSize: 12}}>{item.deva_Finalizacion ? 'Si' : 'No'}</Text>
+                      </text>
+                      
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Descuentos Indirectos : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Pagos_Descuentos_Indirectos ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Depende Precio Condición : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Depende_Precio_Condicion ? 'Si' : 'No'}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Indicar Existe Condición : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Indicar_Existe_Condicion ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Condicionada Revertir : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Condicionada_Revertir ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Vinculación Comprador Vendedor : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Vinculacion_Comprador_Vendedor ? 'Si' : 'No'}</Text>
+                      </text>
+                    </text>
+
+                    
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Vinculación Influye Precio : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Vinculacion_Influye_Precio ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Restricciones de Utilización : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Indicar_Restricciones_Utilizacion ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                    <Text style={styles.linea}>Restricciones de Utilización Indicadas: </Text>
+                    <Text style={{fontSize: 12}}>{item.codi_Restricciones_Utilizacion}</Text>
+                    </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Existen Cánones : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Existen_Canones ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Indicar Cánones : </Text>
+                        <Text style={{fontSize: 12}}>{item.codi_Indicar_Canones ? 'Si' : 'No'}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                    <Text style={styles.linea}> </Text>
+                    </text>
+                    </text>
+                    
+                    <text style={styles.tableRow}>
+                    <Text style={styles.tableHeader}>
+                      <Text style={{ fontWeight: 'bold' }}>Valor Aduana</Text>
+                    </Text>
+                  </text>
+
+                    <text style={styles.tableRow}>
+                     
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Conversión a Dólares : </Text>
+                          <Text style={{fontSize: 12}}>{item.deva_ConversionDolares}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Tipo de Vinculación : </Text>
+                          <Text style={{fontSize: 12}}>{item.codi_Tipo_Vinculacion}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Concepto Monto Declarado : </Text>
+                          <Text style={{fontSize: 12}}>{item.codi_Concepto_Monto_Declarado}</Text>
+                        </text>
+                    </text>
+                    
+                   
+                    <text style={styles.tableRow}>
+                       
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Precio Factura : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_PrecioFactura}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Pagos Indirectos : </Text>
+                          <Text style={{fontSize: 12}}>{item.base_PagosIndirectos}</Text>
+                      </text>
+                      
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Precio Real : </Text> 
+                        <Text style={{fontSize: 12}}>{item.base_PrecioReal}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Monto Condición : </Text>
+                          <Text style={{fontSize: 12}}>{item.base_MontCondicion}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Monto de Reversión : </Text> 
+                          <Text style={{fontSize: 12}}>{item.base_MontoReversion}</Text>
+                        </text>
+                        <text style={styles.tableCell}>
+                          <Text style={styles.linea}>Comisión Correlaje : </Text> 
+                          <Text style={{fontSize: 12}}>{item.base_ComisionCorrelaje}</Text>
+                        </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Gasto Envase Embalaje : </Text> 
+                        <Text style={{fontSize: 12}}>{item.base_Gasto_Envase_Embalaje}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valores Materiales Incorporado : </Text> 
+                        <Text style={{fontSize: 12}}>{item.base_ValoresMateriales_Incorporado}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valor Materiales Utilizados : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Valor_Materiales_Utilizados}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valor Materiales Consumidos : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Valor_Materiales_Consumidos}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valor Ingeniería Importado : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Valor_Ingenieria_Importado}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valor Cánones : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Valor_Canones}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        
+                   
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Gasto Transporte Importada : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Gasto_TransporteM_Importada}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Gastos Carga Importada : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Gastos_Carga_Importada}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Costos Seguro : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Costos_Seguro}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Total Ajustes Precio Pagado : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Total_Ajustes_Precio_Pagado}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Gastos Asistencia Técnica : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Gastos_Asistencia_Tecnica}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Gastos Transporte Posterior : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Gastos_Transporte_Posterior}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                        
+                    
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Derechos Impuestos : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Derechos_Impuestos}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Monto Intereses : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Monto_Intereses}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Deducciones Legales : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Deducciones_Legales}</Text>
+                      </text>
+                    </text>
+                    <text style={styles.tableRow}>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Total Deducciones : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Total_Deducciones_Precio}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}>Valor Aduana : </Text>
+                        <Text style={{fontSize: 12}}>{item.base_Valor_Aduana}</Text>
+                      </text>
+                      <text style={styles.tableCell}>
+                        <Text style={styles.linea}></Text>
+                      </text>
+                    </text>
+                  </View>
+                  ))}
+              </View>
+
+
               <Text style={styles.pagination}>
                 Página {index + 1} de {totalPages}
               </Text>
