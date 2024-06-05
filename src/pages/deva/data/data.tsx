@@ -126,7 +126,8 @@ interface Deva {
   deva_FechaCreacion: string
   usua_ModificacionNombre: string
   deva_FechaModificacion: string
-  deva_Estado: boolean
+  deva_Estado: boolean,
+  subRows: Factura[]
 }
 export const getDevas = async () => {
   try {
@@ -150,6 +151,7 @@ export const getDevas = async () => {
     const data = await response.data
     return data.data.map((deva: Deva) => {
       return {
+        subRows: [],
         deva_Id: deva.deva_Id,
         deva_AduanaIngresoId: deva.deva_AduanaIngresoId,
         adua_IngresoNombre: deva.adua_IngresoNombre,
@@ -1079,7 +1081,7 @@ export const getFacturas = async (deva_Id: number) => {
 
     const response = await fetch(
       import.meta.env.VITE_API_SimexPro_Url +
-        `api//api/Facturas/Listar/Listar?deva_Id=${deva_Id}`,
+        `api/Facturas/Listar?deva_Id=${deva_Id}`,
       {
         method: 'GET',
         headers: {
@@ -1094,6 +1096,8 @@ export const getFacturas = async (deva_Id: number) => {
     }
 
     const data = await response.json()
+    console.log('factura:', JSON.stringify(data.data, null, 2));
+
 
     return data.data.map((fact: Factura) => fact)
   } catch (error) {

@@ -13,17 +13,7 @@ import { Aduana } from '../data/schema'
 export const columns: ColumnDef<Aduana>[] = [
   {
     id: 'expand',
-    // header: ({ table }) => (
-    //   <Checkbox
-    //     checked={
-    //       table.getIsAllPageRowsSelected() ||
-    //       (table.getIsSomePageRowsSelected() && 'indeterminate')
-    //     }
-    //     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //     aria-label='Select all'
-    //     className='translate-y-[2px]'
-    //   />
-    // ),
+    
     cell: ({ row }) =>
       row.original.subRows.length > 0 && (
         <Button

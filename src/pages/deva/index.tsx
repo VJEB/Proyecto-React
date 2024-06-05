@@ -321,7 +321,7 @@ export default function PagDeva({
         <LayoutBody className='flex flex-col' fixedHeight>
           <div className='mb-2 flex items-center justify-between space-y-2'>
             <div>
-              <h2 className='text-2xl font-bold tracking-tight'>
+              <h2 className='text-2xl fontbo-ld tracking-tight'>
                 Listado de {title.toLowerCase()}
               </h2>
             </div>

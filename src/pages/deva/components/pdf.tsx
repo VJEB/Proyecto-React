@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fdfdfd',
   },
   tableCell: {
-    fontSize: '12px',
+    fontSize: '10px',
     flex: 1,
     width: '50%',
     borderStyle: 'solid',
@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     backgroundColor: '#a3d1fe',
     padding: 5,
-    marginTop: 5,
+    marginTop: -1,
+    marginBottom: -20,
     fontWeight: 'bold',
     
   },
@@ -293,7 +294,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
                           <Text style={styles.linea}>Fecha de Aceptación : </Text>
-                          <Text style={{fontSize: 12}}>{item.deva_FechaAceptacion}</Text>
+                          <Text style={{fontSize: 12}}>{item.deva_FechaAceptacion.split('T')[0]}</Text>
                         </text>
                     </text>
 
@@ -481,7 +482,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                       </text>
                       <text style={styles.tableCell}>
                         <Text style={styles.linea}>Fecha de Contrato : </Text>
-                        <Text style={{fontSize: 12}}>{item.deva_FechaContrato}</Text>
+                        <Text style={{fontSize: 12}}>{item.deva_FechaContrato.split('T')[0]}</Text>
                       </text>                   
                     </text>
                     <text style={styles.tableRow}>
@@ -509,7 +510,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                       </text>
                       <text style={styles.tableCell}>
                           <Text style={styles.linea}>Fecha de Exportación : </Text>
-                          <Text style={{fontSize: 12}}>{item.deva_FechaExportacion}</Text>
+                          <Text style={{fontSize: 12}}>{item.deva_FechaExportacion.split('T')[0]}</Text>
                         </text>
                     </text>
                    <text style={styles.tableRow}>

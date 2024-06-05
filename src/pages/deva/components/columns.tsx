@@ -1,10 +1,39 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
-import { Deva } from '../data/schema'
-
-export const columns: ColumnDef<Deva>[] = [
+import { Deva1, Factura } from '../data/schema'
+import { Button } from '@/components/custom/button'
+import { CaretRightIcon, CaretDownIcon } from '@radix-ui/react-icons'
+import { getFacturas } from '../data/data'
+export const columns: ColumnDef<Deva1>[] = [
   {
+    id: 'expand',
+    cell: ({ row }) =>
+        <Button
+          onClick={() => {
+            getFacturas(row.original.deva_Id).then((facturas:Factura[])=>row.original.subRows = facturas)
+            .catch((err)=>{
+              console.log("error en los datos: "+err)
+            })
+            
+            ;
+            
+            console.log("lineas veamos "+row.original.subRows)
+            row.toggleExpanded()
+          }}
+          variant='ghost'
+          className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+        >
+          {row.getIsExpanded() ? (
+            <CaretDownIcon className='h-4 w-4' />
+          ) : (
+            <CaretRightIcon className='h-4 w-4' />
+          )}
+        </Button>,
+      enableSorting: false,
+      enableHiding: false,
+  },
+  {    
     accessorKey: 'deva_Id',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Id' />

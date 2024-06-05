@@ -32,12 +32,20 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-// interface Aldea {
-//   alde_Id: string
-//   ciud_Id: string
-//   alde_Nombre: string
-//   pvin_Nombre: string
-// }
+interface Factura {
+  fact_Id: number,
+  deva_Id: number,
+  fact_Numero: string,
+  fact_Fecha: string,
+  usua_UsuarioCreacion: number,
+  fact_FechaCreacion: string,
+  usua_UsuarioModificacion: number,
+  fact_FechaModificacion: string,
+  fact_Estado: boolean,
+  usuarioCreacionNombre: string,
+  usuarioModificacionNombre: string,
+  deva: string,
+}
 
 export function DataTable<TData, TValue>({
   columns,
@@ -107,19 +115,72 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <>
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                        {cell.column.id === 'adua_Id' && (
+                          <>
+                            <TableCell key={cell.id + 1}></TableCell>
+                            <TableCell key={cell.id + 2}></TableCell>
+                            <TableCell key={cell.id + 3}></TableCell>
+                            <TableCell key={cell.id + 4}></TableCell>
+                            <TableCell key={cell.id + 5}></TableCell>
+                            <TableCell key={cell.id + 6}></TableCell>
+                          </>
+                        )}
+                      </>
+                    ))}
+                  </TableRow>
+                  {row.getIsExpanded() && (
+                    <TableRow
+                      key={row.id + 1}
+                      className='bg-[#192138] font-bold'
+                    >
+                      <TableCell key={row.id + 2} ></TableCell>
+                      <TableCell key={row.id + 3} className='pl-[2%]' >Factura Id</TableCell>
+                      <TableCell key={row.id + 4} className='pl-[2%]'>Número de factura</TableCell>
+                      <TableCell key={row.id + 5}>Fecha Emicion</TableCell>
+                      <TableCell key={row.id + 6}></TableCell>
+                      <TableCell key={row.id + 7}></TableCell>
+                      <TableCell key={row.id + 8}></TableCell>
+                    </TableRow>
+                  )}
+                  {row.getIsExpanded() &&
+                    row.original.subRows.map(
+                      (ciudad: Factura, index: number) => (
+                        <TableRow key={ciudad.fact_Id + index} className='bg-[#23315c] font-bold'>
+                          <TableCell></TableCell>
+                          <TableCell
+                            className='pl-[2%]'
+                            key={ciudad.fact_Id + index}
+                          >
+                            {ciudad.fact_Id}
+                          </TableCell>
+                          <TableCell className='pl-[2%]' key={ciudad.fact_Numero + index}>
+                            {ciudad.fact_Numero}
+                          </TableCell>
+                          
+                          <TableCell className='pl-[2%]' key={ciudad.fact_FechaCreacion + index}>
+                            {ciudad.fact_FechaCreacion.split('T')[0]}
+                          </TableCell>
+                          <TableCell></TableCell>
+                          <TableCell></TableCell>
+                          <TableCell></TableCell>
+
+                        </TableRow>
+                      )
+                    )}
+                </>
               ))
             ) : (
               <TableRow>
