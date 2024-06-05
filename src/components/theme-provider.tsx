@@ -17,6 +17,12 @@ type ThemeProviderState = {
   setProcId: (ofiProId: number) => void
   devaId: number
   setDevaId: (devaId: number) => void
+  factId: number
+  setFactId: (factId: number) => void
+  itemId: number
+  setItemId: (itemId: number) => void
+  aranId: number
+  setAranId: (aranId: number) => void
   refrescar: boolean
   setRefrescar: (val: boolean) => void
   mostrarDetalle: number
@@ -32,6 +38,12 @@ const initialState: ThemeProviderState = {
   setProcId: () => null,
   devaId: 0,
   setDevaId: () => null,
+  factId: 0,
+  setFactId: () => null,
+  itemId: 0,
+  setItemId: () => null,
+  aranId: 0,
+  setAranId: () => null,
   refrescar: false,
   setRefrescar: () => null,
   mostrarDetalle: 0,
@@ -53,6 +65,9 @@ export function ThemeProvider({
   const [ofiProId, setOfiProId] = useState(0)
   const [procId, setProcId] = useState(0)
   const [devaId, setDevaId] = useState(0)
+  const [factId, setFactId] = useState(0)
+  const [itemId, setItemId] = useState(0)
+  const [aranId, setAranId] = useState(0)
 
   const [refrescar, setRefrescar] = useState(false)
   const [mostrarDetalle, setMostrarDetalle] = useState(0)
@@ -87,6 +102,12 @@ export function ThemeProvider({
     setProcId,
     devaId,
     setDevaId,
+    factId,
+    setFactId,
+    itemId,
+    setItemId,
+    aranId,
+    setAranId,
     refrescar,
     setRefrescar,
     mostrarDetalle,

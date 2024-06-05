@@ -16,10 +16,12 @@ import {
 } from 'react'
 import {
   getAduanas,
+  getAranceles,
   getCiudades,
   getCondicionesComerciales,
   getDevas,
   getEmbarques,
+  getEstadosMercancia,
   getFacturas,
   getFormasDeEnvio,
   getFormasDePago,
@@ -28,6 +30,7 @@ import {
   getNivelesComerciales,
   getPaises,
   getTiposDeIntermediarios,
+  getUnidadesDeMedida,
 } from './data/data'
 import { Button } from '@/components/custom/button'
 import {
@@ -48,19 +51,23 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
   Aduana,
+  Arancel,
   Ciudad,
   CondicionComercial,
   Deva,
   DevaCompuesta,
   Embarque,
+  EstadoDeMercancia,
   Factura,
   FormaDeEnvio,
   FormaDePago,
   Incoterm,
+  Item,
   Moneda,
   NivelComercial,
   Pais,
   TipoDeIntermediario,
+  UnidadDeMedida,
 } from './data/schema'
 import { useToast } from '@/components/ui/use-toast'
 import { ThemeProviderContext } from '@/components/theme-provider'
@@ -100,6 +107,8 @@ import { Calendar } from '@/components/ui/calendar'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { aranColumns } from './arancelesDatatable/columns'
+import { AranDataTable } from './arancelesDatatable/data-table'
 
 
 
@@ -668,7 +677,7 @@ function FormDeva({
     condiciones: boolean
     valorAduana: boolean
   }>({
-    general: true,
+    general: false,
     proveedor: true,
     caracteristicas: true,
     facturas: true,
@@ -871,7 +880,7 @@ function FormGeneral({
   setMostrarForm,
 }: {
   validar: boolean
-  setValidar: (bool: boolean) => void
+  setValidar: (bool: boolean | (() => boolean)) => void
   ciudades: Ciudad[]
   paises: { pais_Id: number; pais_Nombre: string; pais_Codigo: string }[]
   deva: DevaCompuesta
@@ -945,7 +954,7 @@ function FormGeneral({
   }, [])
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar((prev) => false), 2000)
+    validar && setTimeout(() => setValidar(() => false), 2000)
     if (validar) {
       validarInfoGeneral()
     }
@@ -3545,6 +3554,7 @@ function FormFactura({
   const context = useContext(ThemeProviderContext)
 
   const [dialogState, setDialogState] = useState(false)
+  const [arancelesDialogState, setArancelesDialogState] = useState(false)
   const [factura, setFactura] = useState<Factura>({
     fact_Id: 0,
     fact_Numero: '',
@@ -3560,17 +3570,96 @@ function FormFactura({
     fact_FechaModificacion: new Date().toISOString(),
     tbItems: [],
   })
+
+  const [item, setItem] = useState<Item>({
+    item_Id: 1,
+    item_Numero: 0,
+    fact_Id: 0,
+    item_Cantidad: 0,
+    item_Cantidad_Bultos: 0,
+    item_ClaseBulto: '',
+    item_Acuerdo: '',
+    item_PesoNeto: 0,
+    item_PesoBruto: 0,
+    unme_Id: 0,
+    item_IdentificacionComercialMercancias: '',
+    item_CaracteristicasMercancias: '',
+    item_Marca: '',
+    item_Modelo: '',
+    merc_Id: 0,
+    mate_SubCategoria: 0,
+    subc_Descripcion: '',
+    mate_Imagen: '',
+    pais_IdOrigenMercancia: 0,
+    item_ClasificacionArancelaria: '',
+    aran_Id: 0,
+    aran_Descripcion: '',
+    aran_Codigo: '',
+    unme_Descripcion: '',
+    merc_Descripcion: '',
+    item_ValorUnitario: 0,
+    item_GastosDeTransporte: 0,
+    item_ValorTransaccion: 0,
+    item_Seguro: 0,
+    item_OtrosGastos: 0,
+    item_ValorAduana: 0,
+    item_CuotaContingente: 0,
+    item_ReglasAccesorias: '',
+    item_CriterioCertificarOrigen: '',
+    item_EsNuevo: false,
+    item_EsHibrido: false,
+    item_LitrosTotales: 0,
+    item_CigarrosTotales: 0,
+    usua_UsuarioCreacion: 1,
+    nombrePaisOrigen: '',
+    usuarioCreacionNombre: '',
+    item_FechaCreacion: new Date().toISOString(),
+    usua_UsuarioModificacion: 1,
+    usuarioModificacionNombre: '',
+    usua_UsuarioEliminacion: 1,
+    item_FechaEliminacion: new Date().toISOString(),
+    item_FechaModificacion: new Date().toISOString(),
+    item_Estado: true,
+  })
+
   const [facturas, setFacturas] = useState<Factura[]>([])
+  const [unidadesDeMedida, setUnidadesDeMedida] = useState<UnidadDeMedida[]>([])
+  const [estadosDeLaMercancia, setEstadosDeLaMercancia] = useState<
+    EstadoDeMercancia[]
+  >([])
+  const [paises, setPaises] = useState<Pais[]>([])
+  const [aranceles, setAranceles] = useState<Arancel[]>([])
+
+  const [cbbUnmeState, setCbbUnmeState] = useState(false)
+  const [cbbMercState, setCbbMercState] = useState(false)
+  const [cbbPaisState, setCbbPaisState] = useState(false)
 
   useEffect(() => {
     getFacturas(deva.declaraciones_ValorViewModel.deva_Id)
       .then((data) => setFacturas(data))
       .catch((err) => console.error('Error al cargar las facturas: ' + err))
+    getUnidadesDeMedida()
+      .then((data) => setUnidadesDeMedida(data))
+      .catch((err) =>
+        console.error('Error al cargar las unidades de medida: ' + err)
+      )
+    getEstadosMercancia()
+      .then((data) => setEstadosDeLaMercancia(data))
+      .catch((err) =>
+        console.error('Error al cargar los estados de la mercancía: ' + err)
+      )
+    getPaises()
+      .then((data) => setPaises(data))
+      .catch((err) => console.error('Error al cargar los paises: ' + err))
   }, [context.refrescar])
 
   const inputFacturasRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
   >([])
+
+  const inputItemRefs = useRef<(HTMLInputElement | HTMLButtonElement | null)[]>(
+    []
+  )
 
   const validarInputsFacturas = () => {
     let huboError = false
@@ -3599,126 +3688,576 @@ function FormFactura({
   }
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar((prev) => false), 2000)
+    if (context.aranId) {
+      setItem((item) => {
+        return {
+          ...item,
+          item_ClasificacionArancelaria: context.aranId,
+        }
+      })
+      setArancelesDialogState(false)
+    }
+  }, [context.aranId])
+
+  const validarInputsItem = () => {
+    let huboError = false
+    inputItemRefs.current.forEach((input) => {
+      if (huboError) {
+        return
+      }
+      const elementType = input?.tagName
+      if (elementType === 'INPUT' && !input?.disabled && !input?.value) {
+        errorToast(
+          `Por favor ingrese ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      } else if (
+        elementType === 'BUTTON' &&
+        input?.dataset.selected !== 'true'
+      ) {
+        errorToast(
+          `Por favor seleccione ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      }
+    })
+    return false
+    // return huboError
+  }
+
+  useEffect(() => {
+    validar && setTimeout(() => setValidar(() => false), 2000)
     if (validar) {
-      validarInputsFacturas()
+      dialogState ? validarInputsItem() : validarInputsFacturas()
     }
   }, [validar])
 
+  function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+    let timeout: NodeJS.Timeout
+    return function (this: any, ...args: Parameters<T>) {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => func.apply(this, args), wait)
+    }
+  }
+
+  const arancelChange = (value: string) => {
+    const regex = /^[\d.]*$/
+    if (regex.test(value)) {
+      setItem((prevItem) => ({
+        ...prevItem,
+        item_ClasificacionArancelaria: value,
+      }))
+    }
+  }
+
+  const handleSearch = async (codigo: string) => {
+    getAranceles(codigo)
+      .then((data) => setAranceles(data))
+      .catch((err) => console.error('Error al cargar los aranceles: ' + err))
+  }
+
+  const debouncedSearch = debounce(handleSearch, 300)
+
+  const buscarAranceles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    arancelChange(value)
+    value.length > 2 && debouncedSearch(value)
+  }
+
+  console.log(aranceles)
+
   return (
-    <Card className='flex flex-col items-center p-3'>
-      <div className='my-3 flex max-w-[500px] flex-wrap justify-center gap-4'>
-        <div className='flex flex-col gap-1'>
-          <Label>16. Número de Factura</Label>
-          <Input
-            ref={(input) => (inputFacturasRefs.current[0] = input)}
-            value={factura.fact_Numero ? factura.fact_Numero : ''}
-            onChange={(e) => {
-              const regex = /^[\d-]*$/
-              if (regex.test(e.target.value)) {
-                setFactura((fact) => {
-                  return {
-                    ...fact,
-                    fact_Numero: e.target.value,
-                  }
-                })
-              }
-            }}
-          />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <Label>Fecha de Emisión</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={'outline'}
-                className={cn(
-                  'w-[200px] justify-start text-left font-normal',
-                  !factura.fact_Fecha && 'text-muted-foreground'
-                )}
-                ref={(input) => (inputFacturasRefs.current[1] = input)}
-                data-selected={factura.fact_Fecha ? true : false}
-              >
-                <CalendarIcon className='mr-2 h-4 w-4' />
-                {factura.fact_Fecha ? (
-                  <span>{factura.fact_Fecha.split('T')[0]}</span>
-                ) : (
-                  // format(date, 'PPP')
-                  <span>Seleccione una fecha</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-auto p-0'>
-              <Calendar
-                mode='single'
-                selected={
-                  factura.fact_Fecha ? new Date(factura.fact_Fecha) : undefined
-                }
-                onSelect={(e) =>
+    <>
+      <Card className='flex flex-col items-center p-3'>
+        <div className='my-3 flex max-w-[500px] flex-wrap justify-center gap-4'>
+          <div className='flex flex-col gap-1'>
+            <Label>16. Número de Factura</Label>
+            <Input
+              ref={(input) => (inputFacturasRefs.current[0] = input)}
+              value={factura.fact_Numero ? factura.fact_Numero : ''}
+              onChange={(e) => {
+                const regex = /^[\d-]*$/
+                if (regex.test(e.target.value)) {
                   setFactura((fact) => {
                     return {
                       ...fact,
-                      fact_Fecha: e
-                        ? e.toISOString()
-                        : new Date().toISOString(),
+                      fact_Numero: e.target.value,
                     }
                   })
                 }
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <Dialog open={dialogState} onOpenChange={setDialogState}>
-          <DialogTrigger asChild>
-            <Button
-              onClick={() => {
-                setDialogState(true)
               }}
-            >
-              <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
-              Agregar Factura
-            </Button>
-          </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
-            <DialogHeader>
-              <DialogTitle>Agregar Facturas</DialogTitle>
-            </DialogHeader>
-            <div className='flex flex-wrap py-4'></div>
-            <DialogFooter>
-              <Button onClick={() => setDialogState(false)} variant='outline'>
-                Cancelar
-              </Button>
+            />
+          </div>
+          <div className='flex flex-col gap-1'>
+            <Label>Fecha de Emisión</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={'outline'}
+                  className={cn(
+                    'w-[200px] justify-start text-left font-normal',
+                    !factura.fact_Fecha && 'text-muted-foreground'
+                  )}
+                  ref={(input) => (inputFacturasRefs.current[1] = input)}
+                  data-selected={factura.fact_Fecha ? true : false}
+                >
+                  <CalendarIcon className='mr-2 h-4 w-4' />
+                  {factura.fact_Fecha ? (
+                    <span>{factura.fact_Fecha.split('T')[0]}</span>
+                  ) : (
+                    // format(date, 'PPP')
+                    <span>Seleccione una fecha</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-auto p-0'>
+                <Calendar
+                  mode='single'
+                  selected={
+                    factura.fact_Fecha
+                      ? new Date(factura.fact_Fecha)
+                      : undefined
+                  }
+                  onSelect={(e) =>
+                    setFactura((fact) => {
+                      return {
+                        ...fact,
+                        fact_Fecha: e
+                          ? e.toISOString()
+                          : new Date().toISOString(),
+                      }
+                    })
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <Dialog open={dialogState} onOpenChange={setDialogState}>
+            <DialogTrigger asChild>
               <Button
                 onClick={() => {
-                  setDialogState(false)
+                  setDialogState(true)
+                  setItem((item) => {
+                    return {
+                      ...item,
+                      item_Numero: factura.tbItems.length + 1,
+                    }
+                  })
                 }}
               >
-                Cancelar Deva
+                <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
+                Agregar Item
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+            </DialogTrigger>
+            <DialogContent
+              className='sm:max-w-[720px]
+            '
+            >
+              <DialogHeader>
+                <DialogTitle>Agregar Item</DialogTitle>
+              </DialogHeader>
+              <div className='flex flex-wrap gap-4 py-4'>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>Número Item</Label>
+                  <Input
+                    disabled
+                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    value={item.item_Numero.toString() ?? ''}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>30. Cantidad</Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[1] = input)}
+                    value={item.item_Cantidad}
+                    onChange={(e) => {
+                      const regex = /^[\d-]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_Cantidad: parseInt(e.target.value),
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='max-w-[200px]'>
+                    31. Identificación Comercial de las Mercancías
+                  </Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[2] = input)}
+                    value={item.item_IdentificacionComercialMercancias ?? ''}
+                    onChange={(e) => {
+                      const regex = /^[\w\s-]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_IdentificacionComercialMercancias:
+                              e.target.value,
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>30.1. Unidad de Medida</Label>
+                  <Popover open={cbbUnmeState} onOpenChange={setCbbUnmeState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[3] = input)}
+                        data-selected={item.unme_Descripcion ? true : false}
+                      >
+                        {item.unme_Descripcion
+                          ? item.unme_Descripcion
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar unidades...' />
+                        <CommandList>
+                          <CommandEmpty>No hay unidades.</CommandEmpty>
+                          <CommandGroup>
+                            {unidadesDeMedida.map((unme) => (
+                              <CommandItem
+                                key={unme.unme_Id}
+                                onSelect={() => {
+                                  console.log(unidadesDeMedida)
+
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      unme_Descripcion: unme.unme_Descripcion,
+                                      unme_Id: unme.unme_Id,
+                                    }
+                                  })
+                                  setCbbUnmeState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    item.unme_Id === unme.unme_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {unme.unme_Descripcion}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='max-w-[200px]'>
+                    32. Características de la Mercancía
+                  </Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[4] = input)}
+                    value={item.item_CaracteristicasMercancias ?? ''}
+                    onChange={(e) => {
+                      const regex = /^[\w\s-]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_CaracteristicasMercancias: e.target.value,
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px] max-w-[200px]'>
+                    33. Marca
+                  </Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[5] = input)}
+                    value={item.item_Marca ?? ''}
+                    onChange={(e) => {
+                      const regex = /^[\w\s-]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_Marca: e.target.value,
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px] max-w-[200px]'>
+                    34. Modelo y/o Estilo
+                  </Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[6] = input)}
+                    value={item.item_Modelo ?? ''}
+                    onChange={(e) => {
+                      const regex = /^[\w\s-]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_Modelo: e.target.value,
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    35. Estado de las Mercancías
+                  </Label>
+                  <Popover open={cbbMercState} onOpenChange={setCbbMercState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[7] = input)}
+                        data-selected={item.merc_Descripcion ? true : false}
+                      >
+                        {item.merc_Descripcion
+                          ? item.merc_Descripcion
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar estado...' />
+                        <CommandList>
+                          <CommandEmpty>No hay estados.</CommandEmpty>
+                          <CommandGroup>
+                            {estadosDeLaMercancia.map((merc) => (
+                              <CommandItem
+                                key={merc.merc_Id}
+                                onSelect={() => {
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      merc_Descripcion: merc.merc_Descripcion,
+                                      merc_Id: merc.merc_Id,
+                                    }
+                                  })
+                                  setCbbMercState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    item.merc_Id === merc.merc_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {merc.merc_Codigo} | {merc.merc_Descripcion}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    36. Origen de las Mercancías
+                  </Label>
+                  <Popover open={cbbPaisState} onOpenChange={setCbbPaisState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[8] = input)}
+                        data-selected={item.nombrePaisOrigen ? true : false}
+                      >
+                        {item.nombrePaisOrigen
+                          ? item.nombrePaisOrigen
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar país...' />
+                        <CommandList>
+                          <CommandEmpty>No hay paises.</CommandEmpty>
+                          <CommandGroup>
+                            {paises.map((pais) => (
+                              <CommandItem
+                                key={pais.pais_Id}
+                                onSelect={() => {
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      pais_IdOrigenMercancia: pais.pais_Id,
+                                      nombrePaisOrigen: pais.pais_Nombre,
+                                    }
+                                  })
+                                  setCbbPaisState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    deva.declaraciones_ValorViewModel
+                                      .pais_EntregaId === pais.pais_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {pais.pais_Codigo} | {pais.pais_Nombre}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    37. Clasificación Arancelaria
+                  </Label>
+                  <Dialog
+                    open={arancelesDialogState}
+                    onOpenChange={setArancelesDialogState}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[9] = input)}
+                        data-selected={
+                          item.item_ClasificacionArancelaria ? true : false
+                        }
+                        onClick={() => setArancelesDialogState(true)}
+                      >
+                        {item.item_ClasificacionArancelaria
+                          ? item.item_ClasificacionArancelaria
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      className='sm:max-w-[720px]
+            '
+                    >
+                      <DialogHeader>
+                        <DialogTitle>Seleccionar Arancel</DialogTitle>
+                      </DialogHeader>
+                      <div className='flex flex-col gap-4 py-4'>
+                        <div className='flex flex-col gap-1'>
+                          <Label className='min-h-[28px]'>
+                            Buscar aranceles por código
+                          </Label>
+                          <Input
+                            ref={(input) => (inputItemRefs.current[1] = input)}
+                            value={item.item_ClasificacionArancelaria}
+                            placeholder='####.##.##.##'
+                            onChange={buscarAranceles}
+                          />
+                        </div>
+                        <div className='mt-6 flex-1 overflow-auto py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+                          <AranDataTable
+                            data={aranceles}
+                            columns={aranColumns}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          onClick={() => setArancelesDialogState(false)}
+                          variant='outline'
+                        >
+                          Cancelar
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>38. Valor Unitario</Label>
+                  <Input
+                    ref={(input) => (inputItemRefs.current[10] = input)}
+                    value={item.item_ValorUnitario}
+                    onChange={(e) => {
+                      const regex = /^[\d-.]*$/
+                      if (regex.test(e.target.value)) {
+                        setItem((item) => {
+                          return {
+                            ...item,
+                            item_ValorUnitario: parseInt(e.target.value),
+                          }
+                        })
+                      }
+                    }}
+                  />
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>Total Factura Unitario</Label>
+                  <Input
+                    disabled
+                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    value={item.item_ValorTransaccion.toString() ?? ''}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setDialogState(false)} variant='outline'>
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => {
+                    setDialogState(false)
+                  }}
+                >
+                  Cancelar Deva
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className='mr-4 flex justify-end gap-2 self-end'>
+          <Button
+            variant={'outline'}
+            onClick={() => onTabChange('caracteristicas')}
+          >
+            Regresar
+          </Button>
+          <Button
+            onClick={() => {
+              onTabChange('condiciones')
+            }}
+          >
+            Continuar
+          </Button>
+        </div>
+      </Card>
+      <div className='mt-6 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
         <FactDataTable data={facturas} columns={factColumns} />
       </div>
-      <div className='mr-4 flex justify-end gap-2 self-end'>
-        <Button
-          variant={'outline'}
-          onClick={() => onTabChange('caracteristicas')}
-        >
-          Regresar
-        </Button>
-        <Button
-          onClick={() => {
-            onTabChange('condiciones')
-          }}
-        >
-          Continuar
-        </Button>
-      </div>
-    </Card>
+    </>
   )
 }
 

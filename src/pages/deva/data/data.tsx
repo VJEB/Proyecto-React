@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Factura } from './schema'
+import { Arancel, EstadoDeMercancia, Factura, UnidadDeMedida } from './schema'
 
 interface Deva {
   deva_Id: number
@@ -958,7 +958,8 @@ export const getPaises = async () => {
     }
 
     const response = await fetch(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Paises/Listar',
+      import.meta.env.VITE_API_SimexPro_Url +
+        'api/Paises/Listar?pais_EsAduana=true',
       {
         method: 'GET',
         headers: {
@@ -1097,6 +1098,161 @@ export const getFacturas = async (deva_Id: number) => {
     return data.data.map((fact: Factura) => fact)
   } catch (error) {
     console.error('Error al cargar los embarques:', error)
+    return []
+  }
+}
+
+export const getUnidadesDeMedida = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/UnidadMedidas/Listar?unme_EsAduana=true`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((unme: UnidadDeMedida) => {
+      return {
+        unme_Id: unme.unme_Id,
+        unme_Descripcion: unme.unme_Descripcion,
+        unme_EsAduana: unme.unme_EsAduana,
+        usua_UsuarioCreacion: unme.usua_UsuarioCreacion,
+        unme_FechaCreacion: unme.unme_FechaCreacion,
+        usua_UsuarioModificacion: unme.usua_UsuarioModificacion,
+        unme_FechaModificacion: unme.unme_FechaModificacion,
+        usua_UsuarioEliminacion: unme.usua_UsuarioEliminacion,
+        unme_FechaEliminacion: unme.unme_FechaEliminacion,
+        unme_Estado: unme.unme_Estado,
+        usuarioCreacionNombre: unme.usuarioCreacionNombre,
+        usuarioModificacionNombre: unme.usuarioModificacionNombre,
+        usuarioEliminacionNombre: unme.usuarioEliminacionNombre,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar las unidades de medir:', error)
+    return []
+  }
+}
+
+export const getEstadosMercancia = async () => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url + `api/EstadoMercancias/Listar`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((merc: EstadoDeMercancia) => {
+      return {
+        merc_Id: merc.merc_Id,
+        merc_Codigo: merc.merc_Codigo,
+        merc_Descripcion: merc.merc_Descripcion,
+        usua_UsuarioCreacion: merc.usua_UsuarioCreacion,
+        merc_FechaCreacion: merc.merc_FechaCreacion,
+        usua_UsuarioModificacion: merc.usua_UsuarioModificacion,
+        merc_FechaModificacion: merc.merc_FechaModificacion,
+        usua_UsuarioEliminacion: merc.usua_UsuarioEliminacion,
+        merc_FechaEliminacion: merc.merc_FechaEliminacion,
+        merc_Estado: merc.merc_Estado,
+        usua_NombreCreacion: merc.usua_NombreCreacion,
+        usua_NombreModificacion: merc.usua_NombreModificacion,
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los estados de la mercancía:', error)
+    return []
+  }
+}
+
+export const getAranceles = async (codigo: string) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/Aranceles/ListarCapitulo?codigo=%25${codigo}%25`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.filter((categ: Arancel) => categ.aran_Codigo.length === 6).map((aran: Arancel) => {
+      return {
+        ...aran,
+        // aran_Id: aran.aran_Id,
+        // aran_Codigo: aran.aran_Codigo,
+        // aran_Descripcion: aran.aran_Descripcion,
+        // usua_UsuarioCreacion: aran.usua_UsuarioCreacion,
+        // usuarioCreacion: aran.usuarioCreacion,
+        // aran_DAI: aran.aran_DAI,
+        // aran_ISV: aran.aran_ISV,
+        // aran_SEL: aran.aran_SEL,
+        // aran_ProdCons: aran.aran_ProdCons,
+        // impu_Descripcion: aran.impu_Descripcion,
+        // impu_Cantidad: aran.impu_Cantidad,
+        // aran_AplicaVehiculos: aran.aran_AplicaVehiculos,
+        // aran_ArancelVehicular: aran.aran_ArancelVehicular,
+        // aran_FechaCreacion: aran.aran_FechaCreacion,
+        // usua_UsuarioModificacion: aran.usua_UsuarioModificacion,
+        // usuarioModificacion: aran.usuarioModificacion,
+        // aran_FechaModificacion: aran.aran_FechaModificacion,
+        // aram_Estado: aran.aram_Estado,
+        subRows: data.data.filter((aranDetalle: Arancel) => aranDetalle.aran_Codigo.length > 6 && aranDetalle.aran_Codigo.split('.')[0] === aran.aran_Codigo.split('.')[0])
+      }
+    })
+  } catch (error) {
+    console.error('Error al cargar los aranceles:', error)
     return []
   }
 }
