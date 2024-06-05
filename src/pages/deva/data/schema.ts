@@ -564,7 +564,7 @@ const itemSchema = z.object({
   usua_UsuarioEliminacion: z.number().nullable(),
   item_FechaEliminacion: z.string().nullable(),
   item_FechaModificacion: z.string().nullable(),
-  item_Estado: z.boolean()
+  item_Estado: z.boolean(),
 })
 
 const factSchema = z.object({
@@ -580,7 +580,7 @@ const factSchema = z.object({
   usuarioCreacionNombre: z.string(),
   usuarioModificacionNombre: z.string().nullable(),
   deva: z.string().nullable(),
-  tbItems: z.array(itemSchema)
+  tbItems: z.array(itemSchema),
 })
 
 const condicionesSchema = z.object({
@@ -602,7 +602,81 @@ const condicionesSchema = z.object({
   codi_FechaCreacion: z.string(),
   usua_UsuarioModificacion: z.number().nullable(),
   codi_FechaModificacion: z.string().nullable(),
-  codi_Estado: z.boolean()
+  codi_Estado: z.boolean(),
+})
+
+const unmeSchema = z.object({
+  unme_Id: z.number(),
+  unme_Descripcion: z.string(),
+  unme_EsAduana: z.boolean(),
+  usua_UsuarioCreacion: z.number(),
+  unme_FechaCreacion: z.string().datetime(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  unme_FechaModificacion: z.string().datetime().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  unme_FechaEliminacion: z.string().datetime().nullable(),
+  unme_Estado: z.boolean(),
+  usuarioCreacionNombre: z.string(),
+  usuarioModificacionNombre: z.string().nullable(),
+  usuarioEliminacionNombre: z.string().nullable(),
+})
+
+const mercSchema = z.object({
+  merc_Id: z.number(),
+  merc_Codigo: z.string(),
+  merc_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  merc_FechaCreacion: z.string().datetime(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  merc_FechaModificacion: z.string().datetime().nullable(),
+  usua_UsuarioEliminacion: z.number().nullable(),
+  merc_FechaEliminacion: z.string().datetime().nullable(),
+  merc_Estado: z.boolean(),
+  usua_NombreCreacion: z.string(),
+  usua_NombreModificacion: z.string().nullable(),
+})
+
+const aranDetalleSchema = z.object({
+  aran_Id: z.number(),
+  aran_Codigo: z.string(),
+  aran_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioCreacion: z.string(),
+  aran_DAI: z.number(),
+  aran_ISV: z.number(),
+  aran_SEL: z.number(),
+  aran_ProdCons: z.number(),
+  impu_Descripcion: z.string().nullable(),
+  impu_Cantidad: z.number(),
+  aran_AplicaVehiculos: z.boolean(),
+  aran_ArancelVehicular: z.boolean(),
+  aran_FechaCreacion: z.string().datetime(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioModificacion: z.string().nullable(),
+  aran_FechaModificacion: z.string().datetime().nullable(),
+  aram_Estado: z.boolean().nullable(),
+})
+
+const aranSchema = z.object({
+  aran_Id: z.number(),
+  aran_Codigo: z.string(),
+  aran_Descripcion: z.string(),
+  usua_UsuarioCreacion: z.number(),
+  usuarioCreacion: z.string(),
+  aran_DAI: z.number(),
+  aran_ISV: z.number(),
+  aran_SEL: z.number(),
+  aran_ProdCons: z.number(),
+  impu_Descripcion: z.string().nullable(),
+  impu_Cantidad: z.number(),
+  aran_AplicaVehiculos: z.boolean(),
+  aran_ArancelVehicular: z.boolean(),
+  aran_FechaCreacion: z.string().datetime(),
+  usua_UsuarioModificacion: z.number().nullable(),
+  usuarioModificacion: z.string().nullable(),
+  aran_FechaModificacion: z.string().datetime().nullable(),
+  aram_Estado: z.boolean().nullable(),
+  subRows: z.array(aranDetalleSchema),
 })
 
 export type Deva = z.infer<typeof devaSchema>
@@ -621,3 +695,7 @@ export type Pais = z.infer<typeof paisSchema>
 export type Factura = z.infer<typeof factSchema>
 export type Item = z.infer<typeof itemSchema>
 export type Condiciones = z.infer<typeof condicionesSchema>
+export type UnidadDeMedida = z.infer<typeof unmeSchema>
+export type EstadoDeMercancia = z.infer<typeof mercSchema>
+export type Arancel = z.infer<typeof aranSchema>
+export type AranDetalle = z.infer<typeof aranDetalleSchema>

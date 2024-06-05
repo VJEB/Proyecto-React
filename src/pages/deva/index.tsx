@@ -15,10 +15,12 @@ import {
 } from 'react'
 import {
   getAduanas,
+  getAranceles,
   getCiudades,
   getCondicionesComerciales,
   getDevas,
   getEmbarques,
+  getEstadosMercancia,
   getFacturas,
   getFormasDeEnvio,
   getFormasDePago,
@@ -27,6 +29,7 @@ import {
   getNivelesComerciales,
   getPaises,
   getTiposDeIntermediarios,
+  getUnidadesDeMedida,
 } from './data/data'
 import { Button } from '@/components/custom/button'
 import {
@@ -47,11 +50,13 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
   Aduana,
+  Arancel,
   Ciudad,
   CondicionComercial,
   Deva,
   DevaCompuesta,
   Embarque,
+  EstadoDeMercancia,
   Factura,
   FormaDeEnvio,
   FormaDePago,
@@ -61,6 +66,7 @@ import {
   NivelComercial,
   Pais,
   TipoDeIntermediario,
+  UnidadDeMedida,
 } from './data/schema'
 import { useToast } from '@/components/ui/use-toast'
 import { ThemeProviderContext } from '@/components/theme-provider'
@@ -100,6 +106,8 @@ import { Calendar } from '@/components/ui/calendar'
 import { CalendarIcon } from '@radix-ui/react-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { aranColumns } from './arancelesDatatable/columns'
+import { AranDataTable } from './arancelesDatatable/data-table'
 
 export default function PagDeva({
   title = 'Declaración de Valor',
@@ -3539,6 +3547,7 @@ function FormFactura({
   const context = useContext(ThemeProviderContext)
 
   const [dialogState, setDialogState] = useState(false)
+  const [arancelesDialogState, setArancelesDialogState] = useState(false)
   const [factura, setFactura] = useState<Factura>({
     fact_Id: 0,
     fact_Numero: '',
@@ -3561,26 +3570,26 @@ function FormFactura({
     fact_Id: 0,
     item_Cantidad: 0,
     item_Cantidad_Bultos: 0,
-    item_ClaseBulto: "",
-    item_Acuerdo: "",
+    item_ClaseBulto: '',
+    item_Acuerdo: '',
     item_PesoNeto: 0,
     item_PesoBruto: 0,
     unme_Id: 0,
-    item_IdentificacionComercialMercancias: "",
-    item_CaracteristicasMercancias: "",
-    item_Marca: "",
-    item_Modelo: "",
+    item_IdentificacionComercialMercancias: '',
+    item_CaracteristicasMercancias: '',
+    item_Marca: '',
+    item_Modelo: '',
     merc_Id: 0,
     mate_SubCategoria: 0,
-    subc_Descripcion: "",
-    mate_Imagen: "",
+    subc_Descripcion: '',
+    mate_Imagen: '',
     pais_IdOrigenMercancia: 0,
-    item_ClasificacionArancelaria: "",
+    item_ClasificacionArancelaria: '',
     aran_Id: 0,
-    aran_Descripcion: "",
-    aran_Codigo: "",
-    unme_Descripcion: "",
-    merc_Descripcion: "",
+    aran_Descripcion: '',
+    aran_Codigo: '',
+    unme_Descripcion: '',
+    merc_Descripcion: '',
     item_ValorUnitario: 0,
     item_GastosDeTransporte: 0,
     item_ValorTransaccion: 0,
@@ -3588,39 +3597,62 @@ function FormFactura({
     item_OtrosGastos: 0,
     item_ValorAduana: 0,
     item_CuotaContingente: 0,
-    item_ReglasAccesorias: "",
-    item_CriterioCertificarOrigen: "",
+    item_ReglasAccesorias: '',
+    item_CriterioCertificarOrigen: '',
     item_EsNuevo: false,
     item_EsHibrido: false,
     item_LitrosTotales: 0,
     item_CigarrosTotales: 0,
     usua_UsuarioCreacion: 1,
-    nombrePaisOrigen: "",
-    usuarioCreacionNombre: "",
+    nombrePaisOrigen: '',
+    usuarioCreacionNombre: '',
     item_FechaCreacion: new Date().toISOString(),
     usua_UsuarioModificacion: 1,
-    usuarioModificacionNombre: "",
+    usuarioModificacionNombre: '',
     usua_UsuarioEliminacion: 1,
     item_FechaEliminacion: new Date().toISOString(),
     item_FechaModificacion: new Date().toISOString(),
-    item_Estado: true
+    item_Estado: true,
   })
 
   const [facturas, setFacturas] = useState<Factura[]>([])
+  const [unidadesDeMedida, setUnidadesDeMedida] = useState<UnidadDeMedida[]>([])
+  const [estadosDeLaMercancia, setEstadosDeLaMercancia] = useState<
+    EstadoDeMercancia[]
+  >([])
+  const [paises, setPaises] = useState<Pais[]>([])
+  const [aranceles, setAranceles] = useState<Arancel[]>([])
+
+  const [cbbUnmeState, setCbbUnmeState] = useState(false)
+  const [cbbMercState, setCbbMercState] = useState(false)
+  const [cbbPaisState, setCbbPaisState] = useState(false)
 
   useEffect(() => {
     getFacturas(deva.declaraciones_ValorViewModel.deva_Id)
       .then((data) => setFacturas(data))
       .catch((err) => console.error('Error al cargar las facturas: ' + err))
+    getUnidadesDeMedida()
+      .then((data) => setUnidadesDeMedida(data))
+      .catch((err) =>
+        console.error('Error al cargar las unidades de medida: ' + err)
+      )
+    getEstadosMercancia()
+      .then((data) => setEstadosDeLaMercancia(data))
+      .catch((err) =>
+        console.error('Error al cargar los estados de la mercancía: ' + err)
+      )
+    getPaises()
+      .then((data) => setPaises(data))
+      .catch((err) => console.error('Error al cargar los paises: ' + err))
   }, [context.refrescar])
 
   const inputFacturasRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
   >([])
 
-  const inputItemRefs = useRef<
-  (HTMLInputElement | HTMLButtonElement | null)[]
->([])
+  const inputItemRefs = useRef<(HTMLInputElement | HTMLButtonElement | null)[]>(
+    []
+  )
 
   const validarInputsFacturas = () => {
     let huboError = false
@@ -3647,6 +3679,18 @@ function FormFactura({
     return false
     // return huboError
   }
+
+  useEffect(() => {
+    if (context.aranId) {
+      setItem((item) => {
+        return {
+          ...item,
+          item_ClasificacionArancelaria: context.aranId,
+        }
+      })
+      setArancelesDialogState(false)
+    }
+  }, [context.aranId])
 
   const validarInputsItem = () => {
     let huboError = false
@@ -3677,9 +3721,43 @@ function FormFactura({
   useEffect(() => {
     validar && setTimeout(() => setValidar(() => false), 2000)
     if (validar) {
-      validarInputsFacturas()
+      dialogState ? validarInputsItem() : validarInputsFacturas()
     }
   }, [validar])
+
+  function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+    let timeout: NodeJS.Timeout
+    return function (this: any, ...args: Parameters<T>) {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => func.apply(this, args), wait)
+    }
+  }
+
+  const arancelChange = (value: string) => {
+    const regex = /^[\d.]*$/
+    if (regex.test(value)) {
+      setItem((prevItem) => ({
+        ...prevItem,
+        item_ClasificacionArancelaria: value,
+      }))
+    }
+  }
+
+  const handleSearch = async (codigo: string) => {
+    getAranceles(codigo)
+      .then((data) => setAranceles(data))
+      .catch((err) => console.error('Error al cargar los aranceles: ' + err))
+  }
+
+  const debouncedSearch = debounce(handleSearch, 300)
+
+  const buscarAranceles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    arancelChange(value)
+    value.length > 2 && debouncedSearch(value)
+  }
+
+  console.log(aranceles)
 
   return (
     <>
@@ -3753,10 +3831,10 @@ function FormFactura({
               <Button
                 onClick={() => {
                   setDialogState(true)
-                  setItem(item=>{
+                  setItem((item) => {
                     return {
                       ...item,
-                      item_Numero: factura.tbItems.length + 1
+                      item_Numero: factura.tbItems.length + 1,
                     }
                   })
                 }}
@@ -3765,12 +3843,14 @@ function FormFactura({
                 Agregar Item
               </Button>
             </DialogTrigger>
-            <DialogContent className='sm:max-w-[720px]
-            '>
+            <DialogContent
+              className='sm:max-w-[720px]
+            '
+            >
               <DialogHeader>
-                <DialogTitle>Agregar Facturas</DialogTitle>
+                <DialogTitle>Agregar Item</DialogTitle>
               </DialogHeader>
-              <div className='flex flex-wrap py-4 gap-4'>
+              <div className='flex flex-wrap gap-4 py-4'>
                 <div className='flex flex-col gap-1'>
                   <Label className='min-h-[28px]'>Número Item</Label>
                   <Input
@@ -3790,7 +3870,7 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_Cantidad: parseInt(e.target.value) 
+                            item_Cantidad: parseInt(e.target.value),
                           }
                         })
                       }
@@ -3798,9 +3878,11 @@ function FormFactura({
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <Label className='max-w-[200px]'>31. Identificación Comercial de las Mercancías</Label>
+                  <Label className='max-w-[200px]'>
+                    31. Identificación Comercial de las Mercancías
+                  </Label>
                   <Input
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[2] = input)}
                     value={item.item_IdentificacionComercialMercancias ?? ''}
                     onChange={(e) => {
                       const regex = /^[\w\s-]*$/
@@ -3808,7 +3890,8 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_IdentificacionComercialMercancias: e.target.value
+                            item_IdentificacionComercialMercancias:
+                              e.target.value,
                           }
                         })
                       }
@@ -3816,9 +3899,67 @@ function FormFactura({
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <Label className='max-w-[200px]'>32. Características de la Mercancía</Label>
+                  <Label className='min-h-[28px]'>30.1. Unidad de Medida</Label>
+                  <Popover open={cbbUnmeState} onOpenChange={setCbbUnmeState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[3] = input)}
+                        data-selected={item.unme_Descripcion ? true : false}
+                      >
+                        {item.unme_Descripcion
+                          ? item.unme_Descripcion
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar unidades...' />
+                        <CommandList>
+                          <CommandEmpty>No hay unidades.</CommandEmpty>
+                          <CommandGroup>
+                            {unidadesDeMedida.map((unme) => (
+                              <CommandItem
+                                key={unme.unme_Id}
+                                onSelect={() => {
+                                  console.log(unidadesDeMedida)
+
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      unme_Descripcion: unme.unme_Descripcion,
+                                      unme_Id: unme.unme_Id,
+                                    }
+                                  })
+                                  setCbbUnmeState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    item.unme_Id === unme.unme_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {unme.unme_Descripcion}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='max-w-[200px]'>
+                    32. Características de la Mercancía
+                  </Label>
                   <Input
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[4] = input)}
                     value={item.item_CaracteristicasMercancias ?? ''}
                     onChange={(e) => {
                       const regex = /^[\w\s-]*$/
@@ -3826,7 +3967,7 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_CaracteristicasMercancias: e.target.value
+                            item_CaracteristicasMercancias: e.target.value,
                           }
                         })
                       }
@@ -3834,9 +3975,11 @@ function FormFactura({
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <Label className='max-w-[200px]'>33. Marca</Label>
+                  <Label className='min-h-[28px] max-w-[200px]'>
+                    33. Marca
+                  </Label>
                   <Input
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[5] = input)}
                     value={item.item_Marca ?? ''}
                     onChange={(e) => {
                       const regex = /^[\w\s-]*$/
@@ -3844,7 +3987,7 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_Marca: e.target.value
+                            item_Marca: e.target.value,
                           }
                         })
                       }
@@ -3852,9 +3995,11 @@ function FormFactura({
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
-                  <Label className='max-w-[200px]'>34. Modelo y/o Estilo</Label>
+                  <Label className='min-h-[28px] max-w-[200px]'>
+                    34. Modelo y/o Estilo
+                  </Label>
                   <Input
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[6] = input)}
                     value={item.item_Modelo ?? ''}
                     onChange={(e) => {
                       const regex = /^[\w\s-]*$/
@@ -3862,7 +4007,7 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_Modelo: e.target.value
+                            item_Modelo: e.target.value,
                           }
                         })
                       }
@@ -3870,9 +4015,184 @@ function FormFactura({
                   />
                 </div>
                 <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    35. Estado de las Mercancías
+                  </Label>
+                  <Popover open={cbbMercState} onOpenChange={setCbbMercState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[7] = input)}
+                        data-selected={item.merc_Descripcion ? true : false}
+                      >
+                        {item.merc_Descripcion
+                          ? item.merc_Descripcion
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar estado...' />
+                        <CommandList>
+                          <CommandEmpty>No hay estados.</CommandEmpty>
+                          <CommandGroup>
+                            {estadosDeLaMercancia.map((merc) => (
+                              <CommandItem
+                                key={merc.merc_Id}
+                                onSelect={() => {
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      merc_Descripcion: merc.merc_Descripcion,
+                                      merc_Id: merc.merc_Id,
+                                    }
+                                  })
+                                  setCbbMercState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    item.merc_Id === merc.merc_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {merc.merc_Codigo} | {merc.merc_Descripcion}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    36. Origen de las Mercancías
+                  </Label>
+                  <Popover open={cbbPaisState} onOpenChange={setCbbPaisState}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[8] = input)}
+                        data-selected={item.nombrePaisOrigen ? true : false}
+                      >
+                        {item.nombrePaisOrigen
+                          ? item.nombrePaisOrigen
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-[200px] p-0'>
+                      <Command>
+                        <CommandInput placeholder='Buscar país...' />
+                        <CommandList>
+                          <CommandEmpty>No hay paises.</CommandEmpty>
+                          <CommandGroup>
+                            {paises.map((pais) => (
+                              <CommandItem
+                                key={pais.pais_Id}
+                                onSelect={() => {
+                                  setItem((item) => {
+                                    return {
+                                      ...item,
+                                      pais_IdOrigenMercancia: pais.pais_Id,
+                                      nombrePaisOrigen: pais.pais_Nombre,
+                                    }
+                                  })
+                                  setCbbPaisState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    deva.declaraciones_ValorViewModel
+                                      .pais_EntregaId === pais.pais_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {pais.pais_Codigo} | {pais.pais_Nombre}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <Label className='min-h-[28px]'>
+                    37. Clasificación Arancelaria
+                  </Label>
+                  <Dialog
+                    open={arancelesDialogState}
+                    onOpenChange={setArancelesDialogState}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className='mb-2 w-[200px] justify-between overflow-hidden'
+                        ref={(input) => (inputItemRefs.current[9] = input)}
+                        data-selected={
+                          item.item_ClasificacionArancelaria ? true : false
+                        }
+                        onClick={() => setArancelesDialogState(true)}
+                      >
+                        {item.item_ClasificacionArancelaria
+                          ? item.item_ClasificacionArancelaria
+                          : '- Seleccione -'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent
+                      className='sm:max-w-[720px]
+            '
+                    >
+                      <DialogHeader>
+                        <DialogTitle>Seleccionar Arancel</DialogTitle>
+                      </DialogHeader>
+                      <div className='flex flex-col gap-4 py-4'>
+                        <div className='flex flex-col gap-1'>
+                          <Label className='min-h-[28px]'>
+                            Buscar aranceles por código
+                          </Label>
+                          <Input
+                            ref={(input) => (inputItemRefs.current[1] = input)}
+                            value={item.item_ClasificacionArancelaria}
+                            placeholder='####.##.##.##'
+                            onChange={buscarAranceles}
+                          />
+                        </div>
+                        <div className='mt-6 flex-1 overflow-auto py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
+                          <AranDataTable
+                            data={aranceles}
+                            columns={aranColumns}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          onClick={() => setArancelesDialogState(false)}
+                          variant='outline'
+                        >
+                          Cancelar
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div className='flex flex-col gap-1'>
                   <Label className='min-h-[28px]'>38. Valor Unitario</Label>
                   <Input
-                    ref={(input) => (inputItemRefs.current[1] = input)}
+                    ref={(input) => (inputItemRefs.current[10] = input)}
                     value={item.item_ValorUnitario}
                     onChange={(e) => {
                       const regex = /^[\d-.]*$/
@@ -3880,7 +4200,7 @@ function FormFactura({
                         setItem((item) => {
                           return {
                             ...item,
-                            item_ValorUnitario: parseInt(e.target.value) 
+                            item_ValorUnitario: parseInt(e.target.value),
                           }
                         })
                       }
