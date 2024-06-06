@@ -184,6 +184,7 @@ const declaraciones_ValorViewModelSchema = z.object({
   fopa_Id: z.number(),
   deva_FormaPagoOtra: z.string(),
   emba_Id: z.number(),
+  emba_Codigo: z.string().nullable(),
   pais_ExportacionId: z.number(),
   deva_FechaExportacion: z.string().datetime(),
   mone_Id: z.number(),
@@ -193,7 +194,7 @@ const declaraciones_ValorViewModelSchema = z.object({
   usua_UsuarioCreacion: z.number(),
   usua_CreacionNombre: z.string(),
   deva_FechaCreacion: z.string().datetime(),
-  usua_UsuarioModificacion: z.number(),
+  usua_UsuarioModificacion: z.number().nullable(),
   usua_ModificacionNombre: z.string(),
   deva_FechaModificacion: z.string().datetime(),
   deva_Estado: z.boolean(),
@@ -580,7 +581,7 @@ const factSchema = z.object({
   usuarioCreacionNombre: z.string(),
   usuarioModificacionNombre: z.string().nullable(),
   deva: z.string().nullable(),
-  tbItems: z.array(itemSchema),
+  subRows: z.array(itemSchema),
 })
 
 const condicionesSchema = z.object({

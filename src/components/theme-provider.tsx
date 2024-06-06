@@ -25,6 +25,8 @@ type ThemeProviderState = {
   setAranId: (aranId: number) => void
   refrescar: boolean
   setRefrescar: (val: boolean) => void
+  editandoTab3: boolean
+  setEditandoTab3: (val: boolean) => void
   mostrarDetalle: number
   setMostrarDetalle: (val: number) => void
 }
@@ -46,6 +48,8 @@ const initialState: ThemeProviderState = {
   setAranId: () => null,
   refrescar: false,
   setRefrescar: () => null,
+  editandoTab3: false,
+  setEditandoTab3: () => null,
   mostrarDetalle: 0,
   setMostrarDetalle: () => null,
 }
@@ -68,6 +72,7 @@ export function ThemeProvider({
   const [factId, setFactId] = useState(0)
   const [itemId, setItemId] = useState(0)
   const [aranId, setAranId] = useState(0)
+  const [editandoTab3, setEditandoTab3] = useState(false)
 
   const [refrescar, setRefrescar] = useState(false)
   const [mostrarDetalle, setMostrarDetalle] = useState(0)
@@ -110,6 +115,8 @@ export function ThemeProvider({
     setAranId,
     refrescar,
     setRefrescar,
+    editandoTab3,
+    setEditandoTab3,
     mostrarDetalle,
     setMostrarDetalle,
   }
