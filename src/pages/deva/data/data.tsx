@@ -4,6 +4,7 @@ import {
   DevaCompuesta,
   EstadoDeMercancia,
   Factura,
+  Item,
   UnidadDeMedida,
 } from './schema'
 
@@ -1265,11 +1266,54 @@ export const getFacturas = async (deva_Id: number) => {
     }
 
     const data = await response.json()
+    return getItemsPorDeva(deva_Id).then(items=>{
+      return data.data.map((fact: Factura) => {
+        return {
+          ...fact,
+          subRows: items.filter(item=>item.fact_Id === fact.fact_Id),
+        }
+      })
+    }).catch(err=>console.log('Error al cargar los items: '+ err)
+    )
+  } catch (error) {
+    console.error('Error al cargar los embarques:', error)
+    return []
+  }
+}
 
-    return data.data.map((fact: Factura) => {
+export const getItemsPorDeva = async (deva_Id: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/Items/ListarItemsByFactId?fact_Id=${deva_Id}`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    return data.data.map((item: Item) => {
       return {
-        ...fact,
-        subRows: [...fact.tbItems],
+        ...item,
+        item_FechaCreacion: item.item_FechaCreacion,
+        item_FechaEliminacion: new Date().toISOString(),
+        item_FechaModificacion: new Date().toISOString(),
       }
     })
   } catch (error) {
@@ -1301,6 +1345,36 @@ export const guardarFactura = async (fact: Factura, eliminar: boolean) => {
     const data = await response.data
 
     console.log(data, 'data fact')
+
+    return data.data.messageStatus
+  } catch (error) {
+    return false
+  }
+}
+
+export const guardarItem = async (item: Item, eliminar: boolean) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Items/${eliminar ? 'Eliminar' : 'Insertar'}`,
+      item,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+
+    console.log(data, 'data item')
 
     return data.data.messageStatus
   } catch (error) {

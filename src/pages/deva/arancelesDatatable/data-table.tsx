@@ -82,7 +82,7 @@ export function AranDataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
-    // console.clear()
+    console.clear()
   }, [])
 
   const context = React.useContext(ThemeProviderContext)
@@ -159,7 +159,7 @@ export function AranDataTable<TData, TValue>({
                           <TableCell>
                             <Button
                               onClick={() => {
-                                context.setAranId(aran.aran_Codigo)
+                                context.setAranId(aran.aran_Id)
                               }}
                             >
                               <CheckIcon className='h-4 w-4' /> Seleccionar

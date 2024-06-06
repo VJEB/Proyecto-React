@@ -31,6 +31,7 @@ import {
   getTiposDeIntermediarios,
   getUnidadesDeMedida,
   guardarFactura,
+  guardarItem,
   guardarTab1,
   guardarTab2,
   guardarTab3,
@@ -54,6 +55,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
   Aduana,
+  AranDetalle,
   Arancel,
   Ciudad,
   CondicionComercial,
@@ -463,8 +465,6 @@ function FormDeva({
       description: message,
     })
   }
-
-  console.log(context.devaId)
 
   useEffect(() => {
     getCiudades()
@@ -1958,7 +1958,7 @@ function FormProveedor({
   const [cbbPaisProveedorState, setCbbPaisProveedorState] = useState(false)
   const [cbbCiudadProveedorState, setCbbCiudadProveedorState] = useState(false)
   const [cbbCocoProveedorState, setCbbCocoProveedorState] = useState(false)
-  const [ckHayIntermediarioState, setCkHayIntermediarioState] = useState(false)
+  const [ckHayIntermediarioState, setCkHayIntermediarioState] = useState(true)
 
   const [cbbPaisIntermediarioState, setCbbPaisIntermediarioState] =
     useState(false)
@@ -2495,7 +2495,7 @@ function FormProveedor({
         <div className='flex items-center gap-1'>
           <Checkbox
             id='ckHayIntermediario'
-            onClick={() => setCkHayIntermediarioState((prev) => !prev)}
+            // onClick={() => setCkHayIntermediarioState((prev) => !prev)}
             className='h-[20px] w-[20px]'
           />
           <Label htmlFor='ckHayIntermediario' className='inline-block'>
@@ -4003,7 +4003,10 @@ function FormCaracteristicas({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^(\d.)?$/
+              const regex = /^[0-9.]*$/
+
+              console.log(regex.test(e.target.value))
+
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -4091,7 +4094,10 @@ function FormFactura({
     fact_FechaCreacion: new Date().toISOString(),
     fact_FechaModificacion: new Date().toISOString(),
     subRows: [],
+    tbItems: [],
   })
+
+  const { toast } = useToast()
 
   const [item, setItem] = useState<Item>({
     item_Id: 1,
@@ -4210,7 +4216,7 @@ function FormFactura({
 
   const validarInputsItem = () => {
     let huboError = false
-    inputFacturasRefs.current.forEach((input) => {
+    inputItemRefs.current.forEach((input) => {
       if (huboError) {
         return
       }
@@ -4235,13 +4241,29 @@ function FormFactura({
 
   useEffect(() => {
     if (context.aranId) {
-      setItem((item) => {
-        return {
-          ...item,
-          item_ClasificacionArancelaria: context.aranId,
-        }
-      })
-      setArancelesDialogState(false)
+      let toditosLosAranceles: AranDetalle[] = []
+
+      aranceles.forEach(
+        (arancel) =>
+          (toditosLosAranceles = [...toditosLosAranceles, ...arancel.subRows])
+      )
+      const arancelEncontrado = toditosLosAranceles.find(
+        (aran) => aran.aran_Id === context.aranId
+      )
+      console.log(arancelEncontrado, aranceles, context.aranId)
+      if (arancelEncontrado) {
+        setItem((item) => {
+          return {
+            ...item,
+            aran_Codigo: arancelEncontrado.aran_Codigo,
+            item_ClasificacionArancelaria: arancelEncontrado.aran_Codigo,
+            aran_Id: context.aranId,
+            aran_Descripcion: arancelEncontrado.aran_Descripcion,
+          }
+        })
+        setArancelesDialogState(false)
+      }
+      context.setAranId(0)
     }
   }, [context.aranId])
 
@@ -4263,8 +4285,6 @@ function FormFactura({
         errorToast('Debe ingresar por lo menos una factura')
         return
       }
-
-      console.log(facturas)
 
       if (!facturas.every((factura) => factura.subRows.length > 0)) {
         errorToast('Todas las facturas deben tener por lo menos un item')
@@ -4294,7 +4314,7 @@ function FormFactura({
 
   const handleSearch = async (codigo: string) => {
     getAranceles(codigo)
-      .then((data) => setAranceles(data))
+      .then((data) => setAranceles((prev) => prev.concat(data)))
       .catch((err) => console.error('Error al cargar los aranceles: ' + err))
   }
 
@@ -4376,42 +4396,45 @@ function FormFactura({
           <Button
             onClick={() => {
               if (!validarInputsFactura()) {
-                guardarFactura(factura, false)
-                  .then((factId) => {
-                    setDialogState(true)
-                    setItem((item) => {
-                      return {
-                        ...item,
-                        fact_Id: parseInt(factId),
-                        item_Numero: factura.subRows.length + 1,
-                      }
-                    })
-                    if (factId === 1) {
-                      setFacturas((facts) => [
-                        ...facts.filter(
-                          (fact) => fact.fact_Id !== factura.fact_Id
-                        ),
-                        factura,
-                      ])
-                    } else {
+                const facturaEncontrada = facturas.find(
+                  (fact) => fact.fact_Numero === factura.fact_Numero
+                )
+                if (facturaEncontrada) {
+                  setFactura(facturaEncontrada)
+                  setItem((item) => {
+                    return {
+                      ...item,
+                      fact_Id: facturaEncontrada?.fact_Id,
+                      item_Numero: facturaEncontrada?.subRows.length + 1,
+                    }
+                  })
+                } else {
+                  guardarFactura(factura, false)
+                    .then((factId) => {
                       setFacturas((facts) => [
                         ...facts,
-                        { ...factura, fact_Id: factId },
+                        { ...factura, fact_Id: parseInt(factId) },
                       ])
                       setFactura((fact) => {
                         return {
                           ...fact,
-                          fact_Id: 0,
-                          fact_Numero: '',
-                          fact_Fecha: new Date().toISOString(),
+                          fact_Id: parseInt(factId),
                         }
                       })
-                    }
-                    context.setFactId(0)
-                  })
-                  .catch((err) => {
-                    console.error('Error al crear factura: ' + err)
-                  })
+                      setItem((item) => {
+                        return {
+                          ...item,
+                          fact_Id: parseInt(factId),
+                          item_Numero: 1,
+                        }
+                      })
+                    })
+                    .catch((err) => {
+                      console.error('Error al crear factura: ' + err)
+                    })
+                }
+
+                setDialogState(true)
               }
             }}
           >
@@ -4423,30 +4446,38 @@ function FormFactura({
               if (!validarInputsFactura()) {
                 guardarFactura(factura, false)
                   .then((factId) => {
-                    console.log('factId:', factId) // Log factId
-                    if (factId === 1) {
-                      setFacturas((facts) => {
-                        const factsFiltradas = facts.filter(
-                          (fact) => fact.fact_Id !== factura.fact_Id
-                        )
-                        console.log(facts, 'facts') // Log original facts
-                        console.log(factsFiltradas, 'factsFiltradas') // Log filtered facts
+                    const idParsed = parseInt(factId) // Log factId
+                    if (idParsed === 1) {
+                      console.log(facturas, 'facturas') // Log original facts
+                      const factsFiltradas = facturas.filter(
+                        (fact) => fact.fact_Id !== factura.fact_Id
+                      )
+                      console.log(factsFiltradas, 'factsFiltradas') // Log filtered facts
+                      setFacturas(() => {
                         return [...factsFiltradas, factura]
+                      })
+                      toast({
+                        title: 'Éxito: ',
+                        description: 'Factura editada con éxito',
                       })
                     } else {
                       setFacturas((facts) => [
                         ...facts,
-                        { ...factura, fact_Id: factId },
+                        { ...factura, fact_Id: idParsed },
                       ])
-                      setFactura((fact) => {
-                        return {
-                          ...fact,
-                          fact_Id: 0,
-                          fact_Numero: '',
-                          fact_Fecha: new Date().toISOString(),
-                        }
+                      toast({
+                        title: 'Éxito: ',
+                        description: 'Factura creada con éxito',
                       })
                     }
+                    setFactura((fact) => {
+                      return {
+                        ...fact,
+                        fact_Id: 0,
+                        fact_Numero: '',
+                        fact_Fecha: new Date().toISOString(),
+                      }
+                    })
                     context.setFactId(0)
                   })
                   .catch((err) => {
@@ -4455,7 +4486,7 @@ function FormFactura({
               }
             }}
           >
-            Guardar
+            Guardar factura
           </Button>
           <Dialog open={dialogState} onOpenChange={setDialogState}>
             <DialogContent
@@ -4480,12 +4511,14 @@ function FormFactura({
                     ref={(input) => (inputItemRefs.current[1] = input)}
                     value={item.item_Cantidad}
                     onChange={(e) => {
-                      const regex = /^[\d-]*$/
+                      const regex = /^[0-9.]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
                             ...item,
-                            item_Cantidad: parseInt(e.target.value),
+                            item_Cantidad: !e.target.value
+                              ? 0
+                              : parseInt(e.target.value),
                           }
                         })
                       }
@@ -4780,7 +4813,6 @@ function FormFactura({
                             Buscar aranceles por código
                           </Label>
                           <Input
-                            ref={(input) => (inputItemRefs.current[1] = input)}
                             value={item.item_ClasificacionArancelaria}
                             placeholder='####.##.##.##'
                             onChange={buscarAranceles}
@@ -4808,14 +4840,21 @@ function FormFactura({
                   <Label className='min-h-[28px]'>38. Valor Unitario</Label>
                   <Input
                     ref={(input) => (inputItemRefs.current[10] = input)}
-                    value={item.item_ValorUnitario}
+                    value={item.item_ValorUnitario.toString()}
                     onChange={(e) => {
-                      const regex = /^[\d-.]*$/
+                      const regex = /^[0-9.]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
                             ...item,
-                            item_ValorUnitario: parseInt(e.target.value),
+                            item_ValorUnitario: !e.target.value
+                              ? 0
+                              : parseFloat(e.target.value),
+                            item_ValorTransaccion:
+                              parseFloat(item.item_Cantidad.toString()) *
+                              (!e.target.value
+                                ? 0
+                                : parseFloat(e.target.value)),
                           }
                         })
                       }
@@ -4826,7 +4865,7 @@ function FormFactura({
                   <Label className='min-h-[28px]'>Total Factura Unitario</Label>
                   <Input
                     disabled
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[11] = input)}
                     value={item.item_ValorTransaccion.toString() ?? ''}
                   />
                 </div>
@@ -4837,7 +4876,73 @@ function FormFactura({
                 </Button>
                 <Button
                   onClick={() => {
-                    setDialogState(false)
+                    if (!validarInputsItem()) {
+                      guardarItem(item, false)
+                        .then((response) => {
+                          if (response === '1') {
+                            toast({
+                              title: 'Éxito',
+                              description: 'Item agregado correctamente',
+                            })
+                            setItem((prev) => {
+                              return {
+                                item_Id: 1,
+                                item_Numero: 0,
+                                fact_Id: 0,
+                                item_Cantidad: 0,
+                                item_Cantidad_Bultos: 0,
+                                item_ClaseBulto: '',
+                                item_Acuerdo: '',
+                                item_PesoNeto: 0,
+                                item_PesoBruto: 0,
+                                unme_Id: 0,
+                                item_IdentificacionComercialMercancias: '',
+                                item_CaracteristicasMercancias: '',
+                                item_Marca: '',
+                                item_Modelo: '',
+                                merc_Id: 0,
+                                mate_SubCategoria: 0,
+                                subc_Descripcion: '',
+                                mate_Imagen: '',
+                                pais_IdOrigenMercancia: 0,
+                                item_ClasificacionArancelaria: '',
+                                aran_Id: 0,
+                                aran_Descripcion: '',
+                                aran_Codigo: '',
+                                unme_Descripcion: '',
+                                merc_Descripcion: '',
+                                item_ValorUnitario: 0,
+                                item_GastosDeTransporte: 0,
+                                item_ValorTransaccion: 0,
+                                item_Seguro: 0,
+                                item_OtrosGastos: 0,
+                                item_ValorAduana: 0,
+                                item_CuotaContingente: 0,
+                                item_ReglasAccesorias: '',
+                                item_CriterioCertificarOrigen: '',
+                                item_EsNuevo: false,
+                                item_EsHibrido: false,
+                                item_LitrosTotales: 0,
+                                item_CigarrosTotales: 0,
+                                usua_UsuarioCreacion: 1,
+                                nombrePaisOrigen: '',
+                                usuarioCreacionNombre: '',
+                                item_FechaCreacion: new Date().toISOString(),
+                                usua_UsuarioModificacion: 1,
+                                usuarioModificacionNombre: '',
+                                usua_UsuarioEliminacion: 1,
+                                item_FechaEliminacion: new Date().toISOString(),
+                                item_FechaModificacion:
+                                  new Date().toISOString(),
+                                item_Estado: true,
+                              }
+                            })
+                            context.setRefrescar(!context.refrescar)
+                          }
+                        })
+                        .catch((err) => console.log(err))
+                      setDialogState(false)
+                    }
                   }}
                 >
                   Agregar Item
@@ -5384,11 +5489,11 @@ function FormValorAduana({
         <div className='flex gap-2'>
           <Button
             variant={'outline'}
-            onClick={() => setTabObjetivo('condiciones')}
+            onClick={() => setTab[tabs[tabIndex - 1]]}
           >
             Regresar
           </Button>
-          <Button onClick={() => setTabObjetivo('valorAduana')}>Guardar</Button>
+          <Button>Guardar</Button>
         </div>
       </div>
     </Card>
@@ -5417,7 +5522,7 @@ function FormFinalizar({
         <div className='flex gap-2'>
           <Button
             variant={'outline'}
-            onClick={() => setTabObjetivo('valorAduana')}
+            onClick={() => setTab(tabs[tabIndex - 1])}
           >
             Regresar
           </Button>

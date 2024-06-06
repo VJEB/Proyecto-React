@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
-import { cancelarDeva } from '../data/data'
+import { cancelarDeva, guardarFactura } from '../data/data'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -53,12 +53,6 @@ export function DataTableRowActions<TData>({
             <IconEdit stroke={1.5} className='mr-1 h-5 w-5' />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => context.setMostrarDetalle(row.original.fact_Id)}
-          >
-            <IconEye stroke={1.5} className='mr-1 h-5 w-5' />
-            Detalle
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setDialogState(true)}>
             <IconTrash stroke={1.5} className='mr-1 h-5 w-5' />
             Eliminar
@@ -83,35 +77,25 @@ export function DataTableRowActions<TData>({
               Cancelar
             </Button>
             <Button
-              onClick={() => {
-                cancelarDeva(
-                  row.original.deva_Id,
-                  row.original.fact_Id,
-                  row.original.codi_Id,
-                  row.original.base_Id
-                )
-                  .then((exito) => {
-                    if (!exito) {
-                      toast({
-                        title: 'Error: ',
-                        variant: 'destructive',
-                        description: 'Hay registros que dependen de esta deva',
-                      })
-                      return
-                    }
+              onClick={() =>
+                guardarFactura(
+                  {
+                    ...row.original,
+                  },
+                  true
+                ).then(response=>{
+                  if (response === '1') {
                     toast({
-                      title: 'Cancelada',
-                      description: 'Deva cancelada exitosamente!',
+                      title: "Éxito",
+                      description: 'Factura eliminada correctamente' 
                     })
-                    setDialogState(false)
                     context.setRefrescar(!context.refrescar)
-                  })
-                  .catch((err: Error) => {
-                    console.log('Error al cancelar la Deva: ' + err)
-                  })
-              }}
+                  }
+                }).catch(err=>console.log('Error al eliminar la factura: ' + err)
+                )
+              }
             >
-              Cancelar Deva
+              Eliminar factura
             </Button>
           </DialogFooter>
         </DialogContent>
