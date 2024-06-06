@@ -1,5 +1,12 @@
 import axios from 'axios'
-import { Arancel, EstadoDeMercancia, Factura, UnidadDeMedida } from './schema'
+import {
+  Arancel,
+  DevaCompuesta,
+  EstadoDeMercancia,
+  Factura,
+  Item,
+  UnidadDeMedida,
+} from './schema'
 
 interface Deva {
   deva_Id: number
@@ -126,8 +133,7 @@ interface Deva {
   deva_FechaCreacion: string
   usua_ModificacionNombre: string
   deva_FechaModificacion: string
-  deva_Estado: boolean,
-  subRows: Factura[]
+  deva_Estado: boolean
 }
 export const getDevas = async () => {
   try {
@@ -151,7 +157,6 @@ export const getDevas = async () => {
     const data = await response.data
     return data.data.map((deva: Deva) => {
       return {
-        subRows: [],
         deva_Id: deva.deva_Id,
         deva_AduanaIngresoId: deva.deva_AduanaIngresoId,
         adua_IngresoNombre: deva.adua_IngresoNombre,
@@ -286,7 +291,8 @@ export const getDevas = async () => {
     return []
   }
 }
-export const guardarDeva = async (Deva: Deva) => {
+
+export const guardarTab1 = async (deva: DevaCompuesta) => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -295,12 +301,9 @@ export const guardarDeva = async (Deva: Deva) => {
       return
     }
 
-    // Deva.usua_UsuarioModificacion = 1
-    // Deva.proc_FechaModificacion = new Date().toISOString()
-
     const response = await axios.post(
-      `${import.meta.env.VITE_API_SimexPro_Url}api/Devas/${Deva.deva_Id === 0 ? 'Insertar' : 'Editar'}`,
-      Deva,
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Declaracion_Valor/${deva.declaraciones_ValorViewModel.deva_Id === 0 ? 'Insertar' : 'Editar'}Tab1`,
+      deva,
       {
         headers: {
           XApiKey: apiKey,
@@ -310,7 +313,173 @@ export const guardarDeva = async (Deva: Deva) => {
     )
 
     const data = await response.data
-    return data.data.messageStatus === '1'
+
+    console.log(data)
+
+    return data.data.messageStatus
+  } catch (error) {
+    return false
+  }
+}
+
+export const guardarTab2 = async (deva: DevaCompuesta) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Declaracion_Valor/InsertarTab2`,
+      deva,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+
+    return data.data.messageStatus
+  } catch (error) {
+    return false
+  }
+}
+
+export const guardarTab3 = async (
+  deva: DevaCompuesta,
+  editandoTab3: boolean
+) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    if (!editandoTab3) {
+      deva.declaraciones_ValorViewModel.usua_UsuarioModificacion = null
+    }
+
+    console.log(deva, editandoTab3)
+
+    const objParseado = {
+      deva_Id: deva.declaraciones_ValorViewModel.deva_Id,
+      deva_AduanaIngresoId:
+        deva.declaraciones_ValorViewModel.deva_AduanaIngresoId,
+      adua_IngresoNombre: deva.declaraciones_ValorViewModel.adua_IngresoNombre,
+      deva_AduanaDespachoId:
+        deva.declaraciones_ValorViewModel.deva_AduanaDespachoId,
+      adua_DespachoNombre:
+        deva.declaraciones_ValorViewModel.adua_DespachoNombre,
+      deva_DeclaracionMercancia:
+        deva.declaraciones_ValorViewModel.deva_DeclaracionMercancia,
+      deva_FechaAceptacion:
+        deva.declaraciones_ValorViewModel.deva_FechaAceptacion,
+      regi_Id: deva.declaraciones_ValorViewModel.regi_Id,
+      regi_Codigo: deva.declaraciones_ValorViewModel.regi_Codigo,
+      regi_Descripcion: deva.declaraciones_ValorViewModel.regi_Descripcion,
+      impo_RTN: deva.declaraciones_ValorViewModel.impo_RTN,
+      impo_Id: deva.declaraciones_ValorViewModel.impo_Id,
+      impo_NumRegistro: deva.declaraciones_ValorViewModel.impo_NumRegistro,
+      nico_Id: deva.declaraciones_ValorViewModel.nico_Id,
+      nico_Descripcion: deva.declaraciones_ValorViewModel.nico_Descripcion,
+      impo_NivelComercial_Otro:
+        deva.declaraciones_ValorViewModel.impo_NivelComercial_Otro,
+      impo_Nombre_Raso: deva.declaraciones_ValorViewModel.impo_Nombre_Raso,
+      impo_Direccion_Exacta:
+        deva.declaraciones_ValorViewModel.impo_Direccion_Exacta,
+      impo_Correo_Electronico:
+        deva.declaraciones_ValorViewModel.impo_Correo_Electronico,
+      impo_Telefono: deva.declaraciones_ValorViewModel.impo_Telefono,
+      impo_Fax: deva.declaraciones_ValorViewModel.impo_Fax,
+      impo_ciudId: deva.declaraciones_ValorViewModel.impo_ciudId,
+      pvde_Id: deva.declaraciones_ValorViewModel.pvde_Id,
+      prov_Nombre_Raso: deva.declaraciones_ValorViewModel.prov_Nombre_Raso,
+      prov_Direccion_Exacta:
+        deva.declaraciones_ValorViewModel.prov_Direccion_Exacta,
+      prov_Correo_Electronico:
+        deva.declaraciones_ValorViewModel.prov_Correo_Electronico,
+      prov_Telefono: deva.declaraciones_ValorViewModel.prov_Telefono,
+      prov_Fax: deva.declaraciones_ValorViewModel.prov_Fax,
+      prov_ciudId: deva.declaraciones_ValorViewModel.prov_ciudId,
+      coco_Id: deva.declaraciones_ValorViewModel.coco_Id,
+      coco_Descripcion: deva.declaraciones_ValorViewModel.coco_Descripcion,
+      pvde_Condicion_Otra:
+        deva.declaraciones_ValorViewModel.pvde_Condicion_Otra,
+      inte_Id: deva.declaraciones_ValorViewModel.inte_Id,
+      tite_Id: deva.declaraciones_ValorViewModel.tite_Id,
+      inte_Nombre_Raso: deva.declaraciones_ValorViewModel.inte_Nombre_Raso,
+      inte_Direccion_Exacta:
+        deva.declaraciones_ValorViewModel.inte_Direccion_Exacta,
+      inte_Correo_Electronico:
+        deva.declaraciones_ValorViewModel.inte_Correo_Electronico,
+      inte_Telefono: deva.declaraciones_ValorViewModel.inte_Telefono,
+      inte_Fax: deva.declaraciones_ValorViewModel.inte_Fax,
+      inte_ciudId: deva.declaraciones_ValorViewModel.inte_ciudId,
+      deva_LugarEntrega: deva.declaraciones_ValorViewModel.deva_LugarEntrega,
+      pais_EntregaId: deva.declaraciones_ValorViewModel.pais_EntregaId,
+      inco_Id: deva.declaraciones_ValorViewModel.inco_Id,
+      inco_Descripcion: deva.declaraciones_ValorViewModel.inco_Descripcion,
+      inco_Version: deva.declaraciones_ValorViewModel.inco_Version,
+      deva_NumeroContrato:
+        deva.declaraciones_ValorViewModel.deva_NumeroContrato,
+      deva_FechaContrato: deva.declaraciones_ValorViewModel.deva_FechaContrato,
+      foen_Id: deva.declaraciones_ValorViewModel.foen_Id,
+      foen_Descripcion: deva.declaraciones_ValorViewModel.foen_Descripcion,
+      deva_FormaEnvioOtra:
+        deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra,
+      deva_PagoEfectuado: deva.declaraciones_ValorViewModel.deva_PagoEfectuado,
+      fopa_Id: deva.declaraciones_ValorViewModel.fopa_Id,
+      deva_FormaPagoOtra: deva.declaraciones_ValorViewModel.deva_FormaPagoOtra,
+      emba_Id: deva.declaraciones_ValorViewModel.emba_Id,
+      pais_ExportacionId: deva.declaraciones_ValorViewModel.pais_ExportacionId,
+      deva_FechaExportacion:
+        deva.declaraciones_ValorViewModel.deva_FechaExportacion,
+      mone_Id: deva.declaraciones_ValorViewModel.mone_Id,
+      mone_Otra: deva.declaraciones_ValorViewModel.mone_Otra,
+      deva_ConversionDolares:
+        deva.declaraciones_ValorViewModel.deva_ConversionDolares,
+      deva_Condiciones: deva.declaraciones_ValorViewModel.deva_Condiciones,
+      usua_UsuarioCreacion:
+        deva.declaraciones_ValorViewModel.usua_UsuarioCreacion,
+      usua_CreacionNombre:
+        deva.declaraciones_ValorViewModel.usua_CreacionNombre,
+      deva_FechaCreacion: deva.declaraciones_ValorViewModel.deva_FechaCreacion,
+      usua_UsuarioModificacion:
+        deva.declaraciones_ValorViewModel.usua_UsuarioModificacion,
+      usua_ModificacionNombre:
+        deva.declaraciones_ValorViewModel.usua_ModificacionNombre,
+      deva_FechaModificacion:
+        deva.declaraciones_ValorViewModel.deva_FechaModificacion,
+      deva_Estado: deva.declaraciones_ValorViewModel.deva_Estado,
+      usua_UsuarioEliminacion:
+        deva.declaraciones_ValorViewModel.usua_UsuarioEliminacion,
+      deva_FechaEliminacion:
+        deva.declaraciones_ValorViewModel.deva_FechaEliminacion,
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Declaracion_Valor/InsertarTab3`,
+      objParseado,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+
+    console.log(data, 'tab 3')
+
+    return data.data.messageStatus
   } catch (error) {
     return false
   }
@@ -442,7 +611,8 @@ export const getCiudades = async () => {
     }
 
     const response = await fetch(
-      import.meta.env.VITE_API_SimexPro_Url + 'api/Ciudades/Listar',
+      import.meta.env.VITE_API_SimexPro_Url +
+        'api/Ciudades/Listar?ciud_EsAduana=true',
       {
         method: 'GET',
         headers: {
@@ -1096,17 +1266,22 @@ export const getFacturas = async (deva_Id: number) => {
     }
 
     const data = await response.json()
-    console.log('factura:', JSON.stringify(data.data, null, 2));
-
-
-    return data.data.map((fact: Factura) => fact)
+    return getItemsPorDeva(deva_Id).then(items=>{
+      return data.data.map((fact: Factura) => {
+        return {
+          ...fact,
+          subRows: items.filter(item=>item.fact_Id === fact.fact_Id),
+        }
+      })
+    }).catch(err=>console.log('Error al cargar los items: '+ err)
+    )
   } catch (error) {
     console.error('Error al cargar los embarques:', error)
     return []
   }
 }
 
-export const getFacturas1 = async (deva_Id: number) => {
+export const getItemsPorDeva = async (deva_Id: number) => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -1117,7 +1292,7 @@ export const getFacturas1 = async (deva_Id: number) => {
 
     const response = await fetch(
       import.meta.env.VITE_API_SimexPro_Url +
-        `api/Facturas/Listar?deva_Id=${deva_Id}`,
+        `api/Items/ListarItemsByFactId?fact_Id=${deva_Id}`,
       {
         method: 'GET',
         headers: {
@@ -1132,17 +1307,22 @@ export const getFacturas1 = async (deva_Id: number) => {
     }
 
     const data = await response.json()
-    console.log('factura:', JSON.stringify(data.data, null, 2));
 
-
-    return data.data;
+    return data.data.map((item: Item) => {
+      return {
+        ...item,
+        item_FechaCreacion: item.item_FechaCreacion,
+        item_FechaEliminacion: new Date().toISOString(),
+        item_FechaModificacion: new Date().toISOString(),
+      }
+    })
   } catch (error) {
-    console.error('Error al cargar las facturas:')
+    console.error('Error al cargar los embarques:', error)
     return []
   }
 }
 
-export const getItems = async (fact_Id: number) =>{
+export const guardarFactura = async (fact: Factura, eliminar: boolean) => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey
 
@@ -1151,11 +1331,10 @@ export const getItems = async (fact_Id: number) =>{
       return
     }
 
-    const response = await fetch(
-      import.meta.env.VITE_API_SimexPro_Url +
-        `api/Items/Listar?fact_Id=${fact_Id}`,
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Facturas/${fact.fact_Id === 0 ? 'Insertar' : eliminar ? 'Eliminar' : 'Editar'}`,
+      fact,
       {
-        method: 'GET',
         headers: {
           XApiKey: apiKey,
           'Content-Type': 'application/json',
@@ -1163,21 +1342,45 @@ export const getItems = async (fact_Id: number) =>{
       }
     )
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
+    const data = await response.data
 
-    const data = await response.json()
-    console.log('items:', JSON.stringify(data.data, null, 2));
+    console.log(data, 'data fact')
 
-
-    return data.data;
+    return data.data.messageStatus
   } catch (error) {
-    console.error('Error al cargar los Items:', error)
-    return []
+    return false
   }
 }
 
+export const guardarItem = async (item: Item, eliminar: boolean) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Items/${eliminar ? 'Eliminar' : 'Insertar'}`,
+      item,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+
+    console.log(data, 'data item')
+
+    return data.data.messageStatus
+  } catch (error) {
+    return false
+  }
+}
 
 export const getUnidadesDeMedida = async () => {
   try {
@@ -1304,30 +1507,19 @@ export const getAranceles = async (codigo: string) => {
 
     const data = await response.json()
 
-    return data.data.filter((categ: Arancel) => categ.aran_Codigo.length === 6).map((aran: Arancel) => {
-      return {
-        ...aran,
-        // aran_Id: aran.aran_Id,
-        // aran_Codigo: aran.aran_Codigo,
-        // aran_Descripcion: aran.aran_Descripcion,
-        // usua_UsuarioCreacion: aran.usua_UsuarioCreacion,
-        // usuarioCreacion: aran.usuarioCreacion,
-        // aran_DAI: aran.aran_DAI,
-        // aran_ISV: aran.aran_ISV,
-        // aran_SEL: aran.aran_SEL,
-        // aran_ProdCons: aran.aran_ProdCons,
-        // impu_Descripcion: aran.impu_Descripcion,
-        // impu_Cantidad: aran.impu_Cantidad,
-        // aran_AplicaVehiculos: aran.aran_AplicaVehiculos,
-        // aran_ArancelVehicular: aran.aran_ArancelVehicular,
-        // aran_FechaCreacion: aran.aran_FechaCreacion,
-        // usua_UsuarioModificacion: aran.usua_UsuarioModificacion,
-        // usuarioModificacion: aran.usuarioModificacion,
-        // aran_FechaModificacion: aran.aran_FechaModificacion,
-        // aram_Estado: aran.aram_Estado,
-        subRows: data.data.filter((aranDetalle: Arancel) => aranDetalle.aran_Codigo.length > 6 && aranDetalle.aran_Codigo.split('.')[0] === aran.aran_Codigo.split('.')[0])
-      }
-    })
+    return data.data
+      .filter((categ: Arancel) => categ.aran_Codigo.length === 6)
+      .map((aran: Arancel) => {
+        return {
+          ...aran,
+          subRows: data.data.filter(
+            (aranDetalle: Arancel) =>
+              aranDetalle.aran_Codigo.length > 6 &&
+              aranDetalle.aran_Codigo.split('.')[0] ===
+                aran.aran_Codigo.split('.')[0]
+          ),
+        }
+      })
   } catch (error) {
     console.error('Error al cargar los aranceles:', error)
     return []

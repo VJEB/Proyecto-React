@@ -3,7 +3,6 @@ import { UserNav } from '@/components/user-nav'
 import { Layout, LayoutBody, LayoutHeader } from '@/components/custom/layout'
 import { FactDataTable } from './facturaComponents/data-table'
 import { DataTable } from './components/data-table'
-import PDFGenerator from './components/pdf'
 import { columns } from './components/columns'
 import { factColumns } from './facturaComponents/columns'
 import {
@@ -31,6 +30,11 @@ import {
   getPaises,
   getTiposDeIntermediarios,
   getUnidadesDeMedida,
+  guardarFactura,
+  guardarItem,
+  guardarTab1,
+  guardarTab2,
+  guardarTab3,
 } from './data/data'
 import { Button } from '@/components/custom/button'
 import {
@@ -51,6 +55,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {
   Aduana,
+  AranDetalle,
   Arancel,
   Ciudad,
   CondicionComercial,
@@ -107,8 +112,6 @@ import {
 } from '@/components/ui/accordion'
 import { Checkbox } from '@/components/ui/checkbox'
 
-
-
 export default function PagDeva({
   title = 'Declaración de Valor',
 }: {
@@ -117,135 +120,6 @@ export default function PagDeva({
   const context = useContext(ThemeProviderContext)
   const [devas, setDevas] = useState<Deva[]>()
   const [mostrarForm, setMostrarForm] = useState(false)
-
-
-  const [deva, setDeva] = useState<Deva>({
-    deva_Id: 0,
-    deva_AduanaIngresoId: 0,
-    adua_IngresoNombre: '',
-    adua_IngresoCodigo: '',
-    adua_DespachoCodigo: '',
-    regi_Id: 0,
-    regi_Codigo: '',
-    regi_Descripcion: '',
-    inco_Codigo: null,
-    duca_No_DUCA: null,
-    deva_AduanaDespachoId: 0,
-    adua_DespachoNombre: '',
-    deva_DeclaracionMercancia: '',
-    deva_FechaAceptacion: new Date().toISOString(),
-    deva_Finalizacion: false,
-    deva_PagoEfectuado: null,
-    pais_ExportacionId: null,
-    pais_ExportacionNombre: null,
-    deva_FechaExportacion: new Date().toISOString(),
-    mone_Id: null,
-    mone_Otra: null,
-    monedaNombre: null,
-    deva_ConversionDolares: null,
-    emba_Id: null,
-    lugarEmbarque: null,
-    nico_Id: 0,
-    nico_Descripcion: '',
-    emba_Codigo: null,
-    impo_Id: 0,
-    impo_NumRegistro: '',
-    impo_RTN: '',
-    impo_NivelComercial_Otro: null,
-    impo_Nombre_Raso: '',
-    impo_Direccion_Exacta: '',
-    impo_CiudadNombre: '',
-    impo_PaisNombre: '',
-    impo_Correo_Electronico: '',
-    impo_Telefono: '',
-    impo_Fax: null,
-    impo_ciudId: 0,
-    impo_paisId: 0,
-    coco_Id: 0,
-    coco_Descripcion: '',
-    pvde_Condicion_Otra: null,
-    pvde_Id: 0,
-    prov_NumeroIdentificacion: '',
-    prov_Nombre_Raso: '',
-    prov_Direccion_Exacta: '',
-    prov_CiudadNombre: '',
-    prov_PaisNombre: '',
-    prov_Correo_Electronico: '',
-    prov_Telefono: '',
-    prov_Fax: null,
-    prov_ciudId: 0,
-    prov_paisId: 0,
-    tite_Id: null,
-    tipoIntermediario: null,
-    inte_Id: null,
-    inte_ciudId: null,
-    inte_paisId: null,
-    inte_Tipo_Otro: null,
-    inte_NumeroIdentificacion: null,
-    inte_Nombre_Raso: null,
-    inte_Direccion_Exacta: null,
-    inte_Correo_Electronico: null,
-    inte_CiudadNombre: null,
-    inte_PaisNombre: null,
-    inte_Telefono: null,
-    inte_Fax: null,
-    deva_LugarEntrega: null,
-    pais_EntregaId: null,
-    pais_EntregaNombre: null,
-    inco_Descripcion: null,
-    inco_Version: null,
-    deva_NumeroContrato: null,
-    deva_FechaContrato: new Date().toISOString(),
-    foen_Id: null,
-    foen_Descripcion: null,
-    deva_FormaEnvioOtra: null,
-    fopa_Id: null,
-    fopa_Descripcion: null,
-    deva_FormaPagoOtra: null,
-    codi_Id: null,
-    codi_Restricciones_Utilizacion: null,
-    codi_Indicar_Restricciones_Utilizacion: null,
-    codi_Depende_Precio_Condicion: null,
-    codi_Indicar_Existe_Condicion: null,
-    codi_Condicionada_Revertir: null,
-    codi_Vinculacion_Comprador_Vendedor: null,
-    codi_Tipo_Vinculacion: null,
-    codi_Vinculacion_Influye_Precio: null,
-    codi_Pagos_Descuentos_Indirectos: null,
-    codi_Concepto_Monto_Declarado: null,
-    codi_Existen_Canones: null,
-    codi_Indicar_Canones: null,
-    base_Id: null,
-    base_PrecioFactura: null,
-    base_PagosIndirectos: null,
-    base_PrecioReal: null,
-    base_MontCondicion: null,
-    base_MontoReversion: null,
-    base_ComisionCorrelaje: null,
-    base_Gasto_Envase_Embalaje: null,
-    base_ValoresMateriales_Incorporado: null,
-    base_Valor_Materiales_Utilizados: null,
-    base_Valor_Materiales_Consumidos: null,
-    base_Valor_Ingenieria_Importado: null,
-    base_Valor_Canones: null,
-    base_Gasto_TransporteM_Importada: null,
-    base_Gastos_Carga_Importada: null,
-    base_Costos_Seguro: null,
-    base_Total_Ajustes_Precio_Pagado: null,
-    base_Gastos_Asistencia_Tecnica: null,
-    base_Gastos_Transporte_Posterior: null,
-    base_Derechos_Impuestos: null,
-    base_Monto_Intereses: null,
-    base_Deducciones_Legales: null,
-    base_Total_Deducciones_Precio: null,
-    base_Valor_Aduana: null,
-    usua_UsuarioCreacion: 0,
-    usua_CreacionNombre: '',
-    deva_FechaCreacion: new Date().toISOString(),
-    usua_ModificacionNombre: '',
-    deva_FechaModificacion: new Date().toISOString(),
-    deva_Estado: false,
-  })
 
   useEffect(() => {
     context.setMostrarDetalle(0)
@@ -259,27 +133,20 @@ export default function PagDeva({
   }, [context.refrescar])
 
   useEffect(() => {
-    const devaEncontrado = devas?.find(
-      (item) => item.deva_Id === context.devaId
-    )
-
-    if (devaEncontrado) {
-      setDeva(devaEncontrado)
-    }
-    if (context.procId) {
+    if (context.devaId) {
       setMostrarForm(true)
     }
   }, [context.devaId])
 
-  useEffect(() => {
-    const devaEncontrada = devas?.find(
-      (item) => item.deva_Id === context.mostrarDetalle
-    )
+  // useEffect(() => {
+  //   const devaEncontrada = devas?.find(
+  //     (item) => item.deva_Id === context.mostrarDetalle
+  //   )
 
-    if (devaEncontrada) {
-      setDeva(devaEncontrada)
-    }
-  }, [context.mostrarDetalle])
+  //   if (devaEncontrada) {
+  //     setDeva(devaEncontrada)
+  //   }
+  // }, [context.mostrarDetalle])
 
   return (
     <Layout>
@@ -296,7 +163,7 @@ export default function PagDeva({
       {context.mostrarDetalle !== 0 ? (
         <LayoutBody className='flex flex-col' fixedHeight>
           <div className='mb-2 flex items-center justify-between space-y-2'>
-            <h2 className='text-2xl font-bold tracking-tight'> Imprimir</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>Detalle</h2>
             <Button
               variant={'outline'}
               onClick={() => context.setMostrarDetalle(0)}
@@ -305,20 +172,17 @@ export default function PagDeva({
               Regresar
             </Button>
           </div>
-          {deva && (
-            <div className=''>
-              <PDFGenerator dato={deva}/>
-
-            </div>
+          {devaId && (
+            <div className='mb-2 flex flex-col items-center justify-between space-y-8 rounded border bg-slate-900 p-8'></div>
           )}
         </LayoutBody>
       ) : mostrarForm ? (
-        <FormDeva setMostrarForm={setMostrarForm} />
+        <FormDeva devas={devas} setMostrarForm={setMostrarForm} />
       ) : (
         <LayoutBody className='flex flex-col' fixedHeight>
           <div className='mb-2 flex items-center justify-between space-y-2'>
             <div>
-              <h2 className='text-2xl fontbo-ld tracking-tight'>
+              <h2 className='text-2xl font-bold tracking-tight'>
                 Listado de {title.toLowerCase()}
               </h2>
             </div>
@@ -328,133 +192,6 @@ export default function PagDeva({
               <div className='mb-2 flex items-center justify-between space-y-2'>
                 <Button
                   onClick={() => {
-                    setDeva({
-                      deva_Id: 0,
-                      deva_AduanaIngresoId: 0,
-                      adua_IngresoNombre: '',
-                      adua_IngresoCodigo: '',
-                      adua_DespachoCodigo: '',
-                      regi_Id: 0,
-                      regi_Codigo: '',
-                      regi_Descripcion: '',
-                      inco_Codigo: null,
-                      duca_No_DUCA: null,
-                      deva_AduanaDespachoId: 0,
-                      adua_DespachoNombre: '',
-                      deva_DeclaracionMercancia: '',
-                      deva_FechaAceptacion: new Date().toISOString(),
-                      deva_Finalizacion: false,
-                      deva_PagoEfectuado: null,
-                      pais_ExportacionId: null,
-                      pais_ExportacionNombre: null,
-                      deva_FechaExportacion: new Date().toISOString(),
-                      mone_Id: null,
-                      mone_Otra: null,
-                      monedaNombre: null,
-                      deva_ConversionDolares: null,
-                      emba_Id: null,
-                      lugarEmbarque: null,
-                      nico_Id: 0,
-                      nico_Descripcion: '',
-                      emba_Codigo: null,
-                      impo_Id: 0,
-                      impo_NumRegistro: '',
-                      impo_RTN: '',
-                      impo_NivelComercial_Otro: null,
-                      impo_Nombre_Raso: '',
-                      impo_Direccion_Exacta: '',
-                      impo_CiudadNombre: '',
-                      impo_PaisNombre: '',
-                      impo_Correo_Electronico: '',
-                      impo_Telefono: '',
-                      impo_Fax: null,
-                      impo_ciudId: 0,
-                      impo_paisId: 0,
-                      coco_Id: 0,
-                      coco_Descripcion: '',
-                      pvde_Condicion_Otra: null,
-                      pvde_Id: 0,
-                      prov_NumeroIdentificacion: '',
-                      prov_Nombre_Raso: '',
-                      prov_Direccion_Exacta: '',
-                      prov_CiudadNombre: '',
-                      prov_PaisNombre: '',
-                      prov_Correo_Electronico: '',
-                      prov_Telefono: '',
-                      prov_Fax: null,
-                      prov_ciudId: 0,
-                      prov_paisId: 0,
-                      tite_Id: null,
-                      tipoIntermediario: null,
-                      inte_Id: null,
-                      inte_ciudId: null,
-                      inte_paisId: null,
-                      inte_Tipo_Otro: null,
-                      inte_NumeroIdentificacion: null,
-                      inte_Nombre_Raso: null,
-                      inte_Direccion_Exacta: null,
-                      inte_Correo_Electronico: null,
-                      inte_CiudadNombre: null,
-                      inte_PaisNombre: null,
-                      inte_Telefono: null,
-                      inte_Fax: null,
-                      deva_LugarEntrega: null,
-                      pais_EntregaId: null,
-                      pais_EntregaNombre: null,
-                      inco_Descripcion: null,
-                      inco_Version: null,
-                      deva_NumeroContrato: null,
-                      deva_FechaContrato: new Date().toISOString(),
-                      foen_Id: null,
-                      foen_Descripcion: null,
-                      deva_FormaEnvioOtra: null,
-                      fopa_Id: null,
-                      fopa_Descripcion: null,
-                      deva_FormaPagoOtra: null,
-                      codi_Id: null,
-                      codi_Restricciones_Utilizacion: null,
-                      codi_Indicar_Restricciones_Utilizacion: null,
-                      codi_Depende_Precio_Condicion: null,
-                      codi_Indicar_Existe_Condicion: null,
-                      codi_Condicionada_Revertir: null,
-                      codi_Vinculacion_Comprador_Vendedor: null,
-                      codi_Tipo_Vinculacion: null,
-                      codi_Vinculacion_Influye_Precio: null,
-                      codi_Pagos_Descuentos_Indirectos: null,
-                      codi_Concepto_Monto_Declarado: null,
-                      codi_Existen_Canones: null,
-                      codi_Indicar_Canones: null,
-                      base_Id: null,
-                      base_PrecioFactura: null,
-                      base_PagosIndirectos: null,
-                      base_PrecioReal: null,
-                      base_MontCondicion: null,
-                      base_MontoReversion: null,
-                      base_ComisionCorrelaje: null,
-                      base_Gasto_Envase_Embalaje: null,
-                      base_ValoresMateriales_Incorporado: null,
-                      base_Valor_Materiales_Utilizados: null,
-                      base_Valor_Materiales_Consumidos: null,
-                      base_Valor_Ingenieria_Importado: null,
-                      base_Valor_Canones: null,
-                      base_Gasto_TransporteM_Importada: null,
-                      base_Gastos_Carga_Importada: null,
-                      base_Costos_Seguro: null,
-                      base_Total_Ajustes_Precio_Pagado: null,
-                      base_Gastos_Asistencia_Tecnica: null,
-                      base_Gastos_Transporte_Posterior: null,
-                      base_Derechos_Impuestos: null,
-                      base_Monto_Intereses: null,
-                      base_Deducciones_Legales: null,
-                      base_Total_Deducciones_Precio: null,
-                      base_Valor_Aduana: null,
-                      usua_UsuarioCreacion: 0,
-                      usua_CreacionNombre: '',
-                      deva_FechaCreacion: new Date().toISOString(),
-                      usua_ModificacionNombre: '',
-                      deva_FechaModificacion: new Date().toISOString(),
-                      deva_Estado: false,
-                    })
                     setMostrarForm(true)
                   }}
                 >
@@ -473,10 +210,13 @@ export default function PagDeva({
 }
 
 function FormDeva({
+  devas,
   setMostrarForm,
 }: {
+  devas: Deva[]
   setMostrarForm: (bool: boolean) => void
 }) {
+  const context = useContext(ThemeProviderContext)
   const [deva, setDeva] = useState<DevaCompuesta>({
     declaraciones_ValorViewModel: {
       deva_Id: 0,
@@ -486,7 +226,7 @@ function FormDeva({
       adua_DespachoNombre: '',
       deva_DeclaracionMercancia: 'Nuevo',
       deva_FechaAceptacion: new Date().toISOString(),
-      regi_Id: 0,
+      regi_Id: 1,
       regi_Codigo: '',
       regi_Descripcion: '',
       impo_RTN: '',
@@ -539,14 +279,14 @@ function FormDeva({
       mone_Otra: '',
       deva_ConversionDolares: 0,
       deva_Condiciones: '',
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       usua_CreacionNombre: '',
       deva_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       usua_ModificacionNombre: '',
       deva_FechaModificacion: new Date().toISOString(),
       deva_Estado: false,
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       deva_FechaEliminacion: new Date().toISOString(),
     },
     declarantesImpo_ViewModel: {
@@ -558,11 +298,11 @@ function FormDeva({
       decl_Correo_Electronico: '',
       decl_Telefono: '',
       decl_Fax: '',
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       decl_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       decl_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
@@ -583,11 +323,11 @@ function FormDeva({
       decl_Correo_Electronico: '',
       decl_Telefono: '',
       decl_Fax: '',
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       decl_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       decl_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
@@ -608,11 +348,11 @@ function FormDeva({
       decl_Correo_Electronico: '',
       decl_Telefono: '',
       decl_Fax: '',
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       decl_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       decl_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
@@ -631,11 +371,11 @@ function FormDeva({
       impo_NivelComercial_Otro: '',
       impo_RTN: '',
       impo_NumRegistro: '',
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       impo_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       impo_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       impo_FechaEliminacion: new Date().toISOString(),
       impo_Estado: false,
     },
@@ -644,11 +384,11 @@ function FormDeva({
       coco_Id: 0,
       pvde_Condicion_Otra: '',
       decl_Id: 0,
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       pvde_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       pvde_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       pvde_FechaEliminacion: new Date().toISOString(),
       pvde_Estado: false,
     },
@@ -657,11 +397,11 @@ function FormDeva({
       tite_Id: 0,
       inte_Tipo_Otro: '',
       decl_Id: 0,
-      usua_UsuarioCreacion: 0,
+      usua_UsuarioCreacion: 1,
       inte_FechaCreacion: new Date().toISOString(),
-      usua_UsuarioModificacion: 0,
+      usua_UsuarioModificacion: 1,
       inte_FechaModificacion: new Date().toISOString(),
-      usua_UsuarioEliminacion: 0,
+      usua_UsuarioEliminacion: 1,
       inte_FechaEliminacion: new Date().toISOString(),
       inte_Estado: false,
     },
@@ -683,21 +423,11 @@ function FormDeva({
     pais_Nombre: string
   } | null>(null)
 
-  const [formsValidados, setFormsValidados] = useState<{
-    general: boolean
-    proveedor: boolean
-    caracteristicas: boolean
-    facturas: boolean
-    condiciones: boolean
-    valorAduana: boolean
-  }>({
-    general: false,
-    proveedor: false,
-    caracteristicas: false,
-    facturas: false,
-    condiciones: false,
-    valorAduana: false,
-  })
+  const [paisEmbarque, setPaisEmbarque] = useState<{
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null>(null)
 
   const [ciudades, setCiudades] = useState<Ciudad[]>([])
   const [validar, setValidar] = useState(false)
@@ -705,57 +435,24 @@ function FormDeva({
     { pais_Id: number; pais_Codigo: string; pais_Nombre: string }[]
   >([])
 
+  const tabs = [
+    'general',
+    'proveedor',
+    'caracteristicas',
+    'facturas',
+    'condiciones',
+    'valorAduana',
+    'finalizar',
+  ]
   const [tab, setTab] = useState('general')
+  const [tabObjetivo, setTabObjetivo] = useState(0)
 
-  const onTabChange = (str: string | (()=>string)) => {
-    const val = typeof str === 'function' ? str() : str
-    console.log(formsValidados, 'formsValidados');
-    switch (val) {
-      case 'proveedor':
-        if (formsValidados.general) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      case 'caracteristicas':
-        if (formsValidados.proveedor) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      case 'facturas':
-        if (formsValidados.caracteristicas) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      case 'condiciones':
-        if (formsValidados.facturas) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      case 'valorAduana':
-        if (formsValidados.condiciones) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      case 'finalizar':
-        if (formsValidados.valorAduana) {
-          setTab(val)
-        } else {
-          setValidar(true)
-        }
-        break
-      default:
-        setTab(val)
-        break
+  const onTabChange = (str: string) => {
+    setTabObjetivo(tabs.indexOf(str))
+    if (tabs.indexOf(str) < tabs.indexOf(tab)) {
+      setTab(str)
+    } else {
+      setValidar((prev) => !prev)
     }
   }
 
@@ -771,7 +468,7 @@ function FormDeva({
 
   useEffect(() => {
     getCiudades()
-      .then((data) => {
+      .then((data: Ciudad[]) => {
         setCiudades(data)
         const paisesReduced = data.reduce(
           (
@@ -797,19 +494,370 @@ function FormDeva({
           []
         )
         setPaises(paisesReduced)
+        const dev = devas.find((de) => de.deva_Id === context.devaId)
+
+        if (dev?.impo_ciudId) {
+          const ciudad = data.find((ciud) => ciud.ciud_Id === dev.impo_ciudId)
+          if (ciudad) {
+            const pai = paisesReduced.find(
+              (pais) => pais.pais_Id === ciudad.pais_Id
+            )
+            if (pai) {
+              setPaisImportador(pai)
+            }
+          }
+        }
+
+        if (dev?.prov_ciudId) {
+          const ciudad = data.find((ciud) => ciud.ciud_Id === dev.prov_ciudId)
+          if (ciudad) {
+            const pai = paisesReduced.find(
+              (pais) => pais.pais_Id === ciudad.pais_Id
+            )
+            if (pai) {
+              setPaisProveedor(pai)
+            }
+          }
+        }
+
+        if (dev?.inte_ciudId) {
+          const ciudad = data.find((ciud) => ciud.ciud_Id === dev.inte_ciudId)
+          if (ciudad) {
+            const pai = paisesReduced.find(
+              (pais) => pais.pais_Id === ciudad.pais_Id
+            )
+            if (pai) {
+              setPaisIntermediario(pai)
+            }
+          }
+        }
       })
       .catch((err) => {
         console.log('Error al cargar las ciudades: ' + err)
       })
   }, [])
 
-  // useEffect(() => {
-  //   console.log(validar, 'useEffect')
-  //   if (validar) {
-  //     setValidar(false)
-  //     console.log(validar, 'useEffect')
-  //   }
-  // }, [validar])
+  useEffect(() => {
+    if (context.devaId) {
+      const dev = devas.find((de) => de.deva_Id === context.devaId)
+      if (dev) {
+        context.setEditandoTab3(dev.deva_LugarEntrega ? true : false)
+        setDeva((prev) => {
+          return {
+            ...prev,
+            declarantesInte_ViewModel: {
+              ...prev.declarantesInte_ViewModel,
+              decl_Nombre_Raso: dev.inte_Nombre_Raso ?? '',
+              decl_NumeroIdentificacion: dev.inte_NumeroIdentificacion ?? '',
+              decl_Direccion_Exacta: dev.inte_Direccion_Exacta ?? '',
+              ciud_Id: dev.inte_ciudId ?? 0,
+              decl_Correo_Electronico: dev.inte_Correo_Electronico ?? '',
+              decl_Telefono: dev.inte_Telefono ?? '',
+              decl_Fax: dev.inte_Fax ?? '',
+              tite_Id: dev.tite_Id ?? 0,
+              decl_Id: dev.inte_Id ?? 0,
+              inte_Tipo_Otro: dev.inte_Tipo_Otro ?? '',
+            },
+            intermediarioViewModel: {
+              ...prev.intermediarioViewModel,
+              inte_Id: dev.inte_Id ?? 0,
+              inte_Tipo_Otro: dev.inte_Tipo_Otro ?? '',
+              decl_Id: dev.inte_Id ?? 0,
+              tite_Id: dev.tite_Id ?? 0,
+            },
+            declarantesProv_ViewModel: {
+              ...prev.declarantesProv_ViewModel,
+              decl_Nombre_Raso: dev.prov_Nombre_Raso ?? '',
+              decl_NumeroIdentificacion: dev.prov_NumeroIdentificacion ?? '',
+              decl_Direccion_Exacta: dev.prov_Direccion_Exacta ?? '',
+              ciud_Id: dev.prov_ciudId ?? 0,
+              decl_Correo_Electronico: dev.prov_Correo_Electronico ?? '',
+              decl_Telefono: dev.prov_Telefono ?? '',
+              decl_Fax: dev.prov_Fax ?? '',
+              decl_Id: dev.pvde_Id ?? 0,
+              coco_Id: dev.coco_Id ?? 0,
+              pvde_Condicion_Otra: dev.pvde_Condicion_Otra ?? '',
+            },
+            proveedoresDeclaracionViewModel: {
+              ...prev.proveedoresDeclaracionViewModel,
+              pvde_Id: dev.pvde_Id ?? 0,
+              pvde_Condicion_Otra: dev.pvde_Condicion_Otra ?? '',
+              coco_Id: dev.coco_Id ?? 0,
+              decl_Id: dev.pvde_Id ?? 0,
+            },
+            declarantesImpo_ViewModel: {
+              ...prev.declarantesImpo_ViewModel,
+              decl_Nombre_Raso: dev.impo_Nombre_Raso ?? '',
+              impo_RTN: dev.impo_RTN ?? '',
+              impo_NumRegistro: dev.impo_NumRegistro ?? '',
+              decl_Direccion_Exacta: dev.impo_Direccion_Exacta ?? '',
+              ciud_Id: dev.impo_ciudId ?? 0,
+              decl_Correo_Electronico: dev.impo_Correo_Electronico ?? '',
+              decl_Telefono: dev.impo_Telefono ?? '',
+              decl_Fax: dev.impo_Fax ?? '',
+              nico_Id: dev.nico_Id ?? 0,
+              decl_Id: dev.impo_Id ?? 0,
+              impo_NivelComercial_Otro: dev.impo_NivelComercial_Otro ?? '',
+            },
+            importadoresViewModel: {
+              ...prev.importadoresViewModel,
+              impo_Id: dev.impo_Id ?? 0,
+              impo_NivelComercial_Otro: dev.impo_NivelComercial_Otro ?? '',
+              impo_RTN: dev.impo_RTN ?? '',
+              impo_NumRegistro: dev.impo_NumRegistro ?? '',
+              nico_Id: dev.nico_Id ?? 0,
+            },
+            declaraciones_ValorViewModel: {
+              ...prev.declaraciones_ValorViewModel,
+              usua_UsuarioModificacion: 1,
+              impo_Telefono: dev.impo_Telefono ?? '',
+              impo_Fax: dev.impo_Fax ?? '',
+              nico_Id: dev.nico_Id ?? 0,
+              impo_Id: dev.impo_Id ?? 0,
+              impo_NivelComercial_Otro: dev.impo_NivelComercial_Otro ?? '',
+              impo_Direccion_Exacta: dev.impo_Direccion_Exacta ?? '',
+              deva_Id: context.devaId,
+              impo_Correo_Electronico: dev.impo_Correo_Electronico ?? '',
+              impo_Nombre_Raso: dev.impo_Nombre_Raso ?? '',
+              deva_DeclaracionMercancia:
+                dev.deva_DeclaracionMercancia ?? 'Nuevo',
+              deva_FechaAceptacion:
+                dev.deva_FechaAceptacion ?? new Date().toISOString(),
+              deva_AduanaIngresoId: dev.deva_AduanaIngresoId ?? 0,
+              adua_IngresoNombre: dev.adua_IngresoNombre ?? '',
+              deva_AduanaDespachoId: dev.deva_AduanaDespachoId ?? 0,
+              adua_DespachoNombre: dev.adua_DespachoNombre ?? '',
+              deva_FormaPagoOtra: dev.deva_FormaPagoOtra ?? '',
+              fopa_Id: dev.fopa_Id ?? 0,
+              deva_FormaEnvioOtra: dev.deva_FormaEnvioOtra ?? '',
+              foen_Descripcion: dev.foen_Descripcion ?? '',
+              foen_Id: dev.foen_Id ?? 0,
+              deva_FechaContrato:
+                dev.deva_FechaContrato ?? new Date().toISOString(),
+              deva_NumeroContrato: dev.deva_NumeroContrato ?? '',
+              inco_Descripcion: dev.inco_Descripcion ?? '',
+              deva_PagoEfectuado: dev?.deva_PagoEfectuado ?? false,
+              pais_ExportacionId: dev?.pais_ExportacionId ?? 0,
+              deva_FechaExportacion:
+                dev?.deva_FechaExportacion ?? new Date().toISOString(),
+              mone_Id: dev?.mone_Id ?? 0,
+              mone_Otra: dev?.mone_Otra ?? '',
+              deva_ConversionDolares: dev?.deva_ConversionDolares ?? 1,
+              emba_Id: dev?.emba_Id ?? 0,
+              pvde_Condicion_Otra: dev?.pvde_Condicion_Otra ?? '',
+              prov_Fax: dev?.prov_Fax ?? '',
+              tite_Id: dev?.tite_Id ?? 0,
+              inte_Id: dev?.inte_Id ?? 0,
+              inte_ciudId: dev?.inte_ciudId ?? 0,
+              inte_Nombre_Raso: dev?.inte_Nombre_Raso
+                ? dev?.inte_Nombre_Raso.toString()
+                : '',
+              inte_Direccion_Exacta: dev.inte_Direccion_Exacta ?? '',
+              inte_Correo_Electronico: dev.inte_Correo_Electronico ?? '',
+              inte_Telefono: dev.inte_Telefono ?? '',
+              inte_Fax: dev.inte_Fax ?? '',
+              deva_LugarEntrega: dev.deva_LugarEntrega ?? '',
+              pais_EntregaId: dev.pais_EntregaId ?? 0,
+              inco_Version: dev.inco_Version ?? '',
+              emba_Codigo: dev.emba_Codigo ?? '',
+            },
+          }
+        })
+      }
+    } else {
+      context.setEditandoTab3(false)
+      setDeva({
+        declaraciones_ValorViewModel: {
+          deva_Id: 0,
+          deva_AduanaIngresoId: 0,
+          adua_IngresoNombre: '',
+          deva_AduanaDespachoId: 0,
+          adua_DespachoNombre: '',
+          deva_DeclaracionMercancia: 'Nuevo',
+          deva_FechaAceptacion: new Date().toISOString(),
+          regi_Id: 1,
+          regi_Codigo: '',
+          regi_Descripcion: '',
+          impo_RTN: '',
+          impo_Id: 0,
+          impo_NumRegistro: '',
+          nico_Id: 0,
+          nico_Descripcion: '',
+          impo_NivelComercial_Otro: '',
+          impo_Nombre_Raso: '',
+          impo_Direccion_Exacta: '',
+          impo_Correo_Electronico: '',
+          impo_Telefono: '',
+          impo_Fax: '',
+          impo_ciudId: 0,
+          pvde_Id: 0,
+          prov_Nombre_Raso: '',
+          prov_Direccion_Exacta: '',
+          prov_Correo_Electronico: '',
+          prov_Telefono: '',
+          prov_Fax: '',
+          prov_ciudId: 0,
+          coco_Id: 0,
+          coco_Descripcion: '',
+          pvde_Condicion_Otra: '',
+          inte_Id: 0,
+          tite_Id: 0,
+          inte_Nombre_Raso: '',
+          inte_Direccion_Exacta: '',
+          inte_Correo_Electronico: '',
+          inte_Telefono: '',
+          inte_Fax: '',
+          inte_ciudId: 0,
+          deva_LugarEntrega: '',
+          pais_EntregaId: 0,
+          inco_Id: 0,
+          inco_Descripcion: '',
+          inco_Version: '',
+          deva_NumeroContrato: '',
+          deva_FechaContrato: new Date().toISOString(),
+          foen_Id: 0,
+          foen_Descripcion: '',
+          deva_FormaEnvioOtra: '',
+          deva_PagoEfectuado: false,
+          fopa_Id: 0,
+          deva_FormaPagoOtra: '',
+          emba_Id: 0,
+          pais_ExportacionId: 0,
+          deva_FechaExportacion: new Date().toISOString(),
+          mone_Id: 0,
+          mone_Otra: '',
+          deva_ConversionDolares: 0,
+          deva_Condiciones: '',
+          usua_UsuarioCreacion: 1,
+          usua_CreacionNombre: '',
+          deva_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          usua_ModificacionNombre: '',
+          deva_FechaModificacion: new Date().toISOString(),
+          deva_Estado: false,
+          usua_UsuarioEliminacion: 1,
+          deva_FechaEliminacion: new Date().toISOString(),
+        },
+        declarantesImpo_ViewModel: {
+          decl_Id: 0,
+          decl_NumeroIdentificacion: '',
+          decl_Nombre_Raso: '',
+          decl_Direccion_Exacta: '',
+          ciud_Id: 0,
+          decl_Correo_Electronico: '',
+          decl_Telefono: '',
+          decl_Fax: '',
+          usua_UsuarioCreacion: 1,
+          decl_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          decl_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          decl_FechaEliminacion: new Date().toISOString(),
+          decl_Estado: false,
+          nico_Id: 0,
+          impo_NivelComercial_Otro: '',
+          impo_RTN: '',
+          impo_NumRegistro: '',
+          tite_Id: 0,
+          inte_Tipo_Otro: '',
+          coco_Id: 0,
+          pvde_Condicion_Otra: '',
+        },
+        declarantesProv_ViewModel: {
+          decl_Id: 0,
+          decl_NumeroIdentificacion: '',
+          decl_Nombre_Raso: '',
+          decl_Direccion_Exacta: '',
+          ciud_Id: 0,
+          decl_Correo_Electronico: '',
+          decl_Telefono: '',
+          decl_Fax: '',
+          usua_UsuarioCreacion: 1,
+          decl_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          decl_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          decl_FechaEliminacion: new Date().toISOString(),
+          decl_Estado: false,
+          nico_Id: 0,
+          impo_NivelComercial_Otro: '',
+          impo_RTN: '',
+          impo_NumRegistro: '',
+          tite_Id: 0,
+          inte_Tipo_Otro: '',
+          coco_Id: 0,
+          pvde_Condicion_Otra: '',
+        },
+        declarantesInte_ViewModel: {
+          decl_Id: 0,
+          decl_NumeroIdentificacion: '',
+          decl_Nombre_Raso: '',
+          decl_Direccion_Exacta: '',
+          ciud_Id: 0,
+          decl_Correo_Electronico: '',
+          decl_Telefono: '',
+          decl_Fax: '',
+          usua_UsuarioCreacion: 1,
+          decl_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          decl_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          decl_FechaEliminacion: new Date().toISOString(),
+          decl_Estado: false,
+          nico_Id: 0,
+          impo_NivelComercial_Otro: '',
+          impo_RTN: '',
+          impo_NumRegistro: '',
+          tite_Id: 0,
+          inte_Tipo_Otro: '',
+          coco_Id: 0,
+          pvde_Condicion_Otra: '',
+        },
+        importadoresViewModel: {
+          impo_Id: 0,
+          nico_Id: 0,
+          decl_Id: 0,
+          impo_NivelComercial_Otro: '',
+          impo_RTN: '',
+          impo_NumRegistro: '',
+          usua_UsuarioCreacion: 1,
+          impo_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          impo_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          impo_FechaEliminacion: new Date().toISOString(),
+          impo_Estado: false,
+        },
+        proveedoresDeclaracionViewModel: {
+          pvde_Id: 0,
+          coco_Id: 0,
+          pvde_Condicion_Otra: '',
+          decl_Id: 0,
+          usua_UsuarioCreacion: 1,
+          pvde_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          pvde_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          pvde_FechaEliminacion: new Date().toISOString(),
+          pvde_Estado: false,
+        },
+        intermediarioViewModel: {
+          inte_Id: 0,
+          tite_Id: 0,
+          inte_Tipo_Otro: '',
+          decl_Id: 0,
+          usua_UsuarioCreacion: 1,
+          inte_FechaCreacion: new Date().toISOString(),
+          usua_UsuarioModificacion: 1,
+          inte_FechaModificacion: new Date().toISOString(),
+          usua_UsuarioEliminacion: 1,
+          inte_FechaEliminacion: new Date().toISOString(),
+          inte_Estado: false,
+        },
+      })
+    }
+  }, [context.devaId])
+
   return (
     <LayoutBody className='flex flex-col' fixedHeight>
       <div className='mb-2 flex items-center justify-between space-y-2'>
@@ -833,8 +881,10 @@ function FormDeva({
         <TabsContent value={'general'}>
           <FormGeneral
             validar={validar}
-            setValidar={setValidar}
-            setFormsValidados={setFormsValidados}
+            tabIndex={0}
+            tabObjetivo={tabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             ciudades={ciudades}
             paises={paises}
             paisImportador={paisImportador}
@@ -843,66 +893,81 @@ function FormDeva({
             setDeva={setDeva}
             errorToast={errorToast}
             setMostrarForm={setMostrarForm}
-            onTabChange={onTabChange}
-            />
+          />
         </TabsContent>
         <TabsContent value={'proveedor'}>
           <FormProveedor
             validar={validar}
-            setValidar={setValidar}
+            tabIndex={1}
+            tabObjetivo={tabObjetivo}
+            setTabObjetivo={setTabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             paisProveedor={paisProveedor}
             setPaisProveedor={setPaisProveedor}
             paisIntermediario={paisIntermediario}
             setPaisIntermediario={setPaisIntermediario}
-            setFormsValidados={setFormsValidados}
             ciudades={ciudades}
             paises={paises}
             deva={deva}
             setDeva={setDeva}
             errorToast={errorToast}
-            onTabChange={onTabChange}
-            />
+          />
         </TabsContent>
         <TabsContent value={'caracteristicas'}>
           <FormCaracteristicas
             deva={deva}
             setDeva={setDeva}
-            setValidar={setValidar}
             validar={validar}
-            setFormsValidados={setFormsValidados}
+            paisEmbarque={paisEmbarque}
+            setPaisEmbarque={setPaisEmbarque}
+            tabIndex={2}
+            setTabObjetivo={setTabObjetivo}
+            tabObjetivo={tabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             errorToast={errorToast}
-            onTabChange={onTabChange}
-            />
+          />
         </TabsContent>
         <TabsContent value={'facturas'}>
           <FormFactura
             validar={validar}
-            setValidar={setValidar}
-            setFormsValidados={setFormsValidados}
+            tabIndex={3}
+            tabObjetivo={tabObjetivo}
+            setTabObjetivo={setTabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             deva={deva}
             errorToast={errorToast}
-            onTabChange={onTabChange}
-            />
+          />
         </TabsContent>
         <TabsContent value={'condiciones'}>
-          <FormCondiciones 
+          <FormCondiciones
             validar={validar}
-            setValidar={setValidar}
-            setFormsValidados={setFormsValidados}
+            tabIndex={4}
+            tabObjetivo={tabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             errorToast={errorToast}
-            onTabChange={onTabChange} />
+          />
         </TabsContent>
         <TabsContent value={'valorAduana'}>
-          <FormValorAduana 
+          <FormValorAduana
             validar={validar}
-            setValidar={setValidar}
-            setFormsValidados={setFormsValidados}
+            tabIndex={5}
+            tabObjetivo={tabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
             errorToast={errorToast}
-            onTabChange={onTabChange} />
+          />
         </TabsContent>
         <TabsContent value={'finalizar'}>
-          <FormFinalizar 
-          onTabChange={onTabChange} />
+          <FormFinalizar
+            tabIndex={6}
+            tabObjetivo={tabObjetivo}
+            tabs={tabs}
+            setTab={setTab}
+          />
         </TabsContent>
       </Tabs>
     </LayoutBody>
@@ -911,8 +976,10 @@ function FormDeva({
 
 function FormGeneral({
   validar,
-  setValidar,
-  setFormsValidados,
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTab,
   ciudades,
   paises,
   paisImportador,
@@ -920,21 +987,13 @@ function FormGeneral({
   deva,
   setDeva,
   errorToast,
-  onTabChange,
   setMostrarForm,
 }: {
   validar: boolean
-  setValidar: Dispatch<SetStateAction<boolean>>
-  setFormsValidados: Dispatch<
-    SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
-  >
+  tabIndex: number
+  tabs: string[]
+  tabObjetivo: number
+  setTab: Dispatch<SetStateAction<string>>
   ciudades: Ciudad[]
   paises: { pais_Id: number; pais_Nombre: string; pais_Codigo: string }[]
   paisImportador: {
@@ -952,11 +1011,13 @@ function FormGeneral({
   deva: DevaCompuesta
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
   setMostrarForm: (bool: boolean) => void
 }) {
   const [aduanas, setAduanas] = useState<Aduana[]>([])
   const [nicos, setNicos] = useState<NivelComercial[]>([])
+  const { toast } = useToast()
+
+  const context = useContext(ThemeProviderContext)
 
   const [cbbAduaIngresoState, setCbbAduaIngresoState] = useState(false)
   const [cbbAduaDespachoState, setCbbAduaDespachoState] = useState(false)
@@ -970,6 +1031,8 @@ function FormGeneral({
   const inputGeneralRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
   >([])
+
+  // const [bloquearValidacion, setBloquearValidacion] = useState(true)
 
   const validarInfoGeneral = () => {
     let huboError = false
@@ -1011,12 +1074,12 @@ function FormGeneral({
       .catch((err) => {
         console.log('Error al cargar los niveles comerciales: ' + err)
       })
+    // setBloquearValidacion(false)
   }, [])
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar(() => false), 2000)
-    if (validar) {
-      validarInfoGeneral()
+    if (tabObjetivo > tabIndex) {
+      !validarInfoGeneral() && setTab(tabs[tabIndex + 1])
     }
   }, [validar])
 
@@ -1052,38 +1115,40 @@ function FormGeneral({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar aduana...' />
-                <CommandEmpty>No hay aduanas.</CommandEmpty>
-                <CommandGroup>
-                  {aduanas.map((aduana) => (
-                    <CommandItem
-                      key={aduana.adua_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              deva_AduanaIngresoId: aduana.adua_Id,
-                              adua_IngresoNombre: aduana.adua_Nombre,
-                            },
-                          }
-                        })
-                        setCbbAduaIngresoState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel
-                            .deva_AduanaIngresoId === aduana.adua_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {aduana.adua_Nombre}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay aduanas.</CommandEmpty>
+                  <CommandGroup>
+                    {aduanas.map((aduana) => (
+                      <CommandItem
+                        key={aduana.adua_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                deva_AduanaIngresoId: aduana.adua_Id,
+                                adua_IngresoNombre: aduana.adua_Nombre,
+                              },
+                            }
+                          })
+                          setCbbAduaIngresoState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declaraciones_ValorViewModel
+                              .deva_AduanaIngresoId === aduana.adua_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {aduana.adua_Nombre}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -1115,38 +1180,40 @@ function FormGeneral({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar aduana...' />
-                <CommandEmpty>No hay aduanas.</CommandEmpty>
-                <CommandGroup>
-                  {aduanas.map((aduana) => (
-                    <CommandItem
-                      key={aduana.adua_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              deva_AduanaDespachoId: aduana.adua_Id,
-                              adua_DespachoNombre: aduana.adua_Nombre,
-                            },
-                          }
-                        })
-                        setCbbAduaIngresoState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel
-                            .deva_AduanaDespachoId === aduana.adua_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {aduana.adua_Nombre}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay aduanas.</CommandEmpty>
+                  <CommandGroup>
+                    {aduanas.map((aduana) => (
+                      <CommandItem
+                        key={aduana.adua_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                deva_AduanaDespachoId: aduana.adua_Id,
+                                adua_DespachoNombre: aduana.adua_Nombre,
+                              },
+                            }
+                          })
+                          setCbbAduaIngresoState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declaraciones_ValorViewModel
+                              .deva_AduanaDespachoId === aduana.adua_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {aduana.adua_Nombre}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -1423,32 +1490,34 @@ function FormGeneral({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar país...' />
-                <CommandEmpty>No hay paises.</CommandEmpty>
-                <CommandGroup>
-                  {paises.map((pais) => (
-                    <CommandItem
-                      key={pais.pais_Id}
-                      onSelect={() => {
-                        setPaisImportador({
-                          pais_Id: pais.pais_Id,
-                          pais_Codigo: pais.pais_Codigo,
-                          pais_Nombre: pais.pais_Nombre,
-                        })
-                        setCbbPaisImportadorState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          paisImportador?.pais_Id === pais.pais_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {pais.pais_Codigo} | {pais.pais_Nombre}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay paises.</CommandEmpty>
+                  <CommandGroup>
+                    {paises.map((pais) => (
+                      <CommandItem
+                        key={pais.pais_Id}
+                        onSelect={() => {
+                          setPaisImportador({
+                            pais_Id: pais.pais_Id,
+                            pais_Codigo: pais.pais_Codigo,
+                            pais_Nombre: pais.pais_Nombre,
+                          })
+                          setCbbPaisImportadorState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            paisImportador?.pais_Id === pais.pais_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {pais.pais_Codigo} | {pais.pais_Nombre}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -1491,45 +1560,48 @@ function FormGeneral({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar ciudad...' />
-                <CommandEmpty>No hay ciudades.</CommandEmpty>
-                <CommandGroup>
-                  {ciudades
-                    .filter(
-                      (ciud) => ciud.pais_Codigo === paisImportador?.pais_Codigo
-                    )
-                    .map((ciudad) => (
-                      <CommandItem
-                        key={ciudad.ciud_Id}
-                        onSelect={() => {
-                          setDeva((deva) => {
-                            return {
-                              ...deva,
-                              declaraciones_ValorViewModel: {
-                                ...deva.declaraciones_ValorViewModel,
-                                impo_ciudId: ciudad.ciud_Id,
-                              },
-                              declarantesImpo_ViewModel: {
-                                ...deva.declarantesImpo_ViewModel,
-                                ciud_Id: ciudad.ciud_Id,
-                              },
-                            }
-                          })
-                          setCbbCiudadImportadorState(false)
-                        }}
-                      >
-                        <IconCheck
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            deva.declaraciones_ValorViewModel.impo_ciudId ===
-                              ciudad.ciud_Id
-                              ? 'opacity-100'
-                              : 'opacity-0'
-                          )}
-                        />
-                        {ciudad.ciud_Nombre}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay ciudades.</CommandEmpty>
+                  <CommandGroup>
+                    {ciudades
+                      .filter(
+                        (ciud) =>
+                          ciud.pais_Codigo === paisImportador?.pais_Codigo
+                      )
+                      .map((ciudad) => (
+                        <CommandItem
+                          key={ciudad.ciud_Id}
+                          onSelect={() => {
+                            setDeva((deva) => {
+                              return {
+                                ...deva,
+                                declaraciones_ValorViewModel: {
+                                  ...deva.declaraciones_ValorViewModel,
+                                  impo_ciudId: ciudad.ciud_Id,
+                                },
+                                declarantesImpo_ViewModel: {
+                                  ...deva.declarantesImpo_ViewModel,
+                                  ciud_Id: ciudad.ciud_Id,
+                                },
+                              }
+                            })
+                            setCbbCiudadImportadorState(false)
+                          }}
+                        >
+                          <IconCheck
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              deva.declaraciones_ValorViewModel.impo_ciudId ===
+                                ciudad.ciud_Id
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                          {ciudad.ciud_Nombre}
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -1652,46 +1724,48 @@ function FormGeneral({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar nivel comercial...' />
-                <CommandEmpty>No hay niveles comerciales.</CommandEmpty>
-                <CommandGroup>
-                  {nicos.map((nico) => (
-                    <CommandItem
-                      key={nico.nico_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              nico_Id: nico.nico_Id,
-                              nico_Descripcion: nico.nico_Descripcion,
-                            },
-                            declarantesImpo_ViewModel: {
-                              ...deva.declarantesImpo_ViewModel,
-                              nico_Id: nico.nico_Id,
-                            },
-                            importadoresViewModel: {
-                              ...deva.importadoresViewModel,
-                              nico_Id: nico.nico_Id,
-                            },
-                          }
-                        })
-                        setCbbNicoImportadorState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel.nico_Id ===
-                            nico.nico_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {nico.nico_Descripcion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay niveles comerciales.</CommandEmpty>
+                  <CommandGroup>
+                    {nicos.map((nico) => (
+                      <CommandItem
+                        key={nico.nico_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                nico_Id: nico.nico_Id,
+                                nico_Descripcion: nico.nico_Descripcion,
+                              },
+                              declarantesImpo_ViewModel: {
+                                ...deva.declarantesImpo_ViewModel,
+                                nico_Id: nico.nico_Id,
+                              },
+                              importadoresViewModel: {
+                                ...deva.importadoresViewModel,
+                                nico_Id: nico.nico_Id,
+                              },
+                            }
+                          })
+                          setCbbNicoImportadorState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declaraciones_ValorViewModel.nico_Id ===
+                              nico.nico_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {nico.nico_Descripcion}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -1735,13 +1809,24 @@ function FormGeneral({
       </div>
 
       <div className='mr-6 flex justify-end gap-2'>
-        <Button variant={'outline'} onClick={()=>setRegresarDialogState(true)}>Regresar</Button>
+        <Button
+          variant={'outline'}
+          onClick={() => {
+            context.setRefrescar(!context.refrescar)
+            context.setDevaId(0)
+            if (!deva.declaraciones_ValorViewModel.deva_Id) {
+              setRegresarDialogState(true)
+            } else {
+              setMostrarForm(false)
+            }
+          }}
+        >
+          Regresar
+        </Button>
         <Dialog
           open={regresarDialogState}
           onOpenChange={setRegresarDialogState}
         >
-          <DialogTrigger asChild>.
-          </DialogTrigger>
           <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader>
               <DialogTitle>Eliminar factura</DialogTitle>
@@ -1756,13 +1841,17 @@ function FormGeneral({
             </div>
             <DialogFooter>
               <Button
-                onClick={() => setRegresarDialogState(false)}
+                onClick={() => {
+                  setRegresarDialogState(false)
+                }}
                 variant='outline'
               >
                 Cancelar
               </Button>
               <Button
                 onClick={() => {
+                  context.setRefrescar(!context.refrescar)
+                  context.setDevaId(0)
                   setRegresarDialogState(false)
                   setMostrarForm(false)
                 }}
@@ -1775,17 +1864,33 @@ function FormGeneral({
         <Button
           onClick={() => {
             if (!validarInfoGeneral()) {
-              setFormsValidados((prev) => {
-                return {
-                  ...prev,
-                  general: true,
-                }
-              })
-              setTimeout(() => onTabChange(()=>'proveedor'), 300)
+              guardarTab1(deva)
+                .then((devaId) => {
+                  if (deva.declaraciones_ValorViewModel.deva_Id === 0) {
+                    setDeva((deva) => {
+                      return {
+                        ...deva,
+                        declaraciones_ValorViewModel: {
+                          ...deva.declaraciones_ValorViewModel,
+                          deva_Id: devaId,
+                        },
+                      }
+                    })
+                  }
+                  setTab(tabs[tabIndex + 1])
+                  toast({
+                    title: 'Éxito: ',
+                    description: 'Información general guardada exitosamente!',
+                  })
+                  context.setRefrescar(!context.refrescar)
+                })
+                .catch((err) =>
+                  console.error('Error al guardar la deva: ' + err)
+                )
             }
           }}
         >
-          Continuar
+          Guardar
         </Button>
       </div>
     </Card>
@@ -1794,21 +1899,26 @@ function FormGeneral({
 
 function FormProveedor({
   validar,
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTabObjetivo,
+  setTab,
   paisProveedor,
   setPaisProveedor,
   paisIntermediario,
   setPaisIntermediario,
-  setValidar,
-  setFormsValidados,
   paises,
   ciudades,
   deva,
   setDeva,
   errorToast,
-  onTabChange,
 }: {
   validar: boolean
-  setValidar: Dispatch<SetStateAction<boolean>>
+  tabIndex: number
+  tabs: string[]
+  tabObjetivo: number
+  setTabObjetivo: Dispatch<SetStateAction<number>>
   paisProveedor: {
     pais_Id: number
     pais_Codigo: string
@@ -1833,22 +1943,12 @@ function FormProveedor({
       pais_Nombre: string
     } | null>
   >
-  setFormsValidados: Dispatch<
-    SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
-  >
+  setTab: Dispatch<SetStateAction<string>>
   ciudades: Ciudad[]
   paises: { pais_Id: number; pais_Nombre: string; pais_Codigo: string }[]
   deva: DevaCompuesta
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
 }) {
   const [condiciones, setCondiciones] = useState<CondicionComercial[]>([])
   const [tiposDeIntermediarios, setTiposDeIntermediarios] = useState<
@@ -1858,7 +1958,7 @@ function FormProveedor({
   const [cbbPaisProveedorState, setCbbPaisProveedorState] = useState(false)
   const [cbbCiudadProveedorState, setCbbCiudadProveedorState] = useState(false)
   const [cbbCocoProveedorState, setCbbCocoProveedorState] = useState(false)
-  const [ckHayIntermediarioState, setCkHayIntermediarioState] = useState(false)
+  const [ckHayIntermediarioState, setCkHayIntermediarioState] = useState(true)
 
   const [cbbPaisIntermediarioState, setCbbPaisIntermediarioState] =
     useState(false)
@@ -1866,6 +1966,8 @@ function FormProveedor({
     useState(false)
   const [cbbTipoIntermediarioState, setCbbTipoIntermediarioState] =
     useState(false)
+
+  const [bloquearValidacion, setBloquearValidacion] = useState(true)
 
   const inputProveedorRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
@@ -1900,8 +2002,6 @@ function FormProveedor({
     return huboError
   }
 
-
-  
   const validarInputsIntermediario = () => {
     let huboError = false
     inputIntermediarioRefs.current.forEach((input) => {
@@ -1945,10 +2045,13 @@ function FormProveedor({
   }, [])
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar(() => false), 2000)
-    if (validar) { 
-      if (!validarInputsProveedor() && ckHayIntermediarioState) {
-        validarInputsIntermediario()
+    if (tabObjetivo > tabIndex) {
+      if (!validarInputsProveedor()) {
+        if (ckHayIntermediarioState) {
+          !validarInputsIntermediario() && setTab(tabs[tabIndex + 1])
+        } else {
+          setTab(tabs[tabIndex + 1])
+        }
       }
     }
   }, [validar])
@@ -1962,8 +2065,8 @@ function FormProveedor({
           <Input
             ref={(input) => (inputProveedorRefs.current[0] = input)}
             value={
-              deva.declaraciones_ValorViewModel.prov_Nombre_Raso
-                ? deva.declaraciones_ValorViewModel.prov_Nombre_Raso
+              deva.declarantesProv_ViewModel.decl_Nombre_Raso
+                ? deva.declarantesProv_ViewModel.decl_Nombre_Raso
                 : ''
             }
             onChange={(e) => {
@@ -1987,12 +2090,40 @@ function FormProveedor({
           />
         </div>
         <div className='flex flex-col gap-1'>
-          <Label>10. Dirección</Label>
+          <Label>Numero de Identificación</Label>
           <Input
             ref={(input) => (inputProveedorRefs.current[1] = input)}
             value={
-              deva.declaraciones_ValorViewModel.prov_Direccion_Exacta
-                ? deva.declaraciones_ValorViewModel.prov_Direccion_Exacta
+              deva.declarantesProv_ViewModel.decl_NumeroIdentificacion
+                ? deva.declarantesProv_ViewModel.decl_NumeroIdentificacion
+                : ''
+            }
+            onChange={(e) => {
+              const value = e.target.value
+
+              const regex = /^\d*$/
+              if (regex.test(value) && value.length <= 13) {
+                setDeva((deva) => {
+                  return {
+                    ...deva,
+                    declarantesProv_ViewModel: {
+                      ...deva.declarantesProv_ViewModel,
+                      decl_NumeroIdentificacion: value,
+                      impo_NumRegistro: value,
+                    },
+                  }
+                })
+              }
+            }}
+          />
+        </div>
+        <div className='flex flex-col gap-1'>
+          <Label>10. Dirección</Label>
+          <Input
+            ref={(input) => (inputProveedorRefs.current[2] = input)}
+            value={
+              deva.declarantesProv_ViewModel.decl_Direccion_Exacta
+                ? deva.declarantesProv_ViewModel.decl_Direccion_Exacta
                 : ''
             }
             onChange={(e) => {
@@ -2027,7 +2158,7 @@ function FormProveedor({
                 variant='outline'
                 role='combobox'
                 className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[2] = input)}
+                ref={(input) => (inputProveedorRefs.current[3] = input)}
                 data-selected={paisProveedor?.pais_Id ? true : false}
               >
                 {paisProveedor?.pais_Nombre
@@ -2041,32 +2172,34 @@ function FormProveedor({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar país...' />
-                <CommandEmpty>No hay paises.</CommandEmpty>
-                <CommandGroup>
-                  {paises.map((pais) => (
-                    <CommandItem
-                      key={pais.pais_Id}
-                      onSelect={() => {
-                        setPaisProveedor({
-                          pais_Id: pais.pais_Id,
-                          pais_Codigo: pais.pais_Codigo,
-                          pais_Nombre: pais.pais_Nombre,
-                        })
-                        setCbbPaisProveedorState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          paisProveedor?.pais_Id === pais.pais_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {pais.pais_Codigo} | {pais.pais_Nombre}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay paises.</CommandEmpty>
+                  <CommandGroup>
+                    {paises.map((pais) => (
+                      <CommandItem
+                        key={pais.pais_Id}
+                        onSelect={() => {
+                          setPaisProveedor({
+                            pais_Id: pais.pais_Id,
+                            pais_Codigo: pais.pais_Codigo,
+                            pais_Nombre: pais.pais_Nombre,
+                          })
+                          setCbbPaisProveedorState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            paisProveedor?.pais_Id === pais.pais_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {pais.pais_Codigo} | {pais.pais_Nombre}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -2089,7 +2222,7 @@ function FormProveedor({
                     : true
                 }
                 className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[3] = input)}
+                ref={(input) => (inputProveedorRefs.current[4] = input)}
                 data-selected={
                   deva.declarantesProv_ViewModel.ciud_Id ? true : false
                 }
@@ -2110,44 +2243,47 @@ function FormProveedor({
               <Command>
                 <CommandInput placeholder='Buscar ciudad...' />
                 <CommandEmpty>No hay ciudades.</CommandEmpty>
-                <CommandGroup>
-                  {ciudades
-                    .filter(
-                      (ciud) => ciud.pais_Codigo === paisProveedor?.pais_Codigo
-                    )
-                    .map((ciudad) => (
-                      <CommandItem
-                        key={ciudad.ciud_Id}
-                        onSelect={() => {
-                          setDeva((deva) => {
-                            return {
-                              ...deva,
-                              declaraciones_ValorViewModel: {
-                                ...deva.declaraciones_ValorViewModel,
-                                prov_ciudId: ciudad.ciud_Id,
-                              },
-                              declarantesProv_ViewModel: {
-                                ...deva.declarantesProv_ViewModel,
-                                ciud_Id: ciudad.ciud_Id,
-                              },
-                            }
-                          })
-                          setCbbCiudadProveedorState(false)
-                        }}
-                      >
-                        <IconCheck
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            deva.declaraciones_ValorViewModel.prov_ciudId ===
-                              ciudad.ciud_Id
-                              ? 'opacity-100'
-                              : 'opacity-0'
-                          )}
-                        />
-                        {ciudad.ciud_Nombre}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandGroup>
+                    {ciudades
+                      .filter(
+                        (ciud) =>
+                          ciud.pais_Codigo === paisProveedor?.pais_Codigo
+                      )
+                      .map((ciudad) => (
+                        <CommandItem
+                          key={ciudad.ciud_Id}
+                          onSelect={() => {
+                            setDeva((deva) => {
+                              return {
+                                ...deva,
+                                declaraciones_ValorViewModel: {
+                                  ...deva.declaraciones_ValorViewModel,
+                                  prov_ciudId: ciudad.ciud_Id,
+                                },
+                                declarantesProv_ViewModel: {
+                                  ...deva.declarantesProv_ViewModel,
+                                  ciud_Id: ciudad.ciud_Id,
+                                },
+                              }
+                            })
+                            setCbbCiudadProveedorState(false)
+                          }}
+                        >
+                          <IconCheck
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              deva.declaraciones_ValorViewModel.prov_ciudId ===
+                                ciudad.ciud_Id
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                          {ciudad.ciud_Nombre}
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -2156,10 +2292,10 @@ function FormProveedor({
         <div className='flex flex-col gap-1'>
           <Label>Correo del proveedor</Label>
           <Input
-            ref={(input) => (inputProveedorRefs.current[4] = input)}
+            ref={(input) => (inputProveedorRefs.current[5] = input)}
             value={
-              deva.declaraciones_ValorViewModel.prov_Correo_Electronico
-                ? deva.declaraciones_ValorViewModel.prov_Correo_Electronico
+              deva.declarantesProv_ViewModel.decl_Correo_Electronico
+                ? deva.declarantesProv_ViewModel.decl_Correo_Electronico
                 : ''
             }
             onChange={(e) => {
@@ -2185,10 +2321,10 @@ function FormProveedor({
         <div className='flex flex-col gap-1'>
           <Label>Teléfono del proveedor</Label>
           <Input
-            ref={(input) => (inputProveedorRefs.current[5] = input)}
+            ref={(input) => (inputProveedorRefs.current[6] = input)}
             value={
-              deva.declaraciones_ValorViewModel.prov_Telefono
-                ? deva.declaraciones_ValorViewModel.prov_Telefono
+              deva.declarantesProv_ViewModel.decl_Telefono
+                ? deva.declarantesProv_ViewModel.decl_Telefono
                 : ''
             }
             onChange={(e) => {
@@ -2214,10 +2350,10 @@ function FormProveedor({
         <div className='flex flex-col gap-1'>
           <Label>Fax del proveedor</Label>
           <Input
-            ref={(input) => (inputProveedorRefs.current[6] = input)}
+            ref={(input) => (inputProveedorRefs.current[7] = input)}
             value={
-              deva.declaraciones_ValorViewModel.prov_Fax
-                ? deva.declaraciones_ValorViewModel.prov_Fax
+              deva.declarantesProv_ViewModel.decl_Fax
+                ? deva.declarantesProv_ViewModel.decl_Fax
                 : ''
             }
             onChange={(e) => {
@@ -2252,7 +2388,7 @@ function FormProveedor({
                 variant='outline'
                 role='combobox'
                 className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[7] = input)}
+                ref={(input) => (inputProveedorRefs.current[8] = input)}
                 data-selected={
                   deva.declarantesProv_ViewModel.coco_Id ? true : false
                 }
@@ -2272,46 +2408,48 @@ function FormProveedor({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar condición comercial...' />
-                <CommandEmpty>No hay condiciones comerciales.</CommandEmpty>
-                <CommandGroup>
-                  {condiciones.map((coco) => (
-                    <CommandItem
-                      key={coco.coco_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              coco_Id: coco.coco_Id,
-                              coco_Descripcion: coco.coco_Descripcion,
-                            },
-                            declarantesProv_ViewModel: {
-                              ...deva.declarantesProv_ViewModel,
-                              coco_Id: coco.coco_Id,
-                            },
-                            proveedoresDeclaracionViewModel: {
-                              ...deva.proveedoresDeclaracionViewModel,
-                              coco_Id: coco.coco_Id,
-                            },
-                          }
-                        })
-                        setCbbCocoProveedorState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel.coco_Id ===
-                            coco.coco_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {coco.coco_Descripcion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay condiciones comerciales.</CommandEmpty>
+                  <CommandGroup>
+                    {condiciones.map((coco) => (
+                      <CommandItem
+                        key={coco.coco_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                coco_Id: coco.coco_Id,
+                                coco_Descripcion: coco.coco_Descripcion,
+                              },
+                              declarantesProv_ViewModel: {
+                                ...deva.declarantesProv_ViewModel,
+                                coco_Id: coco.coco_Id,
+                              },
+                              proveedoresDeclaracionViewModel: {
+                                ...deva.proveedoresDeclaracionViewModel,
+                                coco_Id: coco.coco_Id,
+                              },
+                            }
+                          })
+                          setCbbCocoProveedorState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declarantesProv_ViewModel.coco_Id ===
+                              coco.coco_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {coco.coco_Descripcion}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -2320,15 +2458,13 @@ function FormProveedor({
         <div className='flex flex-col gap-1'>
           <Label>Otra condición</Label>
           <Input
-            ref={(input) => (inputProveedorRefs.current[8] = input)}
+            ref={(input) => (inputProveedorRefs.current[9] = input)}
             value={
               deva.proveedoresDeclaracionViewModel.pvde_Condicion_Otra
                 ? deva.proveedoresDeclaracionViewModel.pvde_Condicion_Otra
                 : ''
             }
-            disabled={
-              deva.declaraciones_ValorViewModel.coco_Descripcion !== 'Otro'
-            }
+            disabled={deva.declarantesProv_ViewModel.coco_Id !== 4}
             onChange={(e) => {
               const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
@@ -2359,7 +2495,7 @@ function FormProveedor({
         <div className='flex items-center gap-1'>
           <Checkbox
             id='ckHayIntermediario'
-            onClick={() => setCkHayIntermediarioState((prev) => !prev)}
+            // onClick={() => setCkHayIntermediarioState((prev) => !prev)}
             className='h-[20px] w-[20px]'
           />
           <Label htmlFor='ckHayIntermediario' className='inline-block'>
@@ -2382,7 +2518,7 @@ function FormProveedor({
               <div className='flex flex-col gap-1'>
                 <Label>12. Nombre o Razón Social</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[9] = input)}
+                  ref={(input) => (inputIntermediarioRefs.current[0] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inte_Nombre_Raso
                       ? deva.declaraciones_ValorViewModel.inte_Nombre_Raso
@@ -2409,9 +2545,36 @@ function FormProveedor({
                 />
               </div>
               <div className='flex flex-col gap-1'>
+                <Label>Numero de Identificación</Label>
+                <Input
+                  ref={(input) => (inputIntermediarioRefs.current[1] = input)}
+                  value={
+                    deva.declarantesInte_ViewModel.decl_NumeroIdentificacion
+                      ? deva.declarantesInte_ViewModel.decl_NumeroIdentificacion
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value
+                    const regex = /^\d*$/
+                    if (regex.test(value) && value.length <= 13) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_NumeroIdentificacion: value,
+                            impo_NumRegistro: value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
                 <Label>13. Dirección</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[10] = input)}
+                  ref={(input) => (inputIntermediarioRefs.current[2] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
                       ? deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
@@ -2449,7 +2612,9 @@ function FormProveedor({
                       variant='outline'
                       role='combobox'
                       className='mb-2 w-[200px] justify-between overflow-hidden'
-                      ref={(input) => (inputProveedorRefs.current[11] = input)}
+                      ref={(input) =>
+                        (inputIntermediarioRefs.current[3] = input)
+                      }
                       data-selected={paisIntermediario?.pais_Id ? true : false}
                     >
                       {paisIntermediario?.pais_Nombre
@@ -2463,32 +2628,34 @@ function FormProveedor({
                   <PopoverContent className='w-[200px] p-0'>
                     <Command>
                       <CommandInput placeholder='Buscar país...' />
-                      <CommandEmpty>No hay paises.</CommandEmpty>
-                      <CommandGroup>
-                        {paises.map((pais) => (
-                          <CommandItem
-                            key={pais.pais_Id}
-                            onSelect={() => {
-                              setPaisIntermediario({
-                                pais_Id: pais.pais_Id,
-                                pais_Codigo: pais.pais_Codigo,
-                                pais_Nombre: pais.pais_Nombre,
-                              })
-                              setCbbPaisIntermediarioState(false)
-                            }}
-                          >
-                            <IconCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                paisIntermediario?.pais_Id === pais.pais_Id
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
-                              )}
-                            />
-                            {pais.pais_Codigo} | {pais.pais_Nombre}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      <CommandList>
+                        <CommandEmpty>No hay paises.</CommandEmpty>
+                        <CommandGroup>
+                          {paises.map((pais) => (
+                            <CommandItem
+                              key={pais.pais_Id}
+                              onSelect={() => {
+                                setPaisIntermediario({
+                                  pais_Id: pais.pais_Id,
+                                  pais_Codigo: pais.pais_Codigo,
+                                  pais_Nombre: pais.pais_Nombre,
+                                })
+                                setCbbPaisIntermediarioState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  paisIntermediario?.pais_Id === pais.pais_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {pais.pais_Codigo} | {pais.pais_Nombre}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -2511,7 +2678,9 @@ function FormProveedor({
                           : true
                       }
                       className='mb-2 w-[200px] justify-between overflow-hidden'
-                      ref={(input) => (inputProveedorRefs.current[12] = input)}
+                      ref={(input) =>
+                        (inputIntermediarioRefs.current[4] = input)
+                      }
                       data-selected={
                         deva.declarantesInte_ViewModel.ciud_Id ? true : false
                       }
@@ -2533,47 +2702,49 @@ function FormProveedor({
                   <PopoverContent className='w-[200px] p-0'>
                     <Command>
                       <CommandInput placeholder='Buscar ciudad...' />
-                      <CommandEmpty>No hay ciudades.</CommandEmpty>
-                      <CommandGroup>
-                        {ciudades
-                          .filter(
-                            (ciud) =>
-                              ciud.pais_Codigo ===
-                              paisIntermediario?.pais_Codigo
-                          )
-                          .map((ciudad) => (
-                            <CommandItem
-                              key={ciudad.ciud_Id}
-                              onSelect={() => {
-                                setDeva((deva) => {
-                                  return {
-                                    ...deva,
-                                    declaraciones_ValorViewModel: {
-                                      ...deva.declaraciones_ValorViewModel,
-                                      inte_ciudId: ciudad.ciud_Id,
-                                    },
-                                    declarantesInte_ViewModel: {
-                                      ...deva.declarantesInte_ViewModel,
-                                      ciud_Id: ciudad.ciud_Id,
-                                    },
-                                  }
-                                })
-                                setCbbCiudadIntermediarioState(false)
-                              }}
-                            >
-                              <IconCheck
-                                className={cn(
-                                  'mr-2 h-4 w-4',
-                                  deva.declaraciones_ValorViewModel
-                                    .inte_ciudId === ciudad.ciud_Id
-                                    ? 'opacity-100'
-                                    : 'opacity-0'
-                                )}
-                              />
-                              {ciudad.ciud_Nombre}
-                            </CommandItem>
-                          ))}
-                      </CommandGroup>
+                      <CommandList>
+                        <CommandEmpty>No hay ciudades.</CommandEmpty>
+                        <CommandGroup>
+                          {ciudades
+                            .filter(
+                              (ciud) =>
+                                ciud.pais_Codigo ===
+                                paisIntermediario?.pais_Codigo
+                            )
+                            .map((ciudad) => (
+                              <CommandItem
+                                key={ciudad.ciud_Id}
+                                onSelect={() => {
+                                  setDeva((deva) => {
+                                    return {
+                                      ...deva,
+                                      declaraciones_ValorViewModel: {
+                                        ...deva.declaraciones_ValorViewModel,
+                                        inte_ciudId: ciudad.ciud_Id,
+                                      },
+                                      declarantesInte_ViewModel: {
+                                        ...deva.declarantesInte_ViewModel,
+                                        ciud_Id: ciudad.ciud_Id,
+                                      },
+                                    }
+                                  })
+                                  setCbbCiudadIntermediarioState(false)
+                                }}
+                              >
+                                <IconCheck
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    deva.declaraciones_ValorViewModel
+                                      .inte_ciudId === ciudad.ciud_Id
+                                      ? 'opacity-100'
+                                      : 'opacity-0'
+                                  )}
+                                />
+                                {ciudad.ciud_Nombre}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -2582,7 +2753,7 @@ function FormProveedor({
               <div className='flex flex-col gap-1'>
                 <Label>Correo del intermediario</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[13] = input)}
+                  ref={(input) => (inputIntermediarioRefs.current[5] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inte_Correo_Electronico
                       ? deva.declaraciones_ValorViewModel
@@ -2612,7 +2783,7 @@ function FormProveedor({
               <div className='flex flex-col gap-1'>
                 <Label>Teléfono del intermediario</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[14] = input)}
+                  ref={(input) => (inputIntermediarioRefs.current[6] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inte_Telefono
                       ? deva.declaraciones_ValorViewModel.inte_Telefono
@@ -2641,7 +2812,7 @@ function FormProveedor({
               <div className='flex flex-col gap-1'>
                 <Label>Fax del intemediario</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[15] = input)}
+                  ref={(input) => (inputIntermediarioRefs.current[7] = input)}
                   value={
                     deva.declaraciones_ValorViewModel.inte_Fax
                       ? deva.declaraciones_ValorViewModel.inte_Fax
@@ -2679,7 +2850,9 @@ function FormProveedor({
                       variant='outline'
                       role='combobox'
                       className='mb-2 w-[200px] justify-between overflow-hidden'
-                      ref={(input) => (inputProveedorRefs.current[16] = input)}
+                      ref={(input) =>
+                        (inputIntermediarioRefs.current[8] = input)
+                      }
                       data-selected={
                         deva.declarantesInte_ViewModel.tite_Id ? true : false
                       }
@@ -2701,45 +2874,47 @@ function FormProveedor({
                   <PopoverContent className='w-[200px] p-0'>
                     <Command>
                       <CommandInput placeholder='Buscar tipo...' />
-                      <CommandEmpty>No hay tipos.</CommandEmpty>
-                      <CommandGroup>
-                        {tiposDeIntermediarios.map((tite) => (
-                          <CommandItem
-                            key={tite.tite_Id}
-                            onSelect={() => {
-                              setDeva((deva) => {
-                                return {
-                                  ...deva,
-                                  declaraciones_ValorViewModel: {
-                                    ...deva.declaraciones_ValorViewModel,
-                                    tite_Id: tite.tite_Id,
-                                  },
-                                  declarantesInte_ViewModel: {
-                                    ...deva.declarantesInte_ViewModel,
-                                    tite_Id: tite.tite_Id,
-                                  },
-                                  intermediarioViewModel: {
-                                    ...deva.intermediarioViewModel,
-                                    tite_Id: tite.tite_Id,
-                                  },
-                                }
-                              })
-                              setCbbTipoIntermediarioState(false)
-                            }}
-                          >
-                            <IconCheck
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                deva.declaraciones_ValorViewModel.tite_Id ===
-                                  tite.tite_Id
-                                  ? 'opacity-100'
-                                  : 'opacity-0'
-                              )}
-                            />
-                            {tite.tite_Descripcion}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      <CommandList>
+                        <CommandEmpty>No hay tipos.</CommandEmpty>
+                        <CommandGroup>
+                          {tiposDeIntermediarios.map((tite) => (
+                            <CommandItem
+                              key={tite.tite_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      tite_Id: tite.tite_Id,
+                                    },
+                                    declarantesInte_ViewModel: {
+                                      ...deva.declarantesInte_ViewModel,
+                                      tite_Id: tite.tite_Id,
+                                    },
+                                    intermediarioViewModel: {
+                                      ...deva.intermediarioViewModel,
+                                      tite_Id: tite.tite_Id,
+                                    },
+                                  }
+                                })
+                                setCbbTipoIntermediarioState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declarantesInte_ViewModel.tite_Id ===
+                                    tite.tite_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {tite.tite_Descripcion}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -2748,14 +2923,8 @@ function FormProveedor({
               <div className='flex flex-col gap-1'>
                 <Label>Otro Tipo Intermediario</Label>
                 <Input
-                  ref={(input) => (inputProveedorRefs.current[17] = input)}
-                  disabled={
-                    tiposDeIntermediarios.find(
-                      (tite) =>
-                        tite.tite_Id ===
-                        deva.declaraciones_ValorViewModel.tite_Id
-                    )?.tite_Descripcion !== 'Otro'
-                  }
+                  ref={(input) => (inputIntermediarioRefs.current[9] = input)}
+                  disabled={deva.declarantesInte_ViewModel.tite_Id !== 5}
                   value={
                     deva.intermediarioViewModel.inte_Tipo_Otro
                       ? deva.intermediarioViewModel.inte_Tipo_Otro
@@ -2789,28 +2958,48 @@ function FormProveedor({
       </Accordion>
 
       <div className='mr-6 flex justify-end gap-2'>
-        <Button variant={'outline'} onClick={() => onTabChange('general')}>
+        <Button
+          variant={'outline'}
+          onClick={() => {
+            setTabObjetivo(tabIndex - 1)
+            setTab(tabs[tabIndex - 1])
+          }}
+        >
           Regresar
         </Button>
         <Button
           onClick={() => {
             if (!validarInputsProveedor()) {
               if (ckHayIntermediarioState) {
-              if (!validarInputsIntermediario()) {
-                 return
-              }
-              }
-              setFormsValidados((prev) => {
-                return {
-                  ...prev,
-                  proveedor: true,
+                if (!validarInputsIntermediario()) {
+                  guardarTab2(deva)
+                    .then((response) => {
+                      console.log(response)
+                      setTab(tabs[tabIndex + 1])
+                    })
+                    .catch((err) =>
+                      console.error(
+                        'Error al guardar la información del intermediario: ' +
+                          err
+                      )
+                    )
                 }
-              })
-              setTimeout(() => onTabChange(()=>'caracteristicas'), 100)
+              } else {
+                guardarTab2(deva)
+                  .then((response) => {
+                    console.log(response)
+                    setTab(tabs[tabIndex + 1])
+                  })
+                  .catch((err) =>
+                    console.error(
+                      'Error al guardar la información del proveedor: ' + err
+                    )
+                  )
+              }
             }
           }}
         >
-          Continuar
+          Guardar
         </Button>
       </div>
     </Card>
@@ -2820,30 +3009,40 @@ function FormProveedor({
 function FormCaracteristicas({
   deva,
   validar,
-  setValidar,
-  setFormsValidados,
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTabObjetivo,
+  paisEmbarque,
+  setPaisEmbarque,
+  setTab,
   setDeva,
   errorToast,
-  onTabChange,
 }: {
   deva: DevaCompuesta
   validar: boolean
-  setFormsValidados: Dispatch<
+  tabIndex: number
+  tabs: string[]
+  paisEmbarque: {
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null
+  setPaisEmbarque: Dispatch<
     SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
+      pais_Id: number
+      pais_Codigo: string
+      pais_Nombre: string
+    } | null>
   >
-  
-  setValidar: Dispatch<SetStateAction<boolean>>
+  setTabObjetivo: Dispatch<SetStateAction<number>>
+  tabObjetivo: number
+  setTab: Dispatch<SetStateAction<string>>
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
 }) {
+  const context = useContext(ThemeProviderContext)
+
   const [paises2, setPaises2] = useState<Pais[]>([])
   const [incoterms, setIncoterms] = useState<Incoterm[]>([])
   const [formasDeEnvio, setFormasDeEnvio] = useState<FormaDeEnvio[]>([])
@@ -2859,12 +3058,6 @@ function FormCaracteristicas({
   const [cbbPaisEmbarqueState, setCbbPaisEmbarqueState] = useState(false)
   const [cbbEmbarqueState, setCbbEmbarqueState] = useState(false)
   const [cbbPaisExportacionState, setCbbPaisExportacionState] = useState(false)
-
-  const [paisEmbarque, setPaisEmbarque] = useState<{
-    pais_Id: number
-    pais_Codigo: string
-    pais_Nombre: string
-  } | null>(null)
 
   const inputCaracteristicasRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
@@ -2892,14 +3085,28 @@ function FormCaracteristicas({
         huboError = true
       }
     })
-    return false
-    // return huboError
+    return huboError
   }
 
   useEffect(() => {
     getPaises()
       .then((data) => {
         setPaises2(data)
+        const paisEncontrado = data.find(
+          (pai) =>
+            pai.pais_Codigo ===
+            deva.declaraciones_ValorViewModel.emba_Codigo?.substring(0, 2)
+        )
+        if (paisEncontrado) {
+          setPaisEmbarque(paisEncontrado)
+          getEmbarques(paisEncontrado.pais_Codigo)
+            .then((data) => {
+              setEmbarques(data)
+            })
+            .catch((err) => {
+              console.log('Error al cargar los embarques: ' + err)
+            })
+        }
       })
       .catch((err) => {
         console.log('Error al cargar los paises: ' + err)
@@ -2907,6 +3114,19 @@ function FormCaracteristicas({
     getIncoterms()
       .then((data) => {
         setIncoterms(data)
+        setDeva((prev) => {
+          return {
+            ...prev,
+            declaraciones_ValorViewModel: {
+              ...prev.declaraciones_ValorViewModel,
+              inco_Id: data.find(
+                (inco) =>
+                  inco.inco_Descripcion ===
+                  deva.declaraciones_ValorViewModel.inco_Descripcion
+              )?.inco_Id,
+            },
+          }
+        })
       })
       .catch((err) => {
         console.log('Error al cargar los incoterms: ' + err)
@@ -2935,9 +3155,8 @@ function FormCaracteristicas({
   }, [])
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar(() => false), 2000)
-    if (validar) {
-      validarCaracteristicas()
+    if (tabObjetivo > tabIndex) {
+      !validarCaracteristicas() && setTab(tabs[tabIndex + 1])
     }
   }, [validar])
 
@@ -3238,38 +3457,40 @@ function FormCaracteristicas({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar forma de envío...' />
-                <CommandEmpty>No hay registros.</CommandEmpty>
-                <CommandGroup>
-                  {formasDeEnvio.map((foen) => (
-                    <CommandItem
-                      key={foen.foen_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              foen_Id: foen.foen_Id,
-                              foen_Descripcion: foen.foen_Descripcion,
-                            },
-                          }
-                        })
-                        setCbbFoenState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel.foen_Id ===
-                            foen.foen_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {foen.foen_Descripcion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay registros.</CommandEmpty>
+                  <CommandGroup>
+                    {formasDeEnvio.map((foen) => (
+                      <CommandItem
+                        key={foen.foen_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                foen_Id: foen.foen_Id,
+                                foen_Descripcion: foen.foen_Descripcion,
+                              },
+                            }
+                          })
+                          setCbbFoenState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declaraciones_ValorViewModel.foen_Id ===
+                              foen.foen_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {foen.foen_Descripcion}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -3360,37 +3581,39 @@ function FormCaracteristicas({
             <PopoverContent className='w-[200px] p-0'>
               <Command>
                 <CommandInput placeholder='Buscar forma de pago...' />
-                <CommandEmpty>No hay registros.</CommandEmpty>
-                <CommandGroup>
-                  {formasDePago.map((fopa) => (
-                    <CommandItem
-                      key={fopa.fopa_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              fopa_Id: fopa.fopa_Id,
-                            },
-                          }
-                        })
-                        setCbbFopaState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel.fopa_Id ===
-                            fopa.fopa_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {fopa.fopa_Descripcion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandList>
+                  <CommandEmpty>No hay registros.</CommandEmpty>
+                  <CommandGroup>
+                    {formasDePago.map((fopa) => (
+                      <CommandItem
+                        key={fopa.fopa_Id}
+                        onSelect={() => {
+                          setDeva((deva) => {
+                            return {
+                              ...deva,
+                              declaraciones_ValorViewModel: {
+                                ...deva.declaraciones_ValorViewModel,
+                                fopa_Id: fopa.fopa_Id,
+                              },
+                            }
+                          })
+                          setCbbFopaState(false)
+                        }}
+                      >
+                        <IconCheck
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            deva.declaraciones_ValorViewModel.fopa_Id ===
+                              fopa.fopa_Id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {fopa.fopa_Descripcion}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
@@ -3400,8 +3623,8 @@ function FormCaracteristicas({
           <Input
             ref={(input) => (inputCaracteristicasRefs.current[9] = input)}
             value={
-              deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
-                ? deva.declaraciones_ValorViewModel.deva_FormaEnvioOtra
+              deva.declaraciones_ValorViewModel.deva_FormaPagoOtra
+                ? deva.declaraciones_ValorViewModel.deva_FormaPagoOtra
                 : ''
             }
             disabled={
@@ -3770,47 +3993,64 @@ function FormCaracteristicas({
             </PopoverContent>
           </Popover>
         </div>
-        {/* <div className='flex flex-col gap-1'>
-                <Label>23. Tipo de Cambio de Moneda Extranejera a Dólares USD</Label>
-                <Input
-                  ref={(input) => (inputCaracteristicasRefs.current[15] = input)}
-                  value={
-                    deva.declaraciones_ValorViewModel.
-                      ? deva.declaraciones_ValorViewModel.impo_Fax
-                      : ''
+        <div className='flex flex-col gap-1'>
+          <Label>23. Tipo de Cambio de Moneda Extranejera a Dólares USD</Label>
+          <Input
+            ref={(input) => (inputCaracteristicasRefs.current[15] = input)}
+            value={
+              deva.declaraciones_ValorViewModel.deva_ConversionDolares
+                ? deva.declaraciones_ValorViewModel.deva_ConversionDolares
+                : ''
+            }
+            onChange={(e) => {
+              const regex = /^[0-9.]*$/
+
+              console.log(regex.test(e.target.value))
+
+              if (regex.test(e.target.value)) {
+                setDeva((deva) => {
+                  return {
+                    ...deva,
+                    declaraciones_ValorViewModel: {
+                      ...deva.declaraciones_ValorViewModel,
+                      deva_ConversionDolares: e.target.value,
+                    },
                   }
-                  onChange={(e) => {
-                    const regex = /^[\d.]*$/
-                    if (regex.test(e.target.value)) {
-                      setDeva((deva) => {
-                        return {
-                          ...deva,
-                          declaraciones_ValorViewModel: {
-                            ...deva.declaraciones_ValorViewModel,
-                            impo_Fax: e.target.value,
-                          },
-                          declarantesImpo_ViewModel: {
-                            ...deva.declarantesImpo_ViewModel,
-                            decl_Fax: e.target.value,
-                          },
-                        }
-                      })
-                    }
-                  }}
-                />
-              </div> */}
+                })
+              }
+            }}
+          />
+        </div>
       </div>
 
       <div className='mr-4 flex justify-end gap-2'>
-        <Button variant={'outline'} onClick={() => onTabChange('general')}>
+        <Button
+          variant={'outline'}
+          onClick={() => {
+            setTabObjetivo(tabIndex - 1)
+            setTab(tabs[tabIndex - 1])
+          }}
+        >
           Regresar
         </Button>
         <Button
           onClick={() => {
-            onTabChange('facturas')
+            if (!validarCaracteristicas()) {
+              guardarTab3(deva, context.editandoTab3)
+                .then((response) => {
+                  console.log(response)
+                  setTab(tabs[tabIndex + 1])
+                })
+                .catch((err) =>
+                  console.error(
+                    'Error al guardar las caracteristicas de la transaccion: ' +
+                      err
+                  )
+                )
+            }
           }}
         >
-          Continuar
+          Guardar
         </Button>
       </div>
     </Card>
@@ -3819,27 +4059,22 @@ function FormCaracteristicas({
 
 function FormFactura({
   validar,
-  setValidar,
-  setFormsValidados,
+  tabIndex,
+  tabs,
+  setTab,
+  tabObjetivo,
+  setTabObjetivo,
   deva,
   errorToast,
-  onTabChange,
 }: {
-validar: boolean
-  setValidar: Dispatch<SetStateAction<boolean>>
-  setFormsValidados: Dispatch<
-    SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
-  >
+  validar: boolean
+  tabIndex: number
+  tabObjetivo: number
+  tabs: string[]
+  setTabObjetivo: Dispatch<SetStateAction<number>>
+  setTab: Dispatch<SetStateAction<string>>
   deva: DevaCompuesta
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
 }) {
   const context = useContext(ThemeProviderContext)
 
@@ -3858,8 +4093,11 @@ validar: boolean
     fact_Estado: true,
     fact_FechaCreacion: new Date().toISOString(),
     fact_FechaModificacion: new Date().toISOString(),
+    subRows: [],
     tbItems: [],
   })
+
+  const { toast } = useToast()
 
   const [item, setItem] = useState<Item>({
     item_Id: 1,
@@ -3951,7 +4189,7 @@ validar: boolean
     []
   )
 
-  const validarInputsFacturas = () => {
+  const validarInputsFactura = () => {
     let huboError = false
     inputFacturasRefs.current.forEach((input) => {
       if (huboError) {
@@ -3973,21 +4211,8 @@ validar: boolean
         huboError = true
       }
     })
-    return false
-    // return huboError
+    return huboError
   }
-
-  useEffect(() => {
-    if (context.aranId) {
-      setItem((item) => {
-        return {
-          ...item,
-          item_ClasificacionArancelaria: context.aranId,
-        }
-      })
-      setArancelesDialogState(false)
-    }
-  }, [context.aranId])
 
   const validarInputsItem = () => {
     let huboError = false
@@ -4011,14 +4236,61 @@ validar: boolean
         huboError = true
       }
     })
-    return false
-    // return huboError
+    return huboError
   }
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar(() => false), 2000)
-    if (validar) {
-      dialogState ? validarInputsItem() : validarInputsFacturas()
+    if (context.aranId) {
+      let toditosLosAranceles: AranDetalle[] = []
+
+      aranceles.forEach(
+        (arancel) =>
+          (toditosLosAranceles = [...toditosLosAranceles, ...arancel.subRows])
+      )
+      const arancelEncontrado = toditosLosAranceles.find(
+        (aran) => aran.aran_Id === context.aranId
+      )
+      console.log(arancelEncontrado, aranceles, context.aranId)
+      if (arancelEncontrado) {
+        setItem((item) => {
+          return {
+            ...item,
+            aran_Codigo: arancelEncontrado.aran_Codigo,
+            item_ClasificacionArancelaria: arancelEncontrado.aran_Codigo,
+            aran_Id: context.aranId,
+            aran_Descripcion: arancelEncontrado.aran_Descripcion,
+          }
+        })
+        setArancelesDialogState(false)
+      }
+      context.setAranId(0)
+    }
+  }, [context.aranId])
+
+  useEffect(() => {
+    if (context.factId) {
+      const factEncontrada = facturas.find(
+        (fact) => fact.fact_Id === context.factId
+      )
+      if (factEncontrada) {
+        setFactura(factEncontrada)
+        setDialogState(false)
+      }
+    }
+  }, [context.factId])
+
+  useEffect(() => {
+    if (tabObjetivo > tabIndex) {
+      if (facturas.length === 0) {
+        errorToast('Debe ingresar por lo menos una factura')
+        return
+      }
+
+      if (!facturas.every((factura) => factura.subRows.length > 0)) {
+        errorToast('Todas las facturas deben tener por lo menos un item')
+        return
+      }
+      setTab(tabs[tabIndex + 1])
     }
   }, [validar])
 
@@ -4042,7 +4314,7 @@ validar: boolean
 
   const handleSearch = async (codigo: string) => {
     getAranceles(codigo)
-      .then((data) => setAranceles(data))
+      .then((data) => setAranceles((prev) => prev.concat(data)))
       .catch((err) => console.error('Error al cargar los aranceles: ' + err))
   }
 
@@ -4062,9 +4334,9 @@ validar: boolean
             <Label>16. Número de Factura</Label>
             <Input
               ref={(input) => (inputFacturasRefs.current[0] = input)}
-              value={factura.fact_Numero ? factura.fact_Numero : ''}
+              value={factura.fact_Numero ?? ''}
               onChange={(e) => {
-                const regex = /^[\d-]*$/
+                const regex = /^[\d]*$/
                 if (regex.test(e.target.value)) {
                   setFactura((fact) => {
                     return {
@@ -4121,23 +4393,102 @@ validar: boolean
               </PopoverContent>
             </Popover>
           </div>
-          <Dialog open={dialogState} onOpenChange={setDialogState}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => {
-                  setDialogState(true)
+          <Button
+            onClick={() => {
+              if (!validarInputsFactura()) {
+                const facturaEncontrada = facturas.find(
+                  (fact) => fact.fact_Numero === factura.fact_Numero
+                )
+                if (facturaEncontrada) {
+                  setFactura(facturaEncontrada)
                   setItem((item) => {
                     return {
                       ...item,
-                      item_Numero: factura.tbItems.length + 1,
+                      fact_Id: facturaEncontrada?.fact_Id,
+                      item_Numero: facturaEncontrada?.subRows.length + 1,
                     }
                   })
-                }}
-              >
-                <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
-                Agregar Item
-              </Button>
-            </DialogTrigger>
+                } else {
+                  guardarFactura(factura, false)
+                    .then((factId) => {
+                      setFacturas((facts) => [
+                        ...facts,
+                        { ...factura, fact_Id: parseInt(factId) },
+                      ])
+                      setFactura((fact) => {
+                        return {
+                          ...fact,
+                          fact_Id: parseInt(factId),
+                        }
+                      })
+                      setItem((item) => {
+                        return {
+                          ...item,
+                          fact_Id: parseInt(factId),
+                          item_Numero: 1,
+                        }
+                      })
+                    })
+                    .catch((err) => {
+                      console.error('Error al crear factura: ' + err)
+                    })
+                }
+
+                setDialogState(true)
+              }
+            }}
+          >
+            <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
+            Agregar Item
+          </Button>
+          <Button
+            onClick={() => {
+              if (!validarInputsFactura()) {
+                guardarFactura(factura, false)
+                  .then((factId) => {
+                    const idParsed = parseInt(factId) // Log factId
+                    if (idParsed === 1) {
+                      console.log(facturas, 'facturas') // Log original facts
+                      const factsFiltradas = facturas.filter(
+                        (fact) => fact.fact_Id !== factura.fact_Id
+                      )
+                      console.log(factsFiltradas, 'factsFiltradas') // Log filtered facts
+                      setFacturas(() => {
+                        return [...factsFiltradas, factura]
+                      })
+                      toast({
+                        title: 'Éxito: ',
+                        description: 'Factura editada con éxito',
+                      })
+                    } else {
+                      setFacturas((facts) => [
+                        ...facts,
+                        { ...factura, fact_Id: idParsed },
+                      ])
+                      toast({
+                        title: 'Éxito: ',
+                        description: 'Factura creada con éxito',
+                      })
+                    }
+                    setFactura((fact) => {
+                      return {
+                        ...fact,
+                        fact_Id: 0,
+                        fact_Numero: '',
+                        fact_Fecha: new Date().toISOString(),
+                      }
+                    })
+                    context.setFactId(0)
+                  })
+                  .catch((err) => {
+                    console.error('Error al crear factura: ' + err)
+                  })
+              }
+            }}
+          >
+            Guardar factura
+          </Button>
+          <Dialog open={dialogState} onOpenChange={setDialogState}>
             <DialogContent
               className='sm:max-w-[720px]
             '
@@ -4160,12 +4511,14 @@ validar: boolean
                     ref={(input) => (inputItemRefs.current[1] = input)}
                     value={item.item_Cantidad}
                     onChange={(e) => {
-                      const regex = /^[\d-]*$/
+                      const regex = /^[0-9.]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
                             ...item,
-                            item_Cantidad: parseInt(e.target.value),
+                            item_Cantidad: !e.target.value
+                              ? 0
+                              : parseInt(e.target.value),
                           }
                         })
                       }
@@ -4460,7 +4813,6 @@ validar: boolean
                             Buscar aranceles por código
                           </Label>
                           <Input
-                            ref={(input) => (inputItemRefs.current[1] = input)}
                             value={item.item_ClasificacionArancelaria}
                             placeholder='####.##.##.##'
                             onChange={buscarAranceles}
@@ -4488,14 +4840,21 @@ validar: boolean
                   <Label className='min-h-[28px]'>38. Valor Unitario</Label>
                   <Input
                     ref={(input) => (inputItemRefs.current[10] = input)}
-                    value={item.item_ValorUnitario}
+                    value={item.item_ValorUnitario.toString()}
                     onChange={(e) => {
-                      const regex = /^[\d-.]*$/
+                      const regex = /^[0-9.]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
                             ...item,
-                            item_ValorUnitario: parseInt(e.target.value),
+                            item_ValorUnitario: !e.target.value
+                              ? 0
+                              : parseFloat(e.target.value),
+                            item_ValorTransaccion:
+                              parseFloat(item.item_Cantidad.toString()) *
+                              (!e.target.value
+                                ? 0
+                                : parseFloat(e.target.value)),
                           }
                         })
                       }
@@ -4506,7 +4865,7 @@ validar: boolean
                   <Label className='min-h-[28px]'>Total Factura Unitario</Label>
                   <Input
                     disabled
-                    ref={(input) => (inputItemRefs.current[0] = input)}
+                    ref={(input) => (inputItemRefs.current[11] = input)}
                     value={item.item_ValorTransaccion.toString() ?? ''}
                   />
                 </div>
@@ -4517,7 +4876,73 @@ validar: boolean
                 </Button>
                 <Button
                   onClick={() => {
-                    setDialogState(false)
+                    if (!validarInputsItem()) {
+                      guardarItem(item, false)
+                        .then((response) => {
+                          if (response === '1') {
+                            toast({
+                              title: 'Éxito',
+                              description: 'Item agregado correctamente',
+                            })
+                            setItem((prev) => {
+                              return {
+                                item_Id: 1,
+                                item_Numero: 0,
+                                fact_Id: 0,
+                                item_Cantidad: 0,
+                                item_Cantidad_Bultos: 0,
+                                item_ClaseBulto: '',
+                                item_Acuerdo: '',
+                                item_PesoNeto: 0,
+                                item_PesoBruto: 0,
+                                unme_Id: 0,
+                                item_IdentificacionComercialMercancias: '',
+                                item_CaracteristicasMercancias: '',
+                                item_Marca: '',
+                                item_Modelo: '',
+                                merc_Id: 0,
+                                mate_SubCategoria: 0,
+                                subc_Descripcion: '',
+                                mate_Imagen: '',
+                                pais_IdOrigenMercancia: 0,
+                                item_ClasificacionArancelaria: '',
+                                aran_Id: 0,
+                                aran_Descripcion: '',
+                                aran_Codigo: '',
+                                unme_Descripcion: '',
+                                merc_Descripcion: '',
+                                item_ValorUnitario: 0,
+                                item_GastosDeTransporte: 0,
+                                item_ValorTransaccion: 0,
+                                item_Seguro: 0,
+                                item_OtrosGastos: 0,
+                                item_ValorAduana: 0,
+                                item_CuotaContingente: 0,
+                                item_ReglasAccesorias: '',
+                                item_CriterioCertificarOrigen: '',
+                                item_EsNuevo: false,
+                                item_EsHibrido: false,
+                                item_LitrosTotales: 0,
+                                item_CigarrosTotales: 0,
+                                usua_UsuarioCreacion: 1,
+                                nombrePaisOrigen: '',
+                                usuarioCreacionNombre: '',
+                                item_FechaCreacion: new Date().toISOString(),
+                                usua_UsuarioModificacion: 1,
+                                usuarioModificacionNombre: '',
+                                usua_UsuarioEliminacion: 1,
+                                item_FechaEliminacion: new Date().toISOString(),
+                                item_FechaModificacion:
+                                  new Date().toISOString(),
+                                item_Estado: true,
+                              }
+                            })
+                            context.setRefrescar(!context.refrescar)
+                          }
+                        })
+                        .catch((err) => console.log(err))
+                      setDialogState(false)
+                    }
                   }}
                 >
                   Agregar Item
@@ -4525,21 +4950,6 @@ validar: boolean
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
-        <div className='mr-4 flex justify-end gap-2 self-end'>
-          <Button
-            variant={'outline'}
-            onClick={() => onTabChange('caracteristicas')}
-          >
-            Regresar
-          </Button>
-          <Button
-            onClick={() => {
-              onTabChange('condiciones')
-            }}
-          >
-            Continuar
-          </Button>
         </div>
       </Card>
       <div className='mt-6 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
@@ -4551,29 +4961,48 @@ validar: boolean
 
 function FormCondiciones({
   validar,
-  setValidar,
-  setFormsValidados,
-  onTabChange,
-  errorToast
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTab,
+  errorToast,
 }: {
-validar: boolean
-  setValidar: Dispatch<SetStateAction<boolean>>
-  setFormsValidados: Dispatch<
-    SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
-  >
-
-
-
+  validar: boolean
+  tabIndex: number
+  tabObjetivo: number
+  tabs: string[]
+  setTab: Dispatch<SetStateAction<string>>
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
 }) {
+  const inputCondicionesRefs = useRef<
+    (HTMLInputElement | HTMLButtonElement | null)[]
+  >([])
+
+  const validarInputsCondiciones = () => {
+    let huboError = false
+    inputCondicionesRefs.current.forEach((input) => {
+      if (huboError) {
+        return
+      }
+      const elementType = input?.tagName
+      if (elementType === 'INPUT' && !input?.disabled && !input?.value) {
+        errorToast(
+          `Por favor ingrese ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      } else if (
+        elementType === 'BUTTON' &&
+        input?.dataset.selected !== 'true'
+      ) {
+        errorToast(
+          `Por favor seleccione ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      }
+    })
+    return huboError
+  }
+
   return (
     <Card className='p-3'>
       <h6>II. Condiciones de la Transacción</h6>
@@ -4776,24 +5205,17 @@ validar: boolean
         </Table>
       </div>
       <div className='mr-4 flex justify-end gap-2 self-end'>
-        <Button variant={'outline'} onClick={() => onTabChange('facturas')}>
+        <Button variant={'outline'} onClick={() => setTab(tabs[tabIndex - 1])}>
           Regresar
         </Button>
         <Button
           onClick={() => {
-              if (!validarInputsIntermediario()) {
-                 return
-              }
-              setFormsValidados((prev) => {
-                return {
-                  ...prev,
-                  proveedor: true,
-                }
-              })
-              setTimeout(() => onTabChange(()=>'valorAduana'), 100)
+            if (!validarInputs()) {
+              setTab(tabs[tabIndex])
+            }
           }}
         >
-          Continuar
+          Guardar
         </Button>
       </div>
     </Card>
@@ -4802,25 +5224,18 @@ validar: boolean
 
 function FormValorAduana({
   validar,
-  setValidar,
-  setFormsValidados,
-  onTabChange,
-  errorToast
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTab,
+  errorToast,
 }: {
-validar: boolean
-  setValidar: Dispatch<SetStateAction<boolean>>
-  setFormsValidados: Dispatch<
-    SetStateAction<{
-      general: boolean
-      proveedor: boolean
-      caracteristicas: boolean
-      facturas: boolean
-      condiciones: boolean
-      valorAduana: boolean
-    }>
-  >
+  validar: boolean
+  tabIndex: number
+  tabObjetivo: number
+  tabs: string[]
+  setTab: Dispatch<SetStateAction<string>>
   errorToast: (message: string) => void
-  onTabChange: (callback:()=>string) => void
 }) {
   return (
     <Card className='p-3'>
@@ -5074,17 +5489,11 @@ validar: boolean
         <div className='flex gap-2'>
           <Button
             variant={'outline'}
-            onClick={() => onTabChange('condiciones')}
+            onClick={() => setTab[tabs[tabIndex - 1]]}
           >
             Regresar
           </Button>
-          <Button
-            onClick={() => {
-              onTabChange('finalizar')
-            }}
-          >
-            Continuar
-          </Button>
+          <Button>Guardar</Button>
         </div>
       </div>
     </Card>
@@ -5092,9 +5501,16 @@ validar: boolean
 }
 
 function FormFinalizar({
-  onTabChange,
+  tabIndex,
+  tabs,
+  tabObjetivo,
+  setTab,
+  setTabObjetivo,
 }: {
-  onTabChange: (callback:()=>string) => void
+  tabIndex: number
+  tabObjetivo: number
+  tabs: string[]
+  setTab: Dispatch<SetStateAction<string>>
 }) {
   return (
     <Card className='p-3'>
@@ -5106,7 +5522,7 @@ function FormFinalizar({
         <div className='flex gap-2'>
           <Button
             variant={'outline'}
-            onClick={() => onTabChange('valorAduana')}
+            onClick={() => setTab(tabs[tabIndex - 1])}
           >
             Regresar
           </Button>

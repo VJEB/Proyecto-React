@@ -2,8 +2,33 @@ import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { Factura } from '../data/schema'
+import { Button } from '@/components/custom/button'
+import { CaretDownIcon, CaretRightIcon } from '@radix-ui/react-icons'
 
 export const factColumns: ColumnDef<Factura>[] = [
+  {
+    id: 'expand',
+    cell: ({ row }) =>
+      row.original.subRows.length > 0 && (
+        <Button
+          onClick={() => {
+            row.toggleExpanded()
+          }}
+          variant='ghost'
+          className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+        >
+          {row.getIsExpanded() ? (
+            <CaretDownIcon className='h-4 w-4' />
+          ) : (
+            <CaretRightIcon className='h-4 w-4' />
+          )}
+          <span className='sr-only'>Desplegar menú</span>
+        </Button>
+      ),
+
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'fact_Id',
     header: ({ column }) => (
