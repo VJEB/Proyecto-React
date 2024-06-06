@@ -92,7 +92,7 @@ export function FactDataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
-    console.clear()
+    // console.clear()
   }, [])
 
   const [dialogState, setDialogState] = useState(false)

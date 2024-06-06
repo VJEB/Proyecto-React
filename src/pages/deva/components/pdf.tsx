@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import backgroundImage from './fondo.jpg'; // Asegúrate de que esta ruta sea correcta
-import { getFacturas1, getItems } from '../data/data'
 
 const styles = StyleSheet.create({
   page: {
@@ -237,30 +236,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   else{
     data = ["nada"];
   }
-  const [facturasConDetalles, setFacturasConDetalles] = useState([]);
 
 
-  useEffect(() => {
-    const fetchFacturasYDetalles = async () => {
-      try {
-        const facturas = await getFacturas1(deva_Id);
-
-        const facturasConDetallesPromises = facturas.map(async (factura) => {
-          const items = await getItems(factura.fact_Id);
-          console.log("items "+items)
-          return { ...factura, items };
-        });
-
-        const facturasConDetalles = await Promise.all(facturasConDetallesPromises);
-        setFacturasConDetalles(facturasConDetalles);
-        console.log(facturasConDetalles)
-      } catch (error) {
-        console.error('Error fetching facturas y detalles:', error);
-      }
-    };
-
-    fetchFacturasYDetalles();
-  }, [data.deva_Id]);
 
 
   // console.log("entra al pdf?",JSON.stringify(data, null, 2))
