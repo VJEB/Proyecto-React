@@ -4216,12 +4216,13 @@ function FormFactura({
 
   const validarInputsItem = () => {
     let huboError = false
-    inputItemRefs.current.forEach((input) => {
+    inputItemRefs.current.forEach((input, index) => {
       if (huboError) {
         return
-      }
+        }
+
       const elementType = input?.tagName
-      if (elementType === 'INPUT' && !input?.disabled && !input?.value) {
+      if (elementType === 'INPUT' && !input?.disabled && !input?.value && input?.value !== '0') {
         errorToast(
           `Por favor ingrese ${input?.parentElement?.children[0].textContent}`
         )
@@ -4444,6 +4445,13 @@ function FormFactura({
           <Button
             onClick={() => {
               if (!validarInputsFactura()) {
+                const facturaEncontrada = facturas.find(
+                  (fact) => fact.fact_Numero === factura.fact_Numero
+                )
+                if (facturaEncontrada) {
+                  errorToast('Ya existe una factura con ese número')
+                  return
+                }
                 guardarFactura(factura, false)
                   .then((factId) => {
                     const idParsed = parseInt(factId) // Log factId
@@ -4452,7 +4460,6 @@ function FormFactura({
                       const factsFiltradas = facturas.filter(
                         (fact) => fact.fact_Id !== factura.fact_Id
                       )
-                      console.log(factsFiltradas, 'factsFiltradas') // Log filtered facts
                       setFacturas(() => {
                         return [...factsFiltradas, factura]
                       })
