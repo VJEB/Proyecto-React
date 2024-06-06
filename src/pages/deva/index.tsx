@@ -80,15 +80,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card } from '@/components/ui/card'
-import { Form } from '@/components/ui/form'
-import { DropdownMenu } from '@/components/ui/dropdown-menu'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   Popover,
   PopoverContent,
@@ -109,6 +100,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { aranColumns } from './arancelesDatatable/columns'
 import { AranDataTable } from './arancelesDatatable/data-table'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+} from '@/components/ui/accordion'
+import { Checkbox } from '@/components/ui/checkbox'
 
 
 
@@ -121,7 +118,7 @@ export default function PagDeva({
   const [devas, setDevas] = useState<Deva[]>()
   const [mostrarForm, setMostrarForm] = useState(false)
 
-  const { toast } = useToast()
+
   const [deva, setDeva] = useState<Deva>({
     deva_Id: 0,
     deva_AduanaIngresoId: 0,
@@ -487,8 +484,8 @@ function FormDeva({
       adua_IngresoNombre: '',
       deva_AduanaDespachoId: 0,
       adua_DespachoNombre: '',
-      deva_DeclaracionMercancia: '',
-      deva_FechaAceptacion: '',
+      deva_DeclaracionMercancia: 'Nuevo',
+      deva_FechaAceptacion: new Date().toISOString(),
       regi_Id: 0,
       regi_Codigo: '',
       regi_Descripcion: '',
@@ -528,7 +525,7 @@ function FormDeva({
       inco_Descripcion: '',
       inco_Version: '',
       deva_NumeroContrato: '',
-      deva_FechaContrato: '',
+      deva_FechaContrato: new Date().toISOString(),
       foen_Id: 0,
       foen_Descripcion: '',
       deva_FormaEnvioOtra: '',
@@ -537,20 +534,20 @@ function FormDeva({
       deva_FormaPagoOtra: '',
       emba_Id: 0,
       pais_ExportacionId: 0,
-      deva_FechaExportacion: '',
+      deva_FechaExportacion: new Date().toISOString(),
       mone_Id: 0,
       mone_Otra: '',
       deva_ConversionDolares: 0,
       deva_Condiciones: '',
       usua_UsuarioCreacion: 0,
       usua_CreacionNombre: '',
-      deva_FechaCreacion: '',
+      deva_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
       usua_ModificacionNombre: '',
-      deva_FechaModificacion: '',
+      deva_FechaModificacion: new Date().toISOString(),
       deva_Estado: false,
       usua_UsuarioEliminacion: 0,
-      deva_FechaEliminacion: '',
+      deva_FechaEliminacion: new Date().toISOString(),
     },
     declarantesImpo_ViewModel: {
       decl_Id: 0,
@@ -562,11 +559,11 @@ function FormDeva({
       decl_Telefono: '',
       decl_Fax: '',
       usua_UsuarioCreacion: 0,
-      decl_FechaCreacion: '',
+      decl_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      decl_FechaModificacion: '',
+      decl_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      decl_FechaEliminacion: '',
+      decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
       impo_NivelComercial_Otro: '',
@@ -587,11 +584,11 @@ function FormDeva({
       decl_Telefono: '',
       decl_Fax: '',
       usua_UsuarioCreacion: 0,
-      decl_FechaCreacion: '',
+      decl_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      decl_FechaModificacion: '',
+      decl_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      decl_FechaEliminacion: '',
+      decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
       impo_NivelComercial_Otro: '',
@@ -612,11 +609,11 @@ function FormDeva({
       decl_Telefono: '',
       decl_Fax: '',
       usua_UsuarioCreacion: 0,
-      decl_FechaCreacion: '',
+      decl_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      decl_FechaModificacion: '',
+      decl_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      decl_FechaEliminacion: '',
+      decl_FechaEliminacion: new Date().toISOString(),
       decl_Estado: false,
       nico_Id: 0,
       impo_NivelComercial_Otro: '',
@@ -635,11 +632,11 @@ function FormDeva({
       impo_RTN: '',
       impo_NumRegistro: '',
       usua_UsuarioCreacion: 0,
-      impo_FechaCreacion: '',
+      impo_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      impo_FechaModificacion: '',
+      impo_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      impo_FechaEliminacion: '',
+      impo_FechaEliminacion: new Date().toISOString(),
       impo_Estado: false,
     },
     proveedoresDeclaracionViewModel: {
@@ -648,11 +645,11 @@ function FormDeva({
       pvde_Condicion_Otra: '',
       decl_Id: 0,
       usua_UsuarioCreacion: 0,
-      pvde_FechaCreacion: '',
+      pvde_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      pvde_FechaModificacion: '',
+      pvde_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      pvde_FechaEliminacion: '',
+      pvde_FechaEliminacion: new Date().toISOString(),
       pvde_Estado: false,
     },
     intermediarioViewModel: {
@@ -661,14 +658,31 @@ function FormDeva({
       inte_Tipo_Otro: '',
       decl_Id: 0,
       usua_UsuarioCreacion: 0,
-      inte_FechaCreacion: '',
+      inte_FechaCreacion: new Date().toISOString(),
       usua_UsuarioModificacion: 0,
-      inte_FechaModificacion: '',
+      inte_FechaModificacion: new Date().toISOString(),
       usua_UsuarioEliminacion: 0,
-      inte_FechaEliminacion: '',
+      inte_FechaEliminacion: new Date().toISOString(),
       inte_Estado: false,
     },
   })
+
+  const [paisImportador, setPaisImportador] = useState<{
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null>(null)
+  const [paisProveedor, setPaisProveedor] = useState<{
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null>(null)
+  const [paisIntermediario, setPaisIntermediario] = useState<{
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null>(null)
+
   const [formsValidados, setFormsValidados] = useState<{
     general: boolean
     proveedor: boolean
@@ -678,11 +692,11 @@ function FormDeva({
     valorAduana: boolean
   }>({
     general: false,
-    proveedor: true,
-    caracteristicas: true,
-    facturas: true,
-    condiciones: true,
-    valorAduana: true,
+    proveedor: false,
+    caracteristicas: false,
+    facturas: false,
+    condiciones: false,
+    valorAduana: false,
   })
 
   const [ciudades, setCiudades] = useState<Ciudad[]>([])
@@ -693,53 +707,54 @@ function FormDeva({
 
   const [tab, setTab] = useState('general')
 
-  const onTabChange = (value: string) => {
-    switch (value) {
+  const onTabChange = (str: string | (()=>string)) => {
+    const val = typeof str === 'function' ? str() : str
+    console.log(formsValidados, 'formsValidados');
+    switch (val) {
       case 'proveedor':
         if (formsValidados.general) {
-          setTab(value)
+          setTab(val)
         } else {
           setValidar(true)
         }
         break
       case 'caracteristicas':
-        if (formsValidados.general) {
-          setTab(value)
+        if (formsValidados.proveedor) {
+          setTab(val)
         } else {
           setValidar(true)
         }
-        formsValidados.proveedor && setTab(value)
         break
       case 'facturas':
         if (formsValidados.caracteristicas) {
-          setTab(value)
+          setTab(val)
         } else {
           setValidar(true)
         }
         break
       case 'condiciones':
         if (formsValidados.facturas) {
-          setTab(value)
+          setTab(val)
         } else {
           setValidar(true)
         }
         break
       case 'valorAduana':
         if (formsValidados.condiciones) {
-          setTab(value)
+          setTab(val)
         } else {
           setValidar(true)
         }
         break
       case 'finalizar':
         if (formsValidados.valorAduana) {
-          setTab(value)
+          setTab(val)
         } else {
           setValidar(true)
         }
         break
       default:
-        setTab(value)
+        setTab(val)
         break
     }
   }
@@ -807,61 +822,87 @@ function FormDeva({
 
       <Tabs value={tab} onValueChange={onTabChange}>
         <TabsList className='flex h-auto w-full flex-wrap'>
-          <TabsTrigger value='general'>Información General</TabsTrigger>
-          <TabsTrigger value='proveedor'>Proveedor</TabsTrigger>
-          <TabsTrigger value='caracteristicas'>Características</TabsTrigger>
-          <TabsTrigger value='facturas'>Facturas</TabsTrigger>
-          <TabsTrigger value='condiciones'>Condiciones</TabsTrigger>
-          <TabsTrigger value='valorAduana'>Valor Aduana</TabsTrigger>
-          <TabsTrigger value='finalizar'>Finalizar</TabsTrigger>
+          <TabsTrigger value={'general'}>Información General</TabsTrigger>
+          <TabsTrigger value={'proveedor'}>Proveedor</TabsTrigger>
+          <TabsTrigger value={'caracteristicas'}>Características</TabsTrigger>
+          <TabsTrigger value={'facturas'}>Facturas</TabsTrigger>
+          <TabsTrigger value={'condiciones'}>Condiciones</TabsTrigger>
+          <TabsTrigger value={'valorAduana'}>Valor Aduana</TabsTrigger>
+          <TabsTrigger value={'finalizar'}>Finalizar</TabsTrigger>
         </TabsList>
-        <TabsContent value='general'>
+        <TabsContent value={'general'}>
           <FormGeneral
             validar={validar}
             setValidar={setValidar}
+            setFormsValidados={setFormsValidados}
             ciudades={ciudades}
             paises={paises}
+            paisImportador={paisImportador}
+            setPaisImportador={setPaisImportador}
             deva={deva}
             setDeva={setDeva}
             errorToast={errorToast}
             setMostrarForm={setMostrarForm}
             onTabChange={onTabChange}
-          />
+            />
         </TabsContent>
-        <TabsContent value='proveedor'>
+        <TabsContent value={'proveedor'}>
           <FormProveedor
+            validar={validar}
+            setValidar={setValidar}
+            paisProveedor={paisProveedor}
+            setPaisProveedor={setPaisProveedor}
+            paisIntermediario={paisIntermediario}
+            setPaisIntermediario={setPaisIntermediario}
+            setFormsValidados={setFormsValidados}
             ciudades={ciudades}
             paises={paises}
             deva={deva}
             setDeva={setDeva}
+            errorToast={errorToast}
             onTabChange={onTabChange}
-          />
+            />
         </TabsContent>
-        <TabsContent value='caracteristicas'>
+        <TabsContent value={'caracteristicas'}>
           <FormCaracteristicas
             deva={deva}
             setDeva={setDeva}
+            setValidar={setValidar}
+            validar={validar}
+            setFormsValidados={setFormsValidados}
             errorToast={errorToast}
             onTabChange={onTabChange}
-          />
+            />
         </TabsContent>
-        <TabsContent value='facturas'>
+        <TabsContent value={'facturas'}>
           <FormFactura
             validar={validar}
             setValidar={setValidar}
+            setFormsValidados={setFormsValidados}
             deva={deva}
             errorToast={errorToast}
             onTabChange={onTabChange}
-          />
+            />
         </TabsContent>
-        <TabsContent value='condiciones'>
-          <FormCondiciones onTabChange={onTabChange} />
+        <TabsContent value={'condiciones'}>
+          <FormCondiciones 
+            validar={validar}
+            setValidar={setValidar}
+            setFormsValidados={setFormsValidados}
+            errorToast={errorToast}
+            onTabChange={onTabChange} />
         </TabsContent>
-        <TabsContent value='valorAduana'>
-          <FormValorAduana onTabChange={onTabChange} />
+        <TabsContent value={'valorAduana'}>
+          <FormValorAduana 
+            validar={validar}
+            setValidar={setValidar}
+            setFormsValidados={setFormsValidados}
+            errorToast={errorToast}
+            onTabChange={onTabChange} />
         </TabsContent>
-        <TabsContent value='valorAduana'>
-          <FormValorAduana onTabChange={onTabChange} />
+        <TabsContent value={'finalizar'}>
+          <FormFinalizar 
+          onTabChange={onTabChange} />
         </TabsContent>
       </Tabs>
     </LayoutBody>
@@ -871,8 +912,11 @@ function FormDeva({
 function FormGeneral({
   validar,
   setValidar,
+  setFormsValidados,
   ciudades,
   paises,
+  paisImportador,
+  setPaisImportador,
   deva,
   setDeva,
   errorToast,
@@ -880,13 +924,35 @@ function FormGeneral({
   setMostrarForm,
 }: {
   validar: boolean
-  setValidar: (bool: boolean | (() => boolean)) => void
+  setValidar: Dispatch<SetStateAction<boolean>>
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
   ciudades: Ciudad[]
   paises: { pais_Id: number; pais_Nombre: string; pais_Codigo: string }[]
+  paisImportador: {
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null
+  setPaisImportador: Dispatch<
+    SetStateAction<{
+      pais_Id: number
+      pais_Codigo: string
+      pais_Nombre: string
+    } | null>
+  >
   deva: DevaCompuesta
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
-  onTabChange: (str: string) => void
+  onTabChange: (callback:()=>string) => void
   setMostrarForm: (bool: boolean) => void
 }) {
   const [aduanas, setAduanas] = useState<Aduana[]>([])
@@ -899,12 +965,7 @@ function FormGeneral({
   const [cbbCiudadImportadorState, setCbbCiudadImportadorState] =
     useState(false)
   const [cbbNicoImportadorState, setCbbNicoImportadorState] = useState(false)
-
-  const [paisImportador, setPaisImportador] = useState<{
-    pais_Id: number
-    pais_Codigo: string
-    pais_Nombre: string
-  } | null>(null)
+  const [regresarDialogState, setRegresarDialogState] = useState(false)
 
   const inputGeneralRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
@@ -932,8 +993,7 @@ function FormGeneral({
         huboError = true
       }
     })
-    return false
-    // return huboError
+    return huboError
   }
 
   useEffect(() => {
@@ -1093,25 +1153,33 @@ function FormGeneral({
         </div>
         <div className='flex flex-col gap-1'>
           <Label>3. Declaración de Mercancías</Label>
-          <Input
-            ref={(input) => (inputGeneralRefs.current[2] = input)}
+          <RadioGroup
+            className='flex w-[200px]'
             value={
-              deva.declaraciones_ValorViewModel.deva_DeclaracionMercancia
-                ? deva.declaraciones_ValorViewModel.deva_DeclaracionMercancia
-                : ''
+              deva.declaraciones_ValorViewModel.deva_DeclaracionMercancia ??
+              'Nuevo'
             }
-            onChange={(e) =>
+            onValueChange={(val) =>
               setDeva((deva) => {
                 return {
                   ...deva,
                   declaraciones_ValorViewModel: {
                     ...deva.declaraciones_ValorViewModel,
-                    deva_DeclaracionMercancia: e.target.value,
+                    deva_DeclaracionMercancia: val,
                   },
                 }
               })
             }
-          />
+          >
+            <div className='flex items-center space-x-2'>
+              <RadioGroupItem value='Nuevo' id='declMercNuevo' />
+              <Label htmlFor='declMercNuevo'>Nuevo</Label>
+            </div>
+            <div className='flex items-center space-x-2'>
+              <RadioGroupItem value='Usado' id='declMercUsado' />
+              <Label htmlFor='declMercUsado'>Usado</Label>
+            </div>
+          </RadioGroup>
         </div>
         <div className='flex flex-col gap-1'>
           <Label>3.1. Fecha de Aceptación</Label>
@@ -1188,7 +1256,7 @@ function FormGeneral({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -1311,7 +1379,7 @@ function FormGeneral({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -1641,7 +1709,7 @@ function FormGeneral({
               deva.declaraciones_ValorViewModel.nico_Descripcion !== 'Otros'
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -1667,12 +1735,54 @@ function FormGeneral({
       </div>
 
       <div className='mr-6 flex justify-end gap-2'>
-        <Button variant={'outline'} onClick={() => setMostrarForm(false)}>
-          Regresar
-        </Button>
+        <Button variant={'outline'} onClick={()=>setRegresarDialogState(true)}>Regresar</Button>
+        <Dialog
+          open={regresarDialogState}
+          onOpenChange={setRegresarDialogState}
+        >
+          <DialogTrigger asChild>.
+          </DialogTrigger>
+          <DialogContent className='sm:max-w-[425px]'>
+            <DialogHeader>
+              <DialogTitle>Eliminar factura</DialogTitle>
+            </DialogHeader>
+            <div className='grid gap-4 py-4'>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <p>
+                  ¿Está seguro de querer regresar? No ha guardado la deva
+                  todavía.
+                </p>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => setRegresarDialogState(false)}
+                variant='outline'
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={() => {
+                  setRegresarDialogState(false)
+                  setMostrarForm(false)
+                }}
+              >
+                Regresar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <Button
           onClick={() => {
-            onTabChange('caracteristicas')
+            if (!validarInfoGeneral()) {
+              setFormsValidados((prev) => {
+                return {
+                  ...prev,
+                  general: true,
+                }
+              })
+              setTimeout(() => onTabChange(()=>'proveedor'), 300)
+            }
           }}
         >
           Continuar
@@ -1683,37 +1793,72 @@ function FormGeneral({
 }
 
 function FormProveedor({
+  validar,
+  paisProveedor,
+  setPaisProveedor,
+  paisIntermediario,
+  setPaisIntermediario,
+  setValidar,
+  setFormsValidados,
   paises,
   ciudades,
   deva,
   setDeva,
+  errorToast,
   onTabChange,
 }: {
+  validar: boolean
+  setValidar: Dispatch<SetStateAction<boolean>>
+  paisProveedor: {
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null
+  setPaisProveedor: Dispatch<
+    SetStateAction<{
+      pais_Id: number
+      pais_Codigo: string
+      pais_Nombre: string
+    } | null>
+  >
+  paisIntermediario: {
+    pais_Id: number
+    pais_Codigo: string
+    pais_Nombre: string
+  } | null
+  setPaisIntermediario: Dispatch<
+    SetStateAction<{
+      pais_Id: number
+      pais_Codigo: string
+      pais_Nombre: string
+    } | null>
+  >
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
   ciudades: Ciudad[]
   paises: { pais_Id: number; pais_Nombre: string; pais_Codigo: string }[]
   deva: DevaCompuesta
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
-  onTabChange: (str: string) => void
+  errorToast: (message: string) => void
+  onTabChange: (callback:()=>string) => void
 }) {
   const [condiciones, setCondiciones] = useState<CondicionComercial[]>([])
   const [tiposDeIntermediarios, setTiposDeIntermediarios] = useState<
     TipoDeIntermediario[]
   >([])
 
-  const [paisExportador, setPaisExportador] = useState<{
-    pais_Id: number
-    pais_Codigo: string
-    pais_Nombre: string
-  } | null>(null)
-  const [paisIntermediario, setPaisIntermediario] = useState<{
-    pais_Id: number
-    pais_Codigo: string
-    pais_Nombre: string
-  } | null>(null)
-
   const [cbbPaisProveedorState, setCbbPaisProveedorState] = useState(false)
   const [cbbCiudadProveedorState, setCbbCiudadProveedorState] = useState(false)
   const [cbbCocoProveedorState, setCbbCocoProveedorState] = useState(false)
+  const [ckHayIntermediarioState, setCkHayIntermediarioState] = useState(false)
 
   const [cbbPaisIntermediarioState, setCbbPaisIntermediarioState] =
     useState(false)
@@ -1725,6 +1870,60 @@ function FormProveedor({
   const inputProveedorRefs = useRef<
     (HTMLInputElement | HTMLButtonElement | null)[]
   >([])
+
+  const inputIntermediarioRefs = useRef<
+    (HTMLInputElement | HTMLButtonElement | null)[]
+  >([])
+
+  const validarInputsProveedor = () => {
+    let huboError = false
+    inputProveedorRefs.current.forEach((input) => {
+      if (huboError) {
+        return
+      }
+      const elementType = input?.tagName
+      if (elementType === 'INPUT' && !input?.disabled && !input?.value) {
+        errorToast(
+          `Por favor ingrese ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      } else if (
+        elementType === 'BUTTON' &&
+        input?.dataset.selected !== 'true'
+      ) {
+        errorToast(
+          `Por favor seleccione ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      }
+    })
+    return huboError
+  }
+
+  const validarInputsIntermediario = () => {
+    let huboError = false
+    inputIntermediarioRefs.current.forEach((input) => {
+      if (huboError) {
+        return
+      }
+      const elementType = input?.tagName
+      if (elementType === 'INPUT' && !input?.disabled && !input?.value) {
+        errorToast(
+          `Por favor ingrese ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      } else if (
+        elementType === 'BUTTON' &&
+        input?.dataset.selected !== 'true'
+      ) {
+        errorToast(
+          `Por favor seleccione ${input?.parentElement?.children[0].textContent}`
+        )
+        huboError = true
+      }
+    })
+    return huboError
+  }
 
   useEffect(() => {
     getCondicionesComerciales()
@@ -1743,6 +1942,15 @@ function FormProveedor({
       })
   }, [])
 
+  useEffect(() => {
+    validar && setTimeout(() => setValidar(() => false), 2000)
+    if (validar) { 
+      if (!validarInputsProveedor() && ckHayIntermediarioState) {
+        validarInputsIntermediario()
+      }
+    }
+  }, [validar])
+
   return (
     <Card className='p-3'>
       <h6>C. Información General del Proveedor</h6>
@@ -1757,7 +1965,7 @@ function FormProveedor({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -1786,7 +1994,7 @@ function FormProveedor({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -1818,12 +2026,12 @@ function FormProveedor({
                 role='combobox'
                 className='mb-2 w-[200px] justify-between overflow-hidden'
                 ref={(input) => (inputProveedorRefs.current[2] = input)}
-                data-selected={paisExportador?.pais_Id ? true : false}
+                data-selected={paisProveedor?.pais_Id ? true : false}
               >
-                {paisExportador?.pais_Nombre
-                  ? paisExportador?.pais_Codigo +
+                {paisProveedor?.pais_Nombre
+                  ? paisProveedor?.pais_Codigo +
                     ' | ' +
-                    paisExportador?.pais_Nombre
+                    paisProveedor?.pais_Nombre
                   : '- Seleccione -'}
                 <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
               </Button>
@@ -1837,7 +2045,7 @@ function FormProveedor({
                     <CommandItem
                       key={pais.pais_Id}
                       onSelect={() => {
-                        setPaisExportador({
+                        setPaisProveedor({
                           pais_Id: pais.pais_Id,
                           pais_Codigo: pais.pais_Codigo,
                           pais_Nombre: pais.pais_Nombre,
@@ -1848,7 +2056,7 @@ function FormProveedor({
                       <IconCheck
                         className={cn(
                           'mr-2 h-4 w-4',
-                          paisExportador?.pais_Id === pais.pais_Id
+                          paisProveedor?.pais_Id === pais.pais_Id
                             ? 'opacity-100'
                             : 'opacity-0'
                         )}
@@ -1872,8 +2080,8 @@ function FormProveedor({
                 variant='outline'
                 role='combobox'
                 disabled={
-                  paisExportador
-                    ? !paisExportador?.pais_Id
+                  paisProveedor
+                    ? !paisProveedor?.pais_Id
                       ? true
                       : false
                     : true
@@ -1903,7 +2111,7 @@ function FormProveedor({
                 <CommandGroup>
                   {ciudades
                     .filter(
-                      (ciud) => ciud.pais_Codigo === paisExportador?.pais_Codigo
+                      (ciud) => ciud.pais_Codigo === paisProveedor?.pais_Codigo
                     )
                     .map((ciudad) => (
                       <CommandItem
@@ -2120,7 +2328,7 @@ function FormProveedor({
               deva.declaraciones_ValorViewModel.coco_Descripcion !== 'Otro'
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -2145,413 +2353,459 @@ function FormProveedor({
         </div>
       </div>
 
-      <h6>D. Información General del Intermediario</h6>
       <div className='mb-4 mt-2 flex flex-wrap justify-evenly gap-2'>
-        <div className='flex flex-col gap-1'>
-          <Label>12. Nombre o Razón Social</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[9] = input)}
-            value={
-              deva.declaraciones_ValorViewModel.inte_Nombre_Raso
-                ? deva.declaraciones_ValorViewModel.inte_Nombre_Raso
-                : ''
-            }
-            onChange={(e) => {
-              const regex = /^[\w\s-]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    declaraciones_ValorViewModel: {
-                      ...deva.declaraciones_ValorViewModel,
-                      inte_Nombre_Raso: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      decl_Nombre_Raso: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
+        <div className='flex items-center gap-1'>
+          <Checkbox
+            id='ckHayIntermediario'
+            onClick={() => setCkHayIntermediarioState((prev) => !prev)}
+            className='h-[20px] w-[20px]'
           />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <Label>13. Dirección</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[10] = input)}
-            value={
-              deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
-                ? deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
-                : ''
-            }
-            onChange={(e) => {
-              const regex = /^[\w\s-]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    declaraciones_ValorViewModel: {
-                      ...deva.declaraciones_ValorViewModel,
-                      inte_Direccion_Exacta: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      decl_Direccion_Exacta: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
-          />
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <Label>País del intermediario</Label>
-          <Popover
-            open={cbbPaisIntermediarioState}
-            onOpenChange={setCbbPaisIntermediarioState}
-          >
-            <PopoverTrigger asChild>
-              <Button
-                variant='outline'
-                role='combobox'
-                className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[11] = input)}
-                data-selected={paisIntermediario?.pais_Id ? true : false}
-              >
-                {paisIntermediario?.pais_Nombre
-                  ? paisIntermediario?.pais_Codigo +
-                    ' | ' +
-                    paisIntermediario?.pais_Nombre
-                  : '- Seleccione -'}
-                <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-[200px] p-0'>
-              <Command>
-                <CommandInput placeholder='Buscar país...' />
-                <CommandEmpty>No hay paises.</CommandEmpty>
-                <CommandGroup>
-                  {paises.map((pais) => (
-                    <CommandItem
-                      key={pais.pais_Id}
-                      onSelect={() => {
-                        setPaisIntermediario({
-                          pais_Id: pais.pais_Id,
-                          pais_Codigo: pais.pais_Codigo,
-                          pais_Nombre: pais.pais_Nombre,
-                        })
-                        setCbbPaisIntermediarioState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          paisIntermediario?.pais_Id === pais.pais_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {pais.pais_Codigo} | {pais.pais_Nombre}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className='flex flex-col gap-1'>
-          <Label>Ciudad del intermediario</Label>
-          <Popover
-            open={cbbCiudadIntermediarioState}
-            onOpenChange={setCbbCiudadIntermediarioState}
-          >
-            <PopoverTrigger asChild>
-              <Button
-                variant='outline'
-                role='combobox'
-                disabled={
-                  paisIntermediario
-                    ? !paisIntermediario?.pais_Id
-                      ? true
-                      : false
-                    : true
-                }
-                className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[12] = input)}
-                data-selected={
-                  deva.declarantesInte_ViewModel.ciud_Id ? true : false
-                }
-              >
-                {ciudades.find(
-                  (ciud) =>
-                    ciud.ciud_Id === deva.declarantesInte_ViewModel.ciud_Id
-                )?.ciud_Nombre
-                  ? ciudades.find(
-                      (ciud) =>
-                        ciud.ciud_Id === deva.declarantesInte_ViewModel.ciud_Id
-                    )?.ciud_Nombre
-                  : '- Seleccione -'}
-                <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-[200px] p-0'>
-              <Command>
-                <CommandInput placeholder='Buscar ciudad...' />
-                <CommandEmpty>No hay ciudades.</CommandEmpty>
-                <CommandGroup>
-                  {ciudades
-                    .filter(
-                      (ciud) =>
-                        ciud.pais_Codigo === paisIntermediario?.pais_Codigo
-                    )
-                    .map((ciudad) => (
-                      <CommandItem
-                        key={ciudad.ciud_Id}
-                        onSelect={() => {
-                          setDeva((deva) => {
-                            return {
-                              ...deva,
-                              declaraciones_ValorViewModel: {
-                                ...deva.declaraciones_ValorViewModel,
-                                inte_ciudId: ciudad.ciud_Id,
-                              },
-                              declarantesInte_ViewModel: {
-                                ...deva.declarantesInte_ViewModel,
-                                ciud_Id: ciudad.ciud_Id,
-                              },
-                            }
-                          })
-                          setCbbCiudadIntermediarioState(false)
-                        }}
-                      >
-                        <IconCheck
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            deva.declaraciones_ValorViewModel.inte_ciudId ===
-                              ciudad.ciud_Id
-                              ? 'opacity-100'
-                              : 'opacity-0'
-                          )}
-                        />
-                        {ciudad.ciud_Nombre}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <Label>Correo del intermediario</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[13] = input)}
-            value={
-              deva.declaraciones_ValorViewModel.inte_Correo_Electronico
-                ? deva.declaraciones_ValorViewModel.inte_Correo_Electronico
-                : ''
-            }
-            onChange={(e) => {
-              const regex = /^[\w\-.+@]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    declaraciones_ValorViewModel: {
-                      ...deva.declaraciones_ValorViewModel,
-                      inte_Correo_Electronico: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      decl_Correo_Electronico: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
-          />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <Label>Teléfono del intermediario</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[14] = input)}
-            value={
-              deva.declaraciones_ValorViewModel.inte_Telefono
-                ? deva.declaraciones_ValorViewModel.inte_Telefono
-                : ''
-            }
-            onChange={(e) => {
-              const regex = /^[\d\s\-+]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    declaraciones_ValorViewModel: {
-                      ...deva.declaraciones_ValorViewModel,
-                      inte_Telefono: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      decl_Telefono: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
-          />
-        </div>
-        <div className='flex flex-col gap-1'>
-          <Label>Fax del intemediario</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[15] = input)}
-            value={
-              deva.declaraciones_ValorViewModel.inte_Fax
-                ? deva.declaraciones_ValorViewModel.inte_Fax
-                : ''
-            }
-            onChange={(e) => {
-              const regex = /^[\d.]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    declaraciones_ValorViewModel: {
-                      ...deva.declaraciones_ValorViewModel,
-                      inte_Fax: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      decl_Fax: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
-          />
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <Label>14. Tipo Intermediario</Label>
-          <Popover
-            open={cbbTipoIntermediarioState}
-            onOpenChange={setCbbTipoIntermediarioState}
-          >
-            <PopoverTrigger asChild>
-              <Button
-                variant='outline'
-                role='combobox'
-                className='mb-2 w-[200px] justify-between overflow-hidden'
-                ref={(input) => (inputProveedorRefs.current[16] = input)}
-                data-selected={
-                  deva.declarantesInte_ViewModel.tite_Id ? true : false
-                }
-              >
-                {tiposDeIntermediarios.find(
-                  (tite) =>
-                    tite.tite_Id === deva.declarantesInte_ViewModel.tite_Id
-                )?.tite_Descripcion
-                  ? tiposDeIntermediarios.find(
-                      (tite) =>
-                        tite.tite_Id === deva.declarantesInte_ViewModel.tite_Id
-                    )?.tite_Descripcion
-                  : '- Seleccione -'}
-                <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className='w-[200px] p-0'>
-              <Command>
-                <CommandInput placeholder='Buscar tipo...' />
-                <CommandEmpty>No hay tipos.</CommandEmpty>
-                <CommandGroup>
-                  {tiposDeIntermediarios.map((tite) => (
-                    <CommandItem
-                      key={tite.tite_Id}
-                      onSelect={() => {
-                        setDeva((deva) => {
-                          return {
-                            ...deva,
-                            declaraciones_ValorViewModel: {
-                              ...deva.declaraciones_ValorViewModel,
-                              tite_Id: tite.tite_Id,
-                            },
-                            declarantesInte_ViewModel: {
-                              ...deva.declarantesInte_ViewModel,
-                              tite_Id: tite.tite_Id,
-                            },
-                            intermediarioViewModel: {
-                              ...deva.intermediarioViewModel,
-                              tite_Id: tite.tite_Id,
-                            },
-                          }
-                        })
-                        setCbbTipoIntermediarioState(false)
-                      }}
-                    >
-                      <IconCheck
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          deva.declaraciones_ValorViewModel.tite_Id ===
-                            tite.tite_Id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                      {tite.tite_Descripcion}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <Label>Otro Tipo Intermediario</Label>
-          <Input
-            ref={(input) => (inputProveedorRefs.current[17] = input)}
-            disabled={
-              tiposDeIntermediarios.find(
-                (tite) =>
-                  tite.tite_Id === deva.declaraciones_ValorViewModel.tite_Id
-              )?.tite_Descripcion !== 'Otro'
-            }
-            value={
-              deva.intermediarioViewModel.inte_Tipo_Otro
-                ? deva.intermediarioViewModel.inte_Tipo_Otro
-                : ''
-            }
-            onChange={(e) => {
-              console.log()
-
-              const regex = /^[\w\s-]*$/
-              if (regex.test(e.target.value)) {
-                setDeva((deva) => {
-                  return {
-                    ...deva,
-                    intermediarioViewModel: {
-                      ...deva.intermediarioViewModel,
-                      inte_Tipo_Otro: e.target.value,
-                    },
-                    declarantesInte_ViewModel: {
-                      ...deva.declarantesInte_ViewModel,
-                      inte_Tipo_Otro: e.target.value,
-                    },
-                  }
-                })
-              }
-            }}
-          />
+          <Label htmlFor='ckHayIntermediario' className='inline-block'>
+            Existe Intermediario {ckHayIntermediarioState}
+          </Label>
         </div>
       </div>
+
+      <Accordion
+        type='single'
+        collapsible
+        value={ckHayIntermediarioState.toString()}
+      >
+        <AccordionItem value='true' className='border-b-0'>
+          <AccordionContent>
+            <h6 className='text-base'>
+              D. Información General del Intermediario
+            </h6>
+            <div className='mb-4 mt-2 flex flex-wrap justify-evenly gap-2'>
+              <div className='flex flex-col gap-1'>
+                <Label>12. Nombre o Razón Social</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[9] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.inte_Nombre_Raso
+                      ? deva.declaraciones_ValorViewModel.inte_Nombre_Raso
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\s-áéíóú]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inte_Nombre_Raso: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_Nombre_Raso: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>13. Dirección</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[10] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
+                      ? deva.declaraciones_ValorViewModel.inte_Direccion_Exacta
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\s-áéíóú]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inte_Direccion_Exacta: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_Direccion_Exacta: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <Label>País del intermediario</Label>
+                <Popover
+                  open={cbbPaisIntermediarioState}
+                  onOpenChange={setCbbPaisIntermediarioState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) => (inputProveedorRefs.current[11] = input)}
+                      data-selected={paisIntermediario?.pais_Id ? true : false}
+                    >
+                      {paisIntermediario?.pais_Nombre
+                        ? paisIntermediario?.pais_Codigo +
+                          ' | ' +
+                          paisIntermediario?.pais_Nombre
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar país...' />
+                      <CommandEmpty>No hay paises.</CommandEmpty>
+                      <CommandGroup>
+                        {paises.map((pais) => (
+                          <CommandItem
+                            key={pais.pais_Id}
+                            onSelect={() => {
+                              setPaisIntermediario({
+                                pais_Id: pais.pais_Id,
+                                pais_Codigo: pais.pais_Codigo,
+                                pais_Nombre: pais.pais_Nombre,
+                              })
+                              setCbbPaisIntermediarioState(false)
+                            }}
+                          >
+                            <IconCheck
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                paisIntermediario?.pais_Id === pais.pais_Id
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {pais.pais_Codigo} | {pais.pais_Nombre}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Ciudad del intermediario</Label>
+                <Popover
+                  open={cbbCiudadIntermediarioState}
+                  onOpenChange={setCbbCiudadIntermediarioState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      disabled={
+                        paisIntermediario
+                          ? !paisIntermediario?.pais_Id
+                            ? true
+                            : false
+                          : true
+                      }
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) => (inputProveedorRefs.current[12] = input)}
+                      data-selected={
+                        deva.declarantesInte_ViewModel.ciud_Id ? true : false
+                      }
+                    >
+                      {ciudades.find(
+                        (ciud) =>
+                          ciud.ciud_Id ===
+                          deva.declarantesInte_ViewModel.ciud_Id
+                      )?.ciud_Nombre
+                        ? ciudades.find(
+                            (ciud) =>
+                              ciud.ciud_Id ===
+                              deva.declarantesInte_ViewModel.ciud_Id
+                          )?.ciud_Nombre
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar ciudad...' />
+                      <CommandEmpty>No hay ciudades.</CommandEmpty>
+                      <CommandGroup>
+                        {ciudades
+                          .filter(
+                            (ciud) =>
+                              ciud.pais_Codigo ===
+                              paisIntermediario?.pais_Codigo
+                          )
+                          .map((ciudad) => (
+                            <CommandItem
+                              key={ciudad.ciud_Id}
+                              onSelect={() => {
+                                setDeva((deva) => {
+                                  return {
+                                    ...deva,
+                                    declaraciones_ValorViewModel: {
+                                      ...deva.declaraciones_ValorViewModel,
+                                      inte_ciudId: ciudad.ciud_Id,
+                                    },
+                                    declarantesInte_ViewModel: {
+                                      ...deva.declarantesInte_ViewModel,
+                                      ciud_Id: ciudad.ciud_Id,
+                                    },
+                                  }
+                                })
+                                setCbbCiudadIntermediarioState(false)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  deva.declaraciones_ValorViewModel
+                                    .inte_ciudId === ciudad.ciud_Id
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {ciudad.ciud_Nombre}
+                            </CommandItem>
+                          ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <Label>Correo del intermediario</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[13] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.inte_Correo_Electronico
+                      ? deva.declaraciones_ValorViewModel
+                          .inte_Correo_Electronico
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\w\-.+@]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inte_Correo_Electronico: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_Correo_Electronico: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Teléfono del intermediario</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[14] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.inte_Telefono
+                      ? deva.declaraciones_ValorViewModel.inte_Telefono
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\d\s\-+]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inte_Telefono: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_Telefono: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <Label>Fax del intemediario</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[15] = input)}
+                  value={
+                    deva.declaraciones_ValorViewModel.inte_Fax
+                      ? deva.declaraciones_ValorViewModel.inte_Fax
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const regex = /^[\d.]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          declaraciones_ValorViewModel: {
+                            ...deva.declaraciones_ValorViewModel,
+                            inte_Fax: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            decl_Fax: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <Label>14. Tipo Intermediario</Label>
+                <Popover
+                  open={cbbTipoIntermediarioState}
+                  onOpenChange={setCbbTipoIntermediarioState}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      role='combobox'
+                      className='mb-2 w-[200px] justify-between overflow-hidden'
+                      ref={(input) => (inputProveedorRefs.current[16] = input)}
+                      data-selected={
+                        deva.declarantesInte_ViewModel.tite_Id ? true : false
+                      }
+                    >
+                      {tiposDeIntermediarios.find(
+                        (tite) =>
+                          tite.tite_Id ===
+                          deva.declarantesInte_ViewModel.tite_Id
+                      )?.tite_Descripcion
+                        ? tiposDeIntermediarios.find(
+                            (tite) =>
+                              tite.tite_Id ===
+                              deva.declarantesInte_ViewModel.tite_Id
+                          )?.tite_Descripcion
+                        : '- Seleccione -'}
+                      <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Buscar tipo...' />
+                      <CommandEmpty>No hay tipos.</CommandEmpty>
+                      <CommandGroup>
+                        {tiposDeIntermediarios.map((tite) => (
+                          <CommandItem
+                            key={tite.tite_Id}
+                            onSelect={() => {
+                              setDeva((deva) => {
+                                return {
+                                  ...deva,
+                                  declaraciones_ValorViewModel: {
+                                    ...deva.declaraciones_ValorViewModel,
+                                    tite_Id: tite.tite_Id,
+                                  },
+                                  declarantesInte_ViewModel: {
+                                    ...deva.declarantesInte_ViewModel,
+                                    tite_Id: tite.tite_Id,
+                                  },
+                                  intermediarioViewModel: {
+                                    ...deva.intermediarioViewModel,
+                                    tite_Id: tite.tite_Id,
+                                  },
+                                }
+                              })
+                              setCbbTipoIntermediarioState(false)
+                            }}
+                          >
+                            <IconCheck
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                deva.declaraciones_ValorViewModel.tite_Id ===
+                                  tite.tite_Id
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {tite.tite_Descripcion}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <Label>Otro Tipo Intermediario</Label>
+                <Input
+                  ref={(input) => (inputProveedorRefs.current[17] = input)}
+                  disabled={
+                    tiposDeIntermediarios.find(
+                      (tite) =>
+                        tite.tite_Id ===
+                        deva.declaraciones_ValorViewModel.tite_Id
+                    )?.tite_Descripcion !== 'Otro'
+                  }
+                  value={
+                    deva.intermediarioViewModel.inte_Tipo_Otro
+                      ? deva.intermediarioViewModel.inte_Tipo_Otro
+                      : ''
+                  }
+                  onChange={(e) => {
+                    console.log()
+
+                    const regex = /^[\w\s-áéíóú]*$/
+                    if (regex.test(e.target.value)) {
+                      setDeva((deva) => {
+                        return {
+                          ...deva,
+                          intermediarioViewModel: {
+                            ...deva.intermediarioViewModel,
+                            inte_Tipo_Otro: e.target.value,
+                          },
+                          declarantesInte_ViewModel: {
+                            ...deva.declarantesInte_ViewModel,
+                            inte_Tipo_Otro: e.target.value,
+                          },
+                        }
+                      })
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
       <div className='mr-6 flex justify-end gap-2'>
         <Button variant={'outline'} onClick={() => onTabChange('general')}>
           Regresar
         </Button>
         <Button
           onClick={() => {
-            onTabChange('caracteristicas')
+            if (!validarInputsProveedor()) {
+              if (ckHayIntermediarioState) {
+              if (!validarInputsIntermediario()) {
+                 return
+              }
+              }
+              setFormsValidados((prev) => {
+                return {
+                  ...prev,
+                  proveedor: true,
+                }
+              })
+              setTimeout(() => onTabChange(()=>'caracteristicas'), 100)
+            }
           }}
         >
           Continuar
@@ -2563,14 +2817,29 @@ function FormProveedor({
 
 function FormCaracteristicas({
   deva,
+  validar,
+  setValidar,
+  setFormsValidados,
   setDeva,
   errorToast,
   onTabChange,
 }: {
   deva: DevaCompuesta
+  validar: boolean
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
+  setValidar: Dispatch<SetStateAction<boolean>>
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
-  onTabChange: (str: string) => void
+  onTabChange: (callback:()=>string) => void
 }) {
   const [paises2, setPaises2] = useState<Pais[]>([])
   const [incoterms, setIncoterms] = useState<Incoterm[]>([])
@@ -2662,6 +2931,13 @@ function FormCaracteristicas({
       })
   }, [])
 
+  useEffect(() => {
+    validar && setTimeout(() => setValidar(() => false), 2000)
+    if (validar) {
+      validarCaracteristicas()
+    }
+  }, [validar])
+
   return (
     <Card className='p-3'>
       <h6>E. Característica de la Transacción</h6>
@@ -2676,7 +2952,7 @@ function FormCaracteristicas({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -2836,7 +3112,7 @@ function FormCaracteristicas({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -2861,7 +3137,7 @@ function FormCaracteristicas({
                 : ''
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\d.-]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -3008,7 +3284,7 @@ function FormCaracteristicas({
               deva.declaraciones_ValorViewModel.foen_Descripcion !== 'Otro'
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -3134,7 +3410,7 @@ function FormCaracteristicas({
                 : true
             }
             onChange={(e) => {
-              const regex = /^[\w\s-]*$/
+              const regex = /^[\w\s-áéíóú]*$/
               if (regex.test(e.target.value)) {
                 setDeva((deva) => {
                   return {
@@ -3541,15 +3817,26 @@ function FormCaracteristicas({
 function FormFactura({
   validar,
   setValidar,
+  setFormsValidados,
   deva,
   errorToast,
   onTabChange,
 }: {
-  validar: boolean
-  setValidar: (bool: boolean | ((bool: boolean) => boolean)) => void
+validar: boolean
+  setValidar: Dispatch<SetStateAction<boolean>>
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
   deva: DevaCompuesta
   errorToast: (message: string) => void
-  onTabChange: (str: string) => void
+  onTabChange: (callback:()=>string) => void
 }) {
   const context = useContext(ThemeProviderContext)
 
@@ -3764,8 +4051,6 @@ function FormFactura({
     value.length > 2 && debouncedSearch(value)
   }
 
-  console.log(aranceles)
-
   return (
     <>
       <Card className='flex flex-col items-center p-3'>
@@ -3892,7 +4177,7 @@ function FormFactura({
                     ref={(input) => (inputItemRefs.current[2] = input)}
                     value={item.item_IdentificacionComercialMercancias ?? ''}
                     onChange={(e) => {
-                      const regex = /^[\w\s-]*$/
+                      const regex = /^[\w\s-áéíóú]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
@@ -3969,7 +4254,7 @@ function FormFactura({
                     ref={(input) => (inputItemRefs.current[4] = input)}
                     value={item.item_CaracteristicasMercancias ?? ''}
                     onChange={(e) => {
-                      const regex = /^[\w\s-]*$/
+                      const regex = /^[\w\s-áéíóú]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
@@ -3989,7 +4274,7 @@ function FormFactura({
                     ref={(input) => (inputItemRefs.current[5] = input)}
                     value={item.item_Marca ?? ''}
                     onChange={(e) => {
-                      const regex = /^[\w\s-]*$/
+                      const regex = /^[\w\s-áéíóú]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
@@ -4009,7 +4294,7 @@ function FormFactura({
                     ref={(input) => (inputItemRefs.current[6] = input)}
                     value={item.item_Modelo ?? ''}
                     onChange={(e) => {
-                      const regex = /^[\w\s-]*$/
+                      const regex = /^[\w\s-áéíóú]*$/
                       if (regex.test(e.target.value)) {
                         setItem((item) => {
                           return {
@@ -4160,7 +4445,7 @@ function FormFactura({
                       </Button>
                     </DialogTrigger>
                     <DialogContent
-                      className='sm:max-w-[720px]
+                      className='max-h-[700px] overflow-y-auto sm:max-w-[720px]
             '
                     >
                       <DialogHeader>
@@ -4232,7 +4517,7 @@ function FormFactura({
                     setDialogState(false)
                   }}
                 >
-                  Cancelar Deva
+                  Agregar Item
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -4262,9 +4547,26 @@ function FormFactura({
 }
 
 function FormCondiciones({
+  validar,
+  setValidar,
+  setFormsValidados,
   onTabChange,
+  errorToast
 }: {
-  onTabChange: (str: string) => void
+validar: boolean
+  setValidar: Dispatch<SetStateAction<boolean>>
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
+  errorToast: (message: string) => void
+  onTabChange: (callback:()=>string) => void
 }) {
   return (
     <Card className='p-3'>
@@ -4484,9 +4786,26 @@ function FormCondiciones({
 }
 
 function FormValorAduana({
+  validar,
+  setValidar,
+  setFormsValidados,
   onTabChange,
+  errorToast
 }: {
-  onTabChange: (str: string) => void
+validar: boolean
+  setValidar: Dispatch<SetStateAction<boolean>>
+  setFormsValidados: Dispatch<
+    SetStateAction<{
+      general: boolean
+      proveedor: boolean
+      caracteristicas: boolean
+      facturas: boolean
+      condiciones: boolean
+      valorAduana: boolean
+    }>
+  >
+  errorToast: (message: string) => void
+  onTabChange: (callback:()=>string) => void
 }) {
   return (
     <Card className='p-3'>
@@ -4750,6 +5069,38 @@ function FormValorAduana({
             }}
           >
             Continuar
+          </Button>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+function FormFinalizar({
+  onTabChange,
+}: {
+  onTabChange: (callback:()=>string) => void
+}) {
+  return (
+    <Card className='p-3'>
+      <h6>III. Determinación del Valor en Aduana, en Pesos Centroamericanos</h6>
+      <div className='overflow-x-auto'>
+        <h1>Formulario completo</h1>
+      </div>
+      <div className='mr-6 flex justify-between gap-2'>
+        <div className='flex gap-2'>
+          <Button
+            variant={'outline'}
+            onClick={() => onTabChange('valorAduana')}
+          >
+            Regresar
+          </Button>
+          <Button
+            onClick={() => {
+              console.log('finalizar')
+            }}
+          >
+            Finalizar Declaración de Valor
           </Button>
         </div>
       </div>
