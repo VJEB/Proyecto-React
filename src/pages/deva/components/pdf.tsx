@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import backgroundImage from './fondo.jpg'; // Asegúrate de que esta ruta sea correcta
+import { getFacturas1, getItems } from '../data/data'
 
 const styles = StyleSheet.create({
   page: {
@@ -225,9 +226,9 @@ interface PDFGeneratorProps {
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
+  
   const [showPdf, setShowPdf] = useState(false);
   let data = [];
-  console.log(dato);
   if(dato != null){
   data = [
     dato
@@ -236,6 +237,30 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
   else{
     data = ["nada"];
   }
+  const [facturasConDetalles, setFacturasConDetalles] = useState([]);
+
+
+  useEffect(() => {
+    const fetchFacturasYDetalles = async () => {
+      try {
+        const facturas = await getFacturas1(deva_Id);
+
+        const facturasConDetallesPromises = facturas.map(async (factura) => {
+          const items = await getItems(factura.fact_Id);
+          console.log("items "+items)
+          return { ...factura, items };
+        });
+
+        const facturasConDetalles = await Promise.all(facturasConDetallesPromises);
+        setFacturasConDetalles(facturasConDetalles);
+        console.log(facturasConDetalles)
+      } catch (error) {
+        console.error('Error fetching facturas y detalles:', error);
+      }
+    };
+
+    fetchFacturasYDetalles();
+  }, [data.deva_Id]);
 
 
   // console.log("entra al pdf?",JSON.stringify(data, null, 2))
@@ -245,6 +270,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
       setShowPdf(true);
     }
   }, [data]);
+
 
   const generatePDF = () => (
     <PDFViewer width="100%" height="500px">
@@ -268,19 +294,19 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     </text>
                       <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Aduana Ingreso : {item.adua_IngresoNombre}</Text>
+                          <Text style={styles.linea}>• Aduana Ingreso : {item.adua_IngresoNombre}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Despacho Nombre : {item.adua_DespachoNombre}</Text>
+                          <Text style={styles.linea}>• Despacho Nombre : {item.adua_DespachoNombre}</Text>
                         </text>
                         
                     </text>
                     <text style={styles.tableRow}>
                     <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Declaración de Mercancía : {item.deva_DeclaracionMercancia}</Text>
+                          <Text style={styles.linea}>• Declaración de Mercancía : {item.deva_DeclaracionMercancia}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Fecha de Aceptación : {item.deva_FechaAceptacion.split('T')[0]}</Text>
+                          <Text style={styles.linea}>• Fecha de Aceptación : {item.deva_FechaAceptacion.split('T')[0]}</Text>
                         </text>
                     </text>
 
@@ -291,45 +317,45 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Nombre o Razón Social: {item.impo_Nombre_Raso}</Text>
+                          <Text style={styles.linea}>• Nombre o Razón Social: {item.impo_Nombre_Raso}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>RTN : {item.impo_RTN}</Text>
+                          <Text style={styles.linea}>• RTN : {item.impo_RTN}</Text>
                         </text>
                         
                     </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Número de Registro : {item.impo_NumRegistro}</Text>
+                          <Text style={styles.linea}>• Número de Registro : {item.impo_NumRegistro}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Dirección Importador : {item.impo_Direccion_Exacta}</Text>
+                          <Text style={styles.linea}>• Dirección Importador : {item.impo_Direccion_Exacta}</Text>
                         </text>
 
                         </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Ciudad Importador : {item.impo_CiudadNombre}</Text>
+                          <Text style={styles.linea}>• Ciudad Importador : {item.impo_CiudadNombre}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>País Importador: {item.impo_PaisNombre}</Text>
+                          <Text style={styles.linea}>• País Importador: {item.impo_PaisNombre}</Text>
                         </text>
                         </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>IMail Importador : {item.impo_Correo_Electronico}</Text>
+                          <Text style={styles.linea}>• IMail Importador : {item.impo_Correo_Electronico}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Teléfono Importador : {item.impo_Telefono}</Text>
+                        <Text style={styles.linea}>• Teléfono Importador : {item.impo_Telefono}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                     <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Fax Importador : {item.impo_Fax}</Text>
+                        <Text style={styles.linea}>• Fax Importador : {item.impo_Fax}</Text>
                       </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Nivel Comercial : {item.nico_Descripcion}</Text>
+                          <Text style={styles.linea}>• Nivel Comercial : {item.nico_Descripcion}</Text>
                         </text>
                     </text>
 
@@ -340,40 +366,40 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Nombre Proveedor : {item.prov_Nombre_Raso}</Text>
+                          <Text style={styles.linea}>• Nombre Proveedor : {item.prov_Nombre_Raso}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Dirección Proveedor : {item.prov_Direccion_Exacta}</Text>
+                          <Text style={styles.linea}>• Dirección Proveedor : {item.prov_Direccion_Exacta}</Text>
                         </text>
                         
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>País Proveedor : {item.prov_PaisNombre}</Text>
+                        <Text style={styles.linea}>• País Proveedor : {item.prov_PaisNombre}</Text>
                       </text>
                      <text style={styles.tableCell}>
-                       <Text style={styles.linea}>Ciudad Proveedor : 
+                       <Text style={styles.linea}>• Ciudad Proveedor : 
                        {item.prov_CiudadNombre}</Text>
                      </text>
                      </text>
                     <text style={styles.tableRow}>
                     
                      <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Correo Proveedor : 
+                        <Text style={styles.linea}>• Correo Proveedor : 
                        {item.prov_Correo_Electronico}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Teléfono Proveedor :  
+                        <Text style={styles.linea}>• Teléfono Proveedor :  
                         {item.prov_Telefono}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Fax Proveedor : 
+                          <Text style={styles.linea}>• Fax Proveedor : 
                            {item.prov_Fax}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Condicion Comercial : 
+                          <Text style={styles.linea}>• Condicion Comercial : 
                           {item.coco_Descripcion}</Text>
                         </text>
                       
@@ -387,42 +413,42 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
 
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Nombre o Razón social : 
+                          <Text style={styles.linea}>• Nombre o Razón social : 
                           {item.inte_Nombre_Raso}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Ciudad Intermediario : 
+                          <Text style={styles.linea}>• Ciudad Intermediario : 
                           {item.inte_Direccion_Exacta}</Text>
                         </text>
                         
                       </text>
                       <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Ciudad Intermediario : 
+                          <Text style={styles.linea}>• Ciudad Intermediario : 
                           {item.inte_CiudadNombre}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>País Intermediario : 
+                          <Text style={styles.linea}>• País Intermediario : 
                           {item.inte_PaisNombre}</Text>
                         </text>
                         </text>
                       <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Correo Intermediario : 
+                          <Text style={styles.linea}>• Correo Intermediario : 
                           {item.inte_Correo_Electronico}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Teléfono Intermediario : 
+                          <Text style={styles.linea}>• Teléfono Intermediario : 
                           {item.inte_Telefono}</Text>
                         </text>
                       </text>
                       <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Fax Intermediario : 
+                          <Text style={styles.linea}>• Fax Intermediario : 
                           {item.inte_Fax}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Tipo Intermediario : 
+                          <Text style={styles.linea}>• Tipo Intermediario : 
                           {item.inte_Tipo_Otro}</Text>
                         </text>
                       </text>
@@ -436,70 +462,70 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
 
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Lugar de Entrega :  
+                        <Text style={styles.linea}>• Lugar de Entrega :  
                          {item.deva_LugarEntrega}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>País de Entrega :  
+                        <Text style={styles.linea}>• País de Entrega :  
                          {item.pais_EntregaNombre}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Incoterm : 
+                        <Text style={styles.linea}>• Incoterm : 
                         {item.inco_Descripcion}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Versión de Incoterms :
+                        <Text style={styles.linea}>• Versión de Incoterms :
                          {item.inco_Version}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
 
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Número de Contrato : 
+                        <Text style={styles.linea}>• Número de Contrato : 
                         {item.deva_NumeroContrato}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Fecha de Contrato : 
+                        <Text style={styles.linea}>• Fecha de Contrato : 
                         {item.deva_FechaContrato}</Text>
                       </text>                   
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Forma de Envío : 
+                        <Text style={styles.linea}>• Forma de Envío : 
                         {item.foen_Descripcion}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Pago Efectuado : 
+                          <Text style={styles.linea}>• Pago Efectuado : 
                           {item.deva_PagoEfectuado !== null ? (item.deva_PagoEfectuado ? 'Si' : 'No') : 'null'}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Forma de Pago : 
+                        <Text style={styles.linea}>• Forma de Pago : 
                         {item.fopa_Descripcion}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                            <Text style={styles.linea}>Lugar de Embarque : 
+                            <Text style={styles.linea}>• Lugar de Embarque : 
                             {item.lugarEmbarque}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>País de Exportación : 
+                        <Text style={styles.linea}>• País de Exportación : 
                         {item.pais_ExportacionNombre}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Fecha de Exportación : 
+                          <Text style={styles.linea}>• Fecha de Exportación : 
                           {item.deva_FechaExportacion}</Text>
                         </text>
                     </text>
                    <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Moneda : 
+                        <Text style={styles.linea}>• Moneda : 
                         {item.monedaNombre}</Text>
                       </text>
                       <text style={styles.tableCell}>
@@ -540,34 +566,34 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
 
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Finalización : 
+                        <Text style={styles.linea}>• Finalización : 
                         {item.deva_Finalizacion ? 'Si' : 'No'}</Text>
                       </text>
                       
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Descuentos Indirectos : 
+                        <Text style={styles.linea}>• Descuentos Indirectos : 
                         {item.codi_Pagos_Descuentos_Indirectos ? 'Si' : 'No'}</Text>
                       </text>
                      
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Depende Precio Condición : 
+                        <Text style={styles.linea}>• Depende Precio Condición : 
                         {item.codi_Depende_Precio_Condicion ? 'Si' : 'No'}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Indicar Existe Condición : 
+                        <Text style={styles.linea}>• Indicar Existe Condición : 
                         {item.codi_Indicar_Existe_Condicion ? 'Si' : 'No'}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Condicionada Revertir : 
+                        <Text style={styles.linea}>• Condicionada Revertir : 
                         {item.codi_Condicionada_Revertir ? 'Si' : 'No'}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Vinculación Comprador Vendedor : 
+                        <Text style={styles.linea}>• Vinculación Comprador Vendedor : 
                         {item.codi_Vinculacion_Comprador_Vendedor ? 'Si' : 'No'}</Text>
                       </text>
                     </text>
@@ -575,32 +601,32 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Vinculación Influye Precio : 
+                        <Text style={styles.linea}>• Vinculación Influye Precio : 
                         {item.codi_Vinculacion_Influye_Precio ? 'Si' : 'No'}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Restricciones de Utilización : 
+                        <Text style={styles.linea}>• Restricciones de Utilización : 
                         {item.codi_Indicar_Restricciones_Utilizacion ? 'Si' : 'No'}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Restricciones de Utilización Indicadas: {item.codi_Restricciones_Utilizacion}</Text>
+                        <Text style={styles.linea}>• Restricciones de Utilización Indicadas: {item.codi_Restricciones_Utilizacion}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Existen Cánones : 
+                        <Text style={styles.linea}>• Existen Cánones : 
                         {item.codi_Existen_Canones ? 'Si' : 'No'}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Indicar Cánones : 
+                        <Text style={styles.linea}>• Indicar Cánones : 
                         {item.codi_Indicar_Canones ? 'Si' : 'No'}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}> </Text>
+                        <Text style={styles.linea}>  </Text>
                       </text>
                     </text>
                     
@@ -613,139 +639,139 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                     <text style={styles.tableRow}>
                      
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Conversión a Dólares : 
+                          <Text style={styles.linea}>• Conversión a Dólares : 
                           {item.deva_ConversionDolares}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Tipo de Vinculación : 
+                          <Text style={styles.linea}>• Tipo de Vinculación : 
                           {item.codi_Tipo_Vinculacion}</Text>
                         </text>
                         
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Concepto Monto Declarado : 
+                          <Text style={styles.linea}>• Concepto Monto Declarado : 
                           {item.codi_Concepto_Monto_Declarado}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Precio Factura : 
+                        <Text style={styles.linea}>• Precio Factura : 
                         {item.base_PrecioFactura}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Pagos Indirectos : 
+                          <Text style={styles.linea}>• Pagos Indirectos : 
                           {item.base_PagosIndirectos}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Precio Real :  
+                        <Text style={styles.linea}>• Precio Real :  
                         {item.base_PrecioReal}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Monto Condición : 
+                          <Text style={styles.linea}>• Monto Condición : 
                           {item.base_MontCondicion}</Text>
                         </text>
                         <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Monto de Reversión :  
+                          <Text style={styles.linea}>• Monto de Reversión :  
                           {item.base_MontoReversion}</Text>
                         </text>
                     
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                          <Text style={styles.linea}>Comisión Correlaje :  
+                          <Text style={styles.linea}>• Comisión Correlaje :  
                           {item.base_ComisionCorrelaje}</Text>
                         </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Gasto Envase Embalaje :  
+                        <Text style={styles.linea}>• Gasto Envase Embalaje :  
                         {item.base_Gasto_Envase_Embalaje}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valores Materiales Incorporado :  
+                        <Text style={styles.linea}>• Valores Materiales Incorporado :  
                         {item.base_ValoresMateriales_Incorporado}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valor Materiales Utilizados : 
+                        <Text style={styles.linea}>• Valor Materiales Utilizados : 
                         {item.base_Valor_Materiales_Utilizados}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valor Materiales Consumidos : 
+                        <Text style={styles.linea}>• Valor Materiales Consumidos : 
                         {item.base_Valor_Materiales_Consumidos}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valor Ingeniería Importado : 
+                        <Text style={styles.linea}>• Valor Ingeniería Importado : 
                         {item.base_Valor_Ingenieria_Importado}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valor Cánones : 
+                        <Text style={styles.linea}>• Valor Cánones : 
                         {item.base_Valor_Canones}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Gasto Transporte Importada : 
+                        <Text style={styles.linea}>• Gasto Transporte Importada : 
                         {item.base_Gasto_TransporteM_Importada}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Gastos Carga Importada : 
+                        <Text style={styles.linea}>• Gastos Carga Importada : 
                         {item.base_Gastos_Carga_Importada}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Costos Seguro : 
+                        <Text style={styles.linea}>• Costos Seguro : 
                         {item.base_Costos_Seguro}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Total Ajustes Precio Pagado : 
+                        <Text style={styles.linea}>• Total Ajustes Precio Pagado : 
                         {item.base_Total_Ajustes_Precio_Pagado}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Gastos Asistencia Técnica : 
+                        <Text style={styles.linea}>• Gastos Asistencia Técnica : 
                         {item.base_Gastos_Asistencia_Tecnica}</Text>
                       </text>
                       
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Gastos Transporte Posterior : 
+                        <Text style={styles.linea}>• Gastos Transporte Posterior : 
                         {item.base_Gastos_Transporte_Posterior}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Derechos Impuestos : 
+                        <Text style={styles.linea}>• Derechos Impuestos : 
                         {item.base_Derechos_Impuestos}</Text>
                       </text>
                       </text>
                     <text style={styles.tableRow}>
                     
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Monto Intereses : 
+                        <Text style={styles.linea}>• Monto Intereses : 
                         {item.base_Monto_Intereses}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Deducciones Legales : 
+                        <Text style={styles.linea}>• Deducciones Legales : 
                         {item.base_Deducciones_Legales}</Text>
                       </text>
                     </text>
                     <text style={styles.tableRow}>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Total Deducciones : 
+                        <Text style={styles.linea}>• Total Deducciones : 
                         {item.base_Total_Deducciones_Precio}</Text>
                       </text>
                       <text style={styles.tableCell}>
-                        <Text style={styles.linea}>Valor Aduana : 
+                        <Text style={styles.linea}>• Valor Aduana : 
                         {item.base_Valor_Aduana}  </Text>
                       </text>
                     </text>

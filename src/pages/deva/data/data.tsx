@@ -1106,6 +1106,79 @@ export const getFacturas = async (deva_Id: number) => {
   }
 }
 
+export const getFacturas1 = async (deva_Id: number) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/Facturas/Listar?deva_Id=${deva_Id}`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log('factura:', JSON.stringify(data.data, null, 2));
+
+
+    return data.data;
+  } catch (error) {
+    console.error('Error al cargar las facturas:')
+    return []
+  }
+}
+
+export const getItems = async (fact_Id: number) =>{
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await fetch(
+      import.meta.env.VITE_API_SimexPro_Url +
+        `api/Items/Listar?fact_Id=${fact_Id}`,
+      {
+        method: 'GET',
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log('items:', JSON.stringify(data.data, null, 2));
+
+
+    return data.data;
+  } catch (error) {
+    console.error('Error al cargar los Items:', error)
+    return []
+  }
+}
+
+
 export const getUnidadesDeMedida = async () => {
   try {
     const apiKey = import.meta.env.VITE_ApiKey

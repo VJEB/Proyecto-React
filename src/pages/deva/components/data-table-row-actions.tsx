@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
 import { cancelarDeva } from '../data/data'
+import { getFacturas } from '../data/data'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -54,7 +55,11 @@ export function DataTableRowActions<TData>({
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => context.setMostrarDetalle(row.original.deva_Id)}
+            onClick={() => {
+              getFacturas(row.original.deva_Id);
+              context.setMostrarDetalle(row.original.deva_Id);
+
+            }}
           >
             <IconEye stroke={1.5} className='mr-1 h-5 w-5' />
             Imprimir

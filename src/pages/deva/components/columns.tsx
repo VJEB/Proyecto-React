@@ -11,15 +11,20 @@ export const columns: ColumnDef<Deva1>[] = [
     cell: ({ row }) =>
         <Button
           onClick={() => {
-            getFacturas(row.original.deva_Id).then((facturas:Factura[])=>row.original.subRows = facturas)
+            getFacturas(row.original.deva_Id)
+            .then(
+              (facturas:Factura[])=>
+                {
+                row.original.subRows = facturas;
+                row.toggleExpanded()
+              }
+            )
             .catch((err)=>{
               console.log("error en los datos: "+err)
             })
             
             ;
             
-            console.log("lineas veamos "+row.original.subRows)
-            row.toggleExpanded()
           }}
           variant='ghost'
           className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'

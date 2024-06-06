@@ -1900,6 +1900,8 @@ function FormProveedor({
     return huboError
   }
 
+
+  
   const validarInputsIntermediario = () => {
     let huboError = false
     inputIntermediarioRefs.current.forEach((input) => {
@@ -2836,6 +2838,7 @@ function FormCaracteristicas({
       valorAduana: boolean
     }>
   >
+  
   setValidar: Dispatch<SetStateAction<boolean>>
   setDeva: Dispatch<SetStateAction<DevaCompuesta>>
   errorToast: (message: string) => void
@@ -4565,6 +4568,9 @@ validar: boolean
       valorAduana: boolean
     }>
   >
+
+
+
   errorToast: (message: string) => void
   onTabChange: (callback:()=>string) => void
 }) {
@@ -4775,7 +4781,16 @@ validar: boolean
         </Button>
         <Button
           onClick={() => {
-            onTabChange('valorAduana')
+              if (!validarInputsIntermediario()) {
+                 return
+              }
+              setFormsValidados((prev) => {
+                return {
+                  ...prev,
+                  proveedor: true,
+                }
+              })
+              setTimeout(() => onTabChange(()=>'valorAduana'), 100)
           }}
         >
           Continuar
