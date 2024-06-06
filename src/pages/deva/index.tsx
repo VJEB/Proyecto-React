@@ -30,6 +30,7 @@ import {
   getPaises,
   getTiposDeIntermediarios,
   getUnidadesDeMedida,
+  guardarFactura,
   guardarTab1,
   guardarTab2,
   guardarTab3,
@@ -4245,9 +4246,31 @@ function FormFactura({
   }, [context.aranId])
 
   useEffect(() => {
-    validar && setTimeout(() => setValidar(() => false), 2000)
-    if (validar) {
-      dialogState ? validarInputsItem() : validarInputsFactura()
+    if (context.factId) {
+      const factEncontrada = facturas.find(
+        (fact) => fact.fact_Id === context.factId
+      )
+      if (factEncontrada) {
+        setFactura(factEncontrada)
+        setDialogState(false)
+      }
+    }
+  }, [context.factId])
+
+  useEffect(() => {
+    if (tabObjetivo > tabIndex) {
+      if (facturas.length === 0) {
+        errorToast('Debe ingresar por lo menos una factura')
+        return
+      }
+
+      console.log(facturas)
+
+      if (!facturas.every((factura) => factura.subRows.length > 0)) {
+        errorToast('Todas las facturas deben tener por lo menos un item')
+        return
+      }
+      setTab(tabs[tabIndex + 1])
     }
   }, [validar])
 
@@ -4291,9 +4314,9 @@ function FormFactura({
             <Label>16. Número de Factura</Label>
             <Input
               ref={(input) => (inputFacturasRefs.current[0] = input)}
-              value={factura.fact_Numero ? factura.fact_Numero : ''}
+              value={factura.fact_Numero ?? ''}
               onChange={(e) => {
-                const regex = /^[\d-]*$/
+                const regex = /^[\d]*$/
                 if (regex.test(e.target.value)) {
                   setFactura((fact) => {
                     return {
@@ -4350,23 +4373,91 @@ function FormFactura({
               </PopoverContent>
             </Popover>
           </div>
-          <Dialog open={dialogState} onOpenChange={setDialogState}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => {
-                  setDialogState(true)
-                  setItem((item) => {
-                    return {
-                      ...item,
-                      item_Numero: factura.tbItems.length + 1,
+          <Button
+            onClick={() => {
+              if (!validarInputsFactura()) {
+                guardarFactura(factura, false)
+                  .then((factId) => {
+                    setDialogState(true)
+                    setItem((item) => {
+                      return {
+                        ...item,
+                        fact_Id: parseInt(factId),
+                        item_Numero: factura.subRows.length + 1,
+                      }
+                    })
+                    if (factId === 1) {
+                      setFacturas((facts) => [
+                        ...facts.filter(
+                          (fact) => fact.fact_Id !== factura.fact_Id
+                        ),
+                        factura,
+                      ])
+                    } else {
+                      setFacturas((facts) => [
+                        ...facts,
+                        { ...factura, fact_Id: factId },
+                      ])
+                      setFactura((fact) => {
+                        return {
+                          ...fact,
+                          fact_Id: 0,
+                          fact_Numero: '',
+                          fact_Fecha: new Date().toISOString(),
+                        }
+                      })
                     }
+                    context.setFactId(0)
                   })
-                }}
-              >
-                <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
-                Agregar Item
-              </Button>
-            </DialogTrigger>
+                  .catch((err) => {
+                    console.error('Error al crear factura: ' + err)
+                  })
+              }
+            }}
+          >
+            <IconPlus stroke={1.5} className='mr-1 h-5 w-5' />
+            Agregar Item
+          </Button>
+          <Button
+            onClick={() => {
+              if (!validarInputsFactura()) {
+                guardarFactura(factura, false)
+                  .then((factId) => {
+                    console.log('factId:', factId) // Log factId
+                    if (factId === 1) {
+                      setFacturas((facts) => {
+                        const factsFiltradas = facts.filter(
+                          (fact) => fact.fact_Id !== factura.fact_Id
+                        )
+                        console.log(facts, 'facts') // Log original facts
+                        console.log(factsFiltradas, 'factsFiltradas') // Log filtered facts
+                        return [...factsFiltradas, factura]
+                      })
+                    } else {
+                      setFacturas((facts) => [
+                        ...facts,
+                        { ...factura, fact_Id: factId },
+                      ])
+                      setFactura((fact) => {
+                        return {
+                          ...fact,
+                          fact_Id: 0,
+                          fact_Numero: '',
+                          fact_Fecha: new Date().toISOString(),
+                        }
+                      })
+                    }
+                    context.setFactId(0)
+                  })
+                  .catch((err) => {
+                    console.error('Error al crear factura: ' + err)
+                  })
+              }
+            }}
+          >
+            Guardar
+          </Button>
+          <Dialog open={dialogState} onOpenChange={setDialogState}>
             <DialogContent
               className='sm:max-w-[720px]
             '
@@ -4754,34 +4845,6 @@ function FormFactura({
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
-        <div className='mr-4 flex justify-end gap-2 self-end'>
-          <Button
-            variant={'outline'}
-            onClick={() => {
-              setTabObjetivo(tabIndex - 1)
-              setTab(tabs[tabIndex - 1])
-            }}
-          >
-            Regresar
-          </Button>
-          <Button
-            onClick={() => {
-              if (facturas.length === 0) {
-                errorToast('Debe ingresar por lo menos una factura')
-                return
-              }
-              if (!facturas.every((factura) => factura.subRows.length > 0)) {
-                errorToast(
-                  'Todas las facturas deben tener por lo menos un item'
-                )
-                return
-              }
-              setTab(tabs[tabIndex + 1])
-            }}
-          >
-            Guardar
-          </Button>
         </div>
       </Card>
       <div className='mt-6 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>

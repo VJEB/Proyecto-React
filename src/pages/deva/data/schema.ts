@@ -582,6 +582,7 @@ const factSchema = z.object({
   usuarioModificacionNombre: z.string().nullable(),
   deva: z.string().nullable(),
   subRows: z.array(itemSchema),
+  tbItems: z.array(itemSchema),
 })
 
 const condicionesSchema = z.object({

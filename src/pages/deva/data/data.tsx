@@ -1266,10 +1266,45 @@ export const getFacturas = async (deva_Id: number) => {
 
     const data = await response.json()
 
-    return data.data.map((fact: Factura) => fact)
+    return data.data.map((fact: Factura) => {
+      return {
+        ...fact,
+        subRows: [...fact.tbItems],
+      }
+    })
   } catch (error) {
     console.error('Error al cargar los embarques:', error)
     return []
+  }
+}
+
+export const guardarFactura = async (fact: Factura, eliminar: boolean) => {
+  try {
+    const apiKey = import.meta.env.VITE_ApiKey
+
+    if (!apiKey) {
+      console.error('API key is undefined.')
+      return
+    }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_SimexPro_Url}api/Facturas/${fact.fact_Id === 0 ? 'Insertar' : eliminar ? 'Eliminar' : 'Editar'}`,
+      fact,
+      {
+        headers: {
+          XApiKey: apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.data
+
+    console.log(data, 'data fact')
+
+    return data.data.messageStatus
+  } catch (error) {
+    return false
   }
 }
 
