@@ -40,31 +40,31 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '50%',
     borderStyle: 'solid',
-    borderColor: '#bfbfbf',
-    borderWidth: 0,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    padding: 4,
+    borderColor: '#fff',
+    borderWidth: 1,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    padding: 3,
   },
   tableHeader: {
     fontSize: '12px',
     flex: 1,
-    width: '50%',
+    width: '100%',
     borderStyle: 'solid',
     borderColor: '#bfbfbf',
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
     backgroundColor: '#a3d1fe',
-    padding: 5,
-    marginTop: 3,
+    padding: 10,
+    margin: 3,
     fontWeight: 'bold',
     
   },
   tableHeader1: {
     fontSize: '12px',
     flex: 1,
-    width: '50%',
+    width: '100%',
     borderStyle: 'solid',
     borderColor: '#bfbfbf',
     borderWidth: 1,
@@ -259,23 +259,24 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ dato = []}) => {
                 src={backgroundImage} 
               /> 
               
-              <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 2, marginTop: -3 }}>Declaración de Valor</Text>
+              <Text style={{ fontSize: 20, marginHorizontal: '31%', marginBottom: 2, marginTop: -3, justifyContent: 'center', alignContent: 'center' }}>Declaración de Valor</Text>
+
               <View style={styles.section}>
                 {data
                   .map((item, i) => (
                     <View style={{fontSize: 12}} key={i}>
                       <text style={styles.tableRow}>
-                      <Text style={styles.tableHeader}>
-                        <Text style={{ fontWeight: 'bold' }}>Informacion Aduana</Text>
-                      </Text>
-                    </text>
+                        <Text style={styles.tableHeader}>
+                          <Text style={{ fontWeight: 'bold', alignContent: 'center', justifyContent: 'center' }}>Informacion Aduana</Text>
+                        </Text>
+                      </text>
                       <text style={styles.tableRow}>
                         <text style={styles.tableCell}>
                           <Text style={styles.linea}>• Aduana Ingreso : {item.adua_IngresoNombre}</Text>
                         </text>
                         <text style={styles.tableCell}>
                           <Text style={styles.linea}>• Despacho Nombre : {item.adua_DespachoNombre}</Text>
-                        </text>
+                      </text>
                         
                     </text>
                     <text style={styles.tableRow}>
